@@ -115,7 +115,7 @@ export const TerminalTitle = ({
   </div>
 );
 
-export type TerminalStatusProps = HTMLAttributes<HTMLDivElement>;
+export type TerminalStatusProps = Omit<HTMLAttributes<HTMLDivElement>, 'children'> & { children?: React.ReactNode };
 
 export const TerminalStatus = ({
   className,
@@ -133,7 +133,7 @@ export const TerminalStatus = ({
       className={cn("flex items-center gap-2 text-xs text-zinc-400", className)}
       {...props}
     >
-      {children ?? <Shimmer className="w-16" />}
+      {children ?? <Shimmer className="w-16">Loading…</Shimmer>}
     </div>
   );
 };

@@ -1,15 +1,17 @@
 "use client";
 
-import { Conversation, PromptInput } from "../components/ai-elements";
-import { Canvas } from "../components/ai-elements";
+import { Conversation } from "../components/ai-elements/conversation";
+import type { StickToBottomContext } from "use-stick-to-bottom";
+import { PromptInput } from "../components/ai-elements/prompt-input";
+import { Canvas } from "../components/ai-elements/canvas";
 
 export default function Page() {
   return (
-    <Conversation endpoint="/api/chat" className="flex flex-col">
+    <Conversation className="flex flex-col">
       {(messages) => (
         <>
           <Canvas className="flex grow" nodes={parseMessagesToNodes(messages)} />
-          <PromptInput />
+          <PromptInput onSubmit={() => {}} />
         </>
       )}
     </Conversation>
@@ -17,8 +19,10 @@ export default function Page() {
 }
 
 // Example parser converting messages to canvas nodes
-function parseMessagesToNodes(messages) {
-  return messages.map((msg, i) => ({
+function parseMessagesToNodes(context: StickToBottomContext) {
+  // If your context contains messages, extract them; otherwise, return an empty array or handle accordingly
+  const messages = Array.isArray((context as any).messages) ? (context as any).messages : [];
+  return messages.map((msg: any, i: number) => ({
     id: `${i}`,
     type: "default",
     position: { x: 10, y: i * 100 },
