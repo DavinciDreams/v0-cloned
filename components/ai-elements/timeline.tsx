@@ -346,7 +346,9 @@ export const TimelineContent = memo(
 
       // Initialize TimelineJS3 when container is mounted
       useEffect(() => {
-        if (typeof window === "undefined" || !containerRef.current || isInitialized) return;
+        if (typeof window === "undefined" || !containerRef.current || isInitialized) {
+          return;
+        }
 
         const initTimeline = async () => {
           try {
@@ -373,9 +375,6 @@ export const TimelineContent = memo(
             const { Timeline: TLTimeline } = await import("@knight-lab/timelinejs");
 
             if (!timelineInstanceRef.current && containerRef.current) {
-              console.log("Initializing timeline with ID:", timelineId);
-              console.log("Container dimensions:", container.offsetWidth, "x", container.offsetHeight);
-
               // Create Timeline instance
               timelineInstanceRef.current = new (TLTimeline as any)(
                 timelineId,
@@ -417,7 +416,8 @@ export const TimelineContent = memo(
             setIsInitialized(false);
           }
         };
-      }, [data, options, timelineId, setError, timelineInstanceRef, timelineRef, isInitialized]);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      }, [isMounted, timelineId]);
 
       if (error) {
         return <TimelineError error={error} />;
