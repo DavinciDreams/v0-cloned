@@ -183,7 +183,7 @@ Remember: Always generate valid A2UI JSON wrapped in markdown code fences!`;
  */
 export async function POST(req: NextRequest) {
   try {
-    const { messages, temperature = 0.7, maxTokens = 4000 } = await req.json();
+    const { messages, temperature = 0.7, maxTokens = 1000 } = await req.json();
 
     // Validate required fields
     if (!messages || !Array.isArray(messages) || messages.length === 0) {
