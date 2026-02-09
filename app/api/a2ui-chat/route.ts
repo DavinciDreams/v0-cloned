@@ -199,8 +199,8 @@ export async function POST(req: NextRequest) {
       apiKey: process.env.OPENROUTER_API_KEY,
     });
 
-    // Use Meta Llama 3.1 8B Instruct (free)
-    const modelName = "meta-llama/llama-3.1-8b-instruct:free";
+    // Use Qwen 2 7B Instruct (free)
+    const modelName = "qwen/qwen-2-7b-instruct:free";
 
     // Generate A2UI system prompt with catalog
     const systemPrompt = getA2UISystemPrompt();
