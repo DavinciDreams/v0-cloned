@@ -126,15 +126,6 @@ export const GenerativeMessage = memo(
 
     const { textContent, jsxBlocks } = parsedContent;
 
-    // Debug logging
-    console.log('[DEBUG GenerativeMessage]', {
-      messageId: id,
-      hasJsx: !!jsx,
-      jsxBlocksCount: jsxBlocks.length,
-      jsx: jsx?.substring(0, 100),
-      components: !!components
-    });
-
     // Don't render for system messages
     if (role === "system") {
       return null;
@@ -142,48 +133,43 @@ export const GenerativeMessage = memo(
 
     // BYPASS Message/MessageContent - render directly
     return (
-      <div className={cn("my-4 p-4 border-2", role === "user" ? "border-blue-500 bg-blue-50" : "border-green-500 bg-green-50", className)} {...props}>
-        {/* DEBUG MARKER */}
-        <div className="bg-pink-500 text-white font-bold text-xl p-4 my-2 border-4 border-black">
-          GenerativeMessage RENDERING - Role: {role} - jsxBlocksCount: {jsxBlocks.length}
-        </div>
+      <div className={cn("my-4", className)} {...props}>
+        {/* Render text content with markdown */}
+        {textContent && (
+          <div className="prose prose-sm dark:prose-invert max-w-none">
+            <MessageResponse>{textContent}</MessageResponse>
+          </div>
+        )}
 
-          {/* Render text content with markdown */}
-          {textContent && (
-            <div className="prose prose-sm dark:prose-invert max-w-none">
-              <MessageResponse>{textContent}</MessageResponse>
-            </div>
-          )}
+        {/* Render JSX blocks */}
+        {jsxBlocks.length > 0 && (
+          <div className="mt-4 space-y-4">
+            {jsxBlocks.map((jsxBlock) => (
+              <JSXPreview
+                key={jsxBlock.id}
+                jsx={jsxBlock.code}
+                isStreaming={isStreaming}
+                components={components}
+                bindings={bindings}
+                className="border rounded-lg bg-background p-4"
+              >
+                <JSXPreviewError />
+                <JSXPreviewContent />
+              </JSXPreview>
+            ))}
+          </div>
+        )}
 
-          {/* Render JSX blocks */}
-          {jsxBlocks.length > 0 && (
-            <div className="mt-4 space-y-4">
-              {jsxBlocks.map((jsxBlock) => (
-                <JSXPreview
-                  key={jsxBlock.id}
-                  jsx={jsxBlock.code}
-                  isStreaming={isStreaming}
-                  components={components}
-                  bindings={bindings}
-                  className="border rounded-lg bg-background p-4"
-                >
-                  <JSXPreviewError />
-                  <JSXPreviewContent />
-                </JSXPreview>
-              ))}
-            </div>
-          )}
-
-          {/* Show streaming indicator */}
-          {isStreaming && (
-            <div className="flex items-center gap-2 text-muted-foreground text-sm">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
-              </span>
-              <span>Generating...</span>
-            </div>
-          )}
+        {/* Show streaming indicator */}
+        {isStreaming && (
+          <div className="flex items-center gap-2 text-muted-foreground text-sm">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+            </span>
+            <span>Generating...</span>
+          </div>
+        )}
       </div>
     );
   }
