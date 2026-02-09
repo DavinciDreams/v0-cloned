@@ -177,6 +177,7 @@ export const JSXPreviewContent = memo(
 
     const handleError = useCallback(
       (err: Error) => {
+        console.error('[JSXPreview] Parse error:', err);
         // Prevent duplicate error reports for the same jsx
         if (errorReportedRef.current === processedJsx) {
           return;

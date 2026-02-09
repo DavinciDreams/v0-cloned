@@ -131,47 +131,46 @@ export const GenerativeMessage = memo(
       return null;
     }
 
+    // BYPASS Message/MessageContent - render directly
     return (
-      <Message from={role} className={className} {...props}>
-        <MessageContent>
-          {/* Render text content with markdown */}
-          {textContent && (
-            <div className="prose prose-sm dark:prose-invert max-w-none">
-              <MessageResponse>{textContent}</MessageResponse>
-            </div>
-          )}
+      <div className={cn("my-4", className)} {...props}>
+        {/* Render text content with markdown */}
+        {textContent && (
+          <div className="prose prose-sm dark:prose-invert max-w-none">
+            <MessageResponse>{textContent}</MessageResponse>
+          </div>
+        )}
 
-          {/* Render JSX blocks */}
-          {jsxBlocks.length > 0 && (
-            <div className="mt-4 space-y-4">
-              {jsxBlocks.map((jsxBlock) => (
-                <JSXPreview
-                  key={jsxBlock.id}
-                  jsx={jsxBlock.code}
-                  isStreaming={isStreaming}
-                  components={components}
-                  bindings={bindings}
-                  className="border rounded-lg bg-background p-4"
-                >
-                  <JSXPreviewError />
-                  <JSXPreviewContent />
-                </JSXPreview>
-              ))}
-            </div>
-          )}
+        {/* Render JSX blocks */}
+        {jsxBlocks.length > 0 && (
+          <div className="mt-4 space-y-4">
+            {jsxBlocks.map((jsxBlock) => (
+              <JSXPreview
+                key={jsxBlock.id}
+                jsx={jsxBlock.code}
+                isStreaming={isStreaming}
+                components={components}
+                bindings={bindings}
+                className="border rounded-lg bg-background p-4"
+              >
+                <JSXPreviewError />
+                <JSXPreviewContent />
+              </JSXPreview>
+            ))}
+          </div>
+        )}
 
-          {/* Show streaming indicator */}
-          {isStreaming && (
-            <div className="flex items-center gap-2 text-muted-foreground text-sm">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
-              </span>
-              <span>Generating...</span>
-            </div>
-          )}
-        </MessageContent>
-      </Message>
+        {/* Show streaming indicator */}
+        {isStreaming && (
+          <div className="flex items-center gap-2 text-muted-foreground text-sm">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+            </span>
+            <span>Generating...</span>
+          </div>
+        )}
+      </div>
     );
   }
 );
