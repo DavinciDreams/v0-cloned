@@ -96,6 +96,18 @@ import {
 } from "@/components/ai-elements/threescene-client";
 import type { ThreeSceneData } from "@/components/ai-elements/threescene-client";
 
+import {
+  ModelViewer,
+  ModelViewerActions,
+  ModelViewerContent,
+  ModelViewerCopyButton,
+  ModelViewerFullscreenButton,
+  ModelViewerResetButton,
+  ModelViewerHeader,
+  ModelViewerTitle,
+} from "@/components/ai-elements/model-viewer-client";
+import type { ModelViewerData } from "@/components/ai-elements/model-viewer-client";
+
 // Sample data for components
 const sampleSVG = `<svg width="300" height="200" xmlns="http://www.w3.org/2000/svg">
   <defs>
@@ -314,6 +326,12 @@ const sampleMaps: MapsData = {
   ],
 };
 
+const sampleModelViewer: ModelViewerData = {
+  url: "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Duck/glTF-Binary/Duck.glb",
+  format: "glb",
+  scale: 0.5,
+};
+
 export default function ShowcasePage() {
   const [activeTab, setActiveTab] = useState("svg");
   const [isMounted, setIsMounted] = useState(false);
@@ -398,7 +416,7 @@ export default function ShowcasePage() {
           </h1>
           <p className="text-muted-foreground text-lg">
             Explore interactive AI elements: SVG Preview, Timeline, Node Editor,
-            Knowledge Graph, LaTeX, Maps, and Three.js Scenes
+            Knowledge Graph, LaTeX, Maps, Three.js Scenes, and 3D Model Viewer
           </p>
         </div>
       </header>
@@ -406,7 +424,7 @@ export default function ShowcasePage() {
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="mb-8 grid w-full grid-cols-7">
+          <TabsList className="mb-8 grid w-full grid-cols-8">
             <TabsTrigger value="svg">SVG</TabsTrigger>
             <TabsTrigger value="timeline">Timeline</TabsTrigger>
             <TabsTrigger value="node-editor">Nodes</TabsTrigger>
@@ -414,6 +432,7 @@ export default function ShowcasePage() {
             <TabsTrigger value="latex">LaTeX</TabsTrigger>
             <TabsTrigger value="maps">Maps</TabsTrigger>
             <TabsTrigger value="threescene">3D</TabsTrigger>
+            <TabsTrigger value="model-viewer">Models</TabsTrigger>
           </TabsList>
 
           {/* SVG Preview Tab */}
@@ -750,6 +769,65 @@ export default function ShowcasePage() {
               </CardContent>
             </Card>
           </TabsContent>
+
+          {/* ModelViewer Tab */}
+          <TabsContent value="model-viewer" className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle>3D Model Viewer Component</CardTitle>
+                <CardDescription>
+                  Load and view 3D models in various formats (GLTF, OBJ, FBX, STL,
+                  Collada). Perfect for displaying product models, architectural
+                  visualizations, and 3D assets.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {activeTab === "model-viewer" && (
+                  <ModelViewer
+                    data={sampleModelViewer}
+                    options={{
+                      height: 500,
+                      enableControls: true,
+                      autoRotate: true,
+                      autoRotateSpeed: 1.0,
+                      showGrid: true,
+                      showAxes: false,
+                      antialias: true,
+                    }}
+                  >
+                    <ModelViewerHeader>
+                      <ModelViewerTitle>Duck Model (GLB)</ModelViewerTitle>
+                      <ModelViewerActions>
+                        <ModelViewerResetButton />
+                        <ModelViewerCopyButton />
+                        <ModelViewerFullscreenButton />
+                      </ModelViewerActions>
+                    </ModelViewerHeader>
+                    <ModelViewerContent />
+                  </ModelViewer>
+                )}
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Features</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ul className="list-disc space-y-2 pl-5 text-muted-foreground text-sm">
+                  <li>Support for 5 3D formats: GLTF/GLB, OBJ, FBX, STL, DAE</li>
+                  <li>Interactive OrbitControls (rotate, pan, zoom)</li>
+                  <li>Auto-rotation with configurable speed</li>
+                  <li>Grid and axes helpers for orientation</li>
+                  <li>Reset camera to initial position</li>
+                  <li>Copy model data and fullscreen mode</li>
+                  <li>Automatic model centering and scaling</li>
+                  <li>Loading states and error handling</li>
+                  <li>Proper memory cleanup on unmount</li>
+                </ul>
+              </CardContent>
+            </Card>
+          </TabsContent>
         </Tabs>
 
         {/* Quick Stats */}
@@ -764,7 +842,7 @@ export default function ShowcasePage() {
           <CardContent>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
               <div className="rounded-lg border bg-card p-4">
-                <div className="mb-2 font-bold text-2xl">7</div>
+                <div className="mb-2 font-bold text-2xl">8</div>
                 <div className="text-muted-foreground text-sm">
                   Components Created
                 </div>
