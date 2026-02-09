@@ -214,11 +214,19 @@ export default function A2UIChatPage() {
                 </div>
 
                 {/* Render A2UI component if present */}
-                {message.a2uiMessage && (
-                  <div className="mt-4 bg-background rounded-lg p-4">
-                    <A2UIRenderer message={message.a2uiMessage} />
-                  </div>
-                )}
+                {(() => {
+                  console.log('[A2UI Chat] Message has a2uiMessage?', !!message.a2uiMessage, message.a2uiMessage);
+                  if (message.a2uiMessage) {
+                    console.log('[A2UI Chat] Rendering A2UIRenderer with message:', message.a2uiMessage);
+                    return (
+                      <div className="mt-4 bg-background rounded-lg p-4 border-2 border-blue-500">
+                        <div className="text-xs text-blue-500 mb-2">A2UI Component:</div>
+                        <A2UIRenderer message={message.a2uiMessage} />
+                      </div>
+                    );
+                  }
+                  return null;
+                })()}
               </div>
             </div>
           ))}
