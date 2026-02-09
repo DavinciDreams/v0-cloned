@@ -116,26 +116,35 @@ export default function A2UIChatPage() {
         if (done) break;
 
         // Decode the chunk
-        const chunk = decoder.decode(value);
+        const chunk = decoder.decode(value, { stream: true });
+        console.log('[A2UI Chat] Received chunk:', chunk);
 
         // Parse Server-Sent Events format
         const lines = chunk.split('\n');
         for (const line of lines) {
+          console.log('[A2UI Chat] Processing line:', line);
+
           if (line.startsWith('0:')) {
             // Text chunk from Vercel AI SDK
             const text = line.slice(2).trim();
+            console.log('[A2UI Chat] Extracted text:', text);
+
             if (text) {
               try {
                 const parsed = JSON.parse(text);
-                if (parsed) {
+                console.log('[A2UI Chat] Parsed JSON:', parsed);
+                if (typeof parsed === 'string') {
                   assistantContent += parsed;
                 }
               } catch {
+                // Not JSON, treat as raw text
                 assistantContent += text;
               }
             }
           }
         }
+
+        console.log('[A2UI Chat] Current content:', assistantContent);
 
         // Update the message content
         setMessages(prev =>
