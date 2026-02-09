@@ -342,7 +342,7 @@ export const ThreeSceneContent = memo(
       const containerRef = useRef<HTMLDivElement>(null);
       const [isInitialized, setIsInitialized] = useState(false);
       const [isMounted, setIsMounted] = useState(false);
-      const animationFrameRef = useRef<number>();
+      const animationFrameRef = useRef<number | undefined>(undefined);
 
       // Only render on client to avoid SSR issues
       useEffect(() => {
