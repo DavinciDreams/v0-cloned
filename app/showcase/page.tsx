@@ -324,7 +324,8 @@ export default function ShowcasePage() {
   }, []);
 
   useEffect(() => {
-    if (!isMounted) return;
+    // Only create 3D scene when the tab is active
+    if (!isMounted || activeTab !== "threescene" || sampleThreeScene) return;
 
     // Create 3D objects only on client
     const createObjects = async () => {
@@ -385,7 +386,7 @@ export default function ShowcasePage() {
     };
 
     createObjects();
-  }, [isMounted]);
+  }, [isMounted, activeTab, sampleThreeScene]);
 
   return (
     <div className="min-h-screen bg-background">
@@ -427,18 +428,20 @@ export default function ShowcasePage() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <SVGPreview svg={sampleSVG} title="Gradient Example">
-                  <SVGPreviewHeader>
-                    <SVGPreviewTitle />
-                    <SVGPreviewActions>
-                      <SVGPreviewModeToggle />
-                      <SVGPreviewCopyButton />
-                      <SVGPreviewDownloadButton />
-                    </SVGPreviewActions>
-                  </SVGPreviewHeader>
-                  <SVGPreviewError />
-                  <SVGPreviewContent />
-                </SVGPreview>
+                {activeTab === "svg" && (
+                  <SVGPreview svg={sampleSVG} title="Gradient Example">
+                    <SVGPreviewHeader>
+                      <SVGPreviewTitle />
+                      <SVGPreviewActions>
+                        <SVGPreviewModeToggle />
+                        <SVGPreviewCopyButton />
+                        <SVGPreviewDownloadButton />
+                      </SVGPreviewActions>
+                    </SVGPreviewHeader>
+                    <SVGPreviewError />
+                    <SVGPreviewContent />
+                  </SVGPreview>
+                )}
               </CardContent>
             </Card>
 
@@ -470,16 +473,18 @@ export default function ShowcasePage() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <Timeline data={sampleTimeline}>
-                  <TimelineHeader>
-                    <TimelineTitle />
-                    <TimelineActions>
-                      <TimelineCopyButton />
-                      <TimelineFullscreenButton />
-                    </TimelineActions>
-                  </TimelineHeader>
-                  <TimelineContent />
-                </Timeline>
+                {activeTab === "timeline" && (
+                  <Timeline data={sampleTimeline}>
+                    <TimelineHeader>
+                      <TimelineTitle />
+                      <TimelineActions>
+                        <TimelineCopyButton />
+                        <TimelineFullscreenButton />
+                      </TimelineActions>
+                    </TimelineHeader>
+                    <TimelineContent />
+                  </Timeline>
+                )}
               </CardContent>
             </Card>
 
@@ -512,17 +517,19 @@ export default function ShowcasePage() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <NodeEditor data={sampleNodeEditor}>
-                  <NodeEditorHeader>
-                    <NodeEditorTitle />
-                    <NodeEditorActions>
-                      <NodeEditorCopyButton />
-                      <NodeEditorFullscreenButton />
-                    </NodeEditorActions>
-                  </NodeEditorHeader>
-                  <NodeEditorError />
-                  <NodeEditorContent />
-                </NodeEditor>
+                {activeTab === "node-editor" && (
+                  <NodeEditor data={sampleNodeEditor}>
+                    <NodeEditorHeader>
+                      <NodeEditorTitle />
+                      <NodeEditorActions>
+                        <NodeEditorCopyButton />
+                        <NodeEditorFullscreenButton />
+                      </NodeEditorActions>
+                    </NodeEditorHeader>
+                    <NodeEditorError />
+                    <NodeEditorContent />
+                  </NodeEditor>
+                )}
               </CardContent>
             </Card>
 
@@ -555,19 +562,21 @@ export default function ShowcasePage() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <KnowledgeGraph data={sampleKnowledgeGraph} title="AI Concepts">
-                  <KnowledgeGraphHeader>
-                    <KnowledgeGraphTitle />
-                    <KnowledgeGraphActions>
-                      <KnowledgeGraphSearch />
-                      <KnowledgeGraphCopyButton />
-                      <KnowledgeGraphFullscreenButton />
-                    </KnowledgeGraphActions>
-                  </KnowledgeGraphHeader>
-                  <KnowledgeGraphError />
-                  <KnowledgeGraphContent />
-                  <KnowledgeGraphLegend />
-                </KnowledgeGraph>
+                {activeTab === "knowledge-graph" && (
+                  <KnowledgeGraph data={sampleKnowledgeGraph} title="AI Concepts">
+                    <KnowledgeGraphHeader>
+                      <KnowledgeGraphTitle />
+                      <KnowledgeGraphActions>
+                        <KnowledgeGraphSearch />
+                        <KnowledgeGraphCopyButton />
+                        <KnowledgeGraphFullscreenButton />
+                      </KnowledgeGraphActions>
+                    </KnowledgeGraphHeader>
+                    <KnowledgeGraphError />
+                    <KnowledgeGraphContent />
+                    <KnowledgeGraphLegend />
+                  </KnowledgeGraph>
+                )}
               </CardContent>
             </Card>
 
@@ -603,16 +612,18 @@ export default function ShowcasePage() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <Latex data={sampleLatex}>
-                  <LatexHeader>
-                    <LatexTitle>Mathematical Equations</LatexTitle>
-                    <LatexActions>
-                      <LatexCopyButton />
-                      <LatexFullscreenButton />
-                    </LatexActions>
-                  </LatexHeader>
-                  <LatexContent />
-                </Latex>
+                {activeTab === "latex" && (
+                  <Latex data={sampleLatex}>
+                    <LatexHeader>
+                      <LatexTitle>Mathematical Equations</LatexTitle>
+                      <LatexActions>
+                        <LatexCopyButton />
+                        <LatexFullscreenButton />
+                      </LatexActions>
+                    </LatexHeader>
+                    <LatexContent />
+                  </Latex>
+                )}
               </CardContent>
             </Card>
 
@@ -646,16 +657,18 @@ export default function ShowcasePage() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <Maps data={sampleMaps}>
-                  <MapsHeader>
-                    <MapsTitle>San Francisco</MapsTitle>
-                    <MapsActions>
-                      <MapsCopyButton />
-                      <MapsFullscreenButton />
-                    </MapsActions>
-                  </MapsHeader>
-                  <MapsContent />
-                </Maps>
+                {activeTab === "maps" && (
+                  <Maps data={sampleMaps}>
+                    <MapsHeader>
+                      <MapsTitle>San Francisco</MapsTitle>
+                      <MapsActions>
+                        <MapsCopyButton />
+                        <MapsFullscreenButton />
+                      </MapsActions>
+                    </MapsHeader>
+                    <MapsContent />
+                  </Maps>
+                )}
               </CardContent>
             </Card>
 
@@ -689,7 +702,7 @@ export default function ShowcasePage() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                {sampleThreeScene ? (
+                {activeTab === "threescene" && sampleThreeScene ? (
                   <ThreeScene
                     data={sampleThreeScene}
                     options={{
@@ -711,11 +724,11 @@ export default function ShowcasePage() {
                     </ThreeSceneHeader>
                     <ThreeSceneContent />
                   </ThreeScene>
-                ) : (
+                ) : activeTab === "threescene" ? (
                   <div className="flex h-[500px] items-center justify-center text-muted-foreground">
                     Loading 3D scene...
                   </div>
-                )}
+                ) : null}
               </CardContent>
             </Card>
 
