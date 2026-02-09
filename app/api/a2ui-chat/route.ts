@@ -199,9 +199,8 @@ export async function POST(req: NextRequest) {
       apiKey: process.env.OPENROUTER_API_KEY,
     });
 
-    // Use GPT-3.5 Turbo (cheap, widely available)
-    // Note: This has a small cost, but should work reliably for testing
-    const modelName = "openai/gpt-3.5-turbo";
+    // Use NVIDIA Nemotron 3 Nano (free)
+    const modelName = "nvidia/nemotron-3-nano-30b-a3b:free";
 
     // Generate A2UI system prompt with catalog
     const systemPrompt = getA2UISystemPrompt();
