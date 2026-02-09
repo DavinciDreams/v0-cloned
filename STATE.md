@@ -7,18 +7,27 @@
 
 ## Current Session Summary (2026-02-09)
 
-### ✅ Completed AI Elements
+### ✅ Completed - 3 AI Elements Successfully Built
 
-1. **Timeline Component** - TimelineJS3 Integration
-2. **Maps Component** - MapLibre GL + Three.js 3D
-3. **ThreeScene Component** - Pure Three.js viewer
+**Session Focus:** Built complete Maps, Timeline, and ThreeScene components from scratch
 
-### ⚠️ Current Issue
+**Commits:**
+- `945f222` - Maps component with Leaflet (replaced MapLibre)
+- `32e9cd8` - Timeline rendering and image sync fixes
+- `ca4217f` - ThreeScene rendering fixes and optimization
+- `2bcab42` - Documentation on avoiding infinite loops
 
-**Maps Not Rendering** - Shows marker but no map tiles
-- Fixed re-rendering loop (dependency array)
-- Added error handling
-- Need to test different tile provider
+**Key Challenges Resolved:**
+1. **Maps**: Switched from MapLibre GL (tiles not loading) to Leaflet (working perfectly)
+2. **Timeline**: Fixed infinite re-rendering loop, fixed image/event sync issues, added rich Wikipedia test data
+3. **ThreeScene**: Fixed infinite re-rendering loop, fixed Three.js multiple instance warning
+
+**All Components:**
+- ✅ Stable rendering (no infinite loops)
+- ✅ Proper useEffect dependency optimization
+- ✅ Working test pages with rich data
+- ✅ Follow composable API pattern
+- ✅ Client-side rendering with SSR safety
 
 ---
 
@@ -56,31 +65,29 @@
 
 ---
 
-### 2. Maps (MapLibre GL + Three.js)
+### 2. Maps (Leaflet)
 **Files:**
-- `components/ai-elements/maps.tsx` (535 lines)
+- `components/ai-elements/maps.tsx` (464 lines)
 - `components/ai-elements/maps-client.tsx` (client exports)
 - `app/maps-test/page.tsx` (test page)
 
 **Packages:**
-- `maplibre-gl@latest`
-- `react-map-gl@latest`
-- `three@0.182.0`
-- `@types/three@latest`
-- `@dvt3d/maplibre-three-plugin@1.3.0`
+- `leaflet@latest`
+- `react-leaflet@latest`
+- `@types/leaflet@latest`
 
-**Status:** ⚠️ In Progress - Markers render but map tiles don't load
-- Re-rendering loop: FIXED (dependency array issue)
-- Error handling: Added
-- Default style: `https://demotiles.maplibre.org/style.json`
-- Need to test alternative tile provider
+**Status:** ✅ Working Perfectly
+- Switched from MapLibre GL to Leaflet for reliability
+- Uses OpenStreetMap tiles (no API key required)
+- Infinite loop fixed (dependency array optimization)
+- Test page: http://localhost:3002/maps-test
 
 **Features:**
-- 2D interactive maps
-- Custom markers with colors
-- 3D object support (Three.js integration)
-- Navigation controls
+- 2D interactive maps with OpenStreetMap
+- Custom colored markers with popups
+- Navigation controls (zoom, pan)
 - Fullscreen mode
+- Composable API pattern
 
 **API:**
 ```tsx
@@ -116,13 +123,14 @@
 - `components/ai-elements/threescene-client.tsx`
 - `app/threescene-test/page.tsx`
 
-**Package:** `three@0.182.0` (already installed)
+**Package:** `three@0.182.0`
 
-**Status:** ✅ Should be working (not yet tested)
-- OrbitControls for interaction
-- Multiple light types (ambient, directional, point, spot, hemisphere)
-- Grid and axes helpers
-- Customizable camera
+**Status:** ✅ Working Perfectly
+- Infinite loop fixed (dependency array optimization)
+- Multiple Three.js instances warning resolved
+- OrbitControls for interaction (drag to rotate, scroll to zoom)
+- Test page with 4 objects: cube, torus, sphere, icosahedron
+- Test page: http://localhost:3002/threescene-test
 
 **Features:**
 - Pure 3D scene viewer
@@ -154,43 +162,39 @@
 
 ---
 
-## Package Dependencies Added Today
+## Package Dependencies
 
-```json
-{
-  "@knight-lab/timelinejs": "3.9.8",
-  "maplibre-gl": "latest",
-  "react-map-gl": "latest",
-  "three": "0.182.0",
-  "@types/three": "latest",
-  "@dvt3d/maplibre-three-plugin": "1.3.0"
-}
-```
+**Timeline:**
+- `@knight-lab/timelinejs@3.9.8`
+
+**Maps:**
+- `leaflet@latest`
+- `react-leaflet@latest`
+- `@types/leaflet@latest`
+
+**ThreeScene:**
+- `three@0.182.0`
+- `@types/three@latest`
+
+**Removed (replaced MapLibre with Leaflet):**
+- ~~maplibre-gl~~
+- ~~react-map-gl~~
+- ~~@dvt3d/maplibre-three-plugin~~
 
 ---
 
 ## Known Issues
 
-### 🔴 CRITICAL: Maps Not Rendering Tiles
-**Symptom:** Marker shows but no map background
-**Possible Causes:**
-1. Demo tiles URL not loading
-2. CORS issue with tile server
-3. Map style JSON format issue
+### ✅ All Critical Issues Resolved
 
-**Investigation Steps:**
-1. Check browser console for network errors
-2. Test alternative tile providers:
-   - OpenStreetMap direct
-   - Maptiler free tier
-   - Protomaps
-3. Verify MapLibre GL CSS loaded
+**Previous Issues (Now Fixed):**
+1. ~~Maps not rendering tiles~~ → Switched to Leaflet
+2. ~~Timeline infinite re-rendering~~ → Fixed dependency array
+3. ~~Timeline images out of sync~~ → Added unique_id and thumbnails
+4. ~~ThreeScene infinite re-rendering~~ → Fixed dependency array
+5. ~~Multiple Three.js instances warning~~ → Fixed import method
 
-**Browser Console Logs:**
-```
-"Initializing map with ID: map-xxxxx"
-Expected: "Map loaded successfully"
-```
+**Current Status:** All 3 components working perfectly with no known issues.
 
 ---
 
@@ -369,78 +373,39 @@ types/
 **Port:** 3002 (3000 in use by another process)
 
 **Test Pages:**
-- Timeline: http://localhost:3002/timeline-test ✅
-- Maps: http://localhost:3002/maps-test ⚠️
-- ThreeScene: http://localhost:3002/threescene-test 🔄
+- Timeline: http://localhost:3002/timeline-test ✅ Working
+- Maps: http://localhost:3002/maps-test ✅ Working
+- ThreeScene: http://localhost:3002/threescene-test ✅ Working
 
 ---
 
 ## Git Status
 
 **Branch:** `components`
-**Last Commit:** `1b87d76` - feat: integrate official TimelineJS3 library
-**Status:** 1 commit ahead of origin (pushed)
+**Latest Commits:**
+- `2bcab42` - docs: add guidance on avoiding infinite loops in useEffect
+- `ca4217f` - fix: resolve ThreeScene rendering issues and optimize performance
+- `32e9cd8` - fix: resolve Timeline rendering and image sync issues
+- `945f222` - feat: add Maps AI element with Leaflet
 
-**Uncommitted:**
-- Maps component (maps.tsx, maps-client.tsx)
-- ThreeScene component (threescene.tsx, threescene-client.tsx)
-- Test pages (maps-test, threescene-test)
-- Package.json updates (map/3D dependencies)
+**Status:** ✅ All changes committed and pushed
+
+**Clean Working Directory:** No uncommitted changes
 
 ---
 
 ## Next Steps
 
-### 🔴 Immediate: Fix Maps Rendering
+### ✅ Session Complete - Ready for Next Components
 
-1. **Test Alternative Tile Provider**
-   ```tsx
-   // Try OpenStreetMap style
-   style: {
-     version: 8,
-     sources: {
-       osm: {
-         type: 'raster',
-         tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],
-         tileSize: 256,
-       }
-     },
-     layers: [{
-       id: 'osm',
-       type: 'raster',
-       source: 'osm'
-     }]
-   }
-   ```
+All planned components for this session are complete and working:
+- Timeline ✅
+- Maps ✅
+- ThreeScene ✅
 
-2. **Check Browser DevTools**
-   - Network tab: Failed tile requests?
-   - Console: MapLibre errors?
-   - Elements: Canvas element exists?
+Documentation updated with best practices for avoiding infinite loops.
 
-3. **Verify MapLibre CSS**
-   - Check if `maplibre-gl.css` loaded
-   - Inspect map container styles
-
-### 🟡 After Maps Fixed: Test ThreeScene
-
-1. Visit http://localhost:3002/threescene-test
-2. Verify OrbitControls work
-3. Check all 4 objects render
-4. Test reset button
-
-### 🟢 When Both Work: Commit
-
-```bash
-git add .
-git commit -m "feat: add Maps and ThreeScene AI elements
-
-- Add MapLibre GL Maps component with 3D support
-- Add pure Three.js Scene viewer
-- Integrate @dvt3d/maplibre-three-plugin for 3D on maps
-- Add test pages for both components
-- Install maplibre-gl, three, and related packages"
-```
+**Ready to build more components!**
 
 ---
 
