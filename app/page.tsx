@@ -227,10 +227,8 @@ export default function Page() {
 
       // Extract JSX from the response and add to message
       const jsxMatch = fullContent.match(/```(?:jsx|tsx)\s*\n([\s\S]*?)```/);
-      console.log('[DEBUG] JSX extraction:', { matched: !!jsxMatch, fullContent: fullContent.substring(0, 200) });
       if (jsxMatch) {
         const extractedJsx = jsxMatch[1].trim();
-        console.log('[DEBUG] Extracted JSX:', extractedJsx);
         updateMessage(assistantMessageId, {
           jsx: extractedJsx,
         });
@@ -265,30 +263,8 @@ export default function Page() {
   // =====================
   // Render
   // =====================
-  console.log('[PAGE RENDER]', {
-    messagesCount: messages.length,
-    isLoading,
-    error,
-    messagesPreview: messages.map(m => ({ id: m.id, role: m.role, hasJsx: !!m.jsx }))
-  });
-
   return (
     <div className="flex h-screen w-full flex-col bg-background">
-      {/* SUPER OBVIOUS TEST */}
-      <div style={{
-        backgroundColor: 'red',
-        color: 'white',
-        padding: '40px',
-        fontSize: '40px',
-        fontWeight: 'bold',
-        border: '10px solid black'
-      }}>
-        🔴 INLINE STYLE TEST - IF YOU SEE THIS, RENDERING WORKS!
-      </div>
-
-      {/* Canvas for visualization - TEMPORARILY HIDDEN TO DEBUG */}
-      {/* <Canvas className="h-64 flex-shrink-0" nodes={parseMessagesToNodes()} /> */}
-
       {/* Messages Display - Conversation handles scroll behavior */}
       <Conversation className="flex-1">
         <ConversationContent className="overflow-y-auto">
@@ -306,41 +282,21 @@ export default function Page() {
                   </div>
                 </div>
               ) : (
-                <>
-                  {/* DIRECT TEST - Bypass all ai-elements */}
-                  <div className="bg-red-500 text-white p-8 m-4 text-3xl font-bold border-8 border-black">
-                    DIRECT TEST - {messages.length} messages found
-                  </div>
-
-                  {messages.map((message) => (
-                    <div key={message.id}>
-                      {/* Simple message display */}
-                      <div className="bg-blue-500 text-white p-4 m-2 rounded">
-                        <div className="font-bold">{message.role}</div>
-                        <div className="text-sm mt-2">{message.content.substring(0, 100)}...</div>
-                        {message.jsx && (
-                          <div className="bg-green-500 p-2 mt-2">
-                            HAS JSX: {message.jsx.substring(0, 50)}
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Original GenerativeMessage */}
-                      <GenerativeMessage
-                        message={{
-                          id: message.id,
-                          role: message.role,
-                          content: message.content,
-                          jsx: message.jsx,
-                          timestamp: message.timestamp,
-                        }}
-                        isStreaming={isLoading && message.role === "assistant"}
-                        // eslint-disable-next-line @typescript-eslint/no-explicit-any -- React type version mismatch with react-jsx-parser
-                        components={componentBindings as any}
-                      />
-                    </div>
-                  ))}
-                </>
+                messages.map((message) => (
+                  <GenerativeMessage
+                    key={message.id}
+                    message={{
+                      id: message.id,
+                      role: message.role,
+                      content: message.content,
+                      jsx: message.jsx,
+                      timestamp: message.timestamp,
+                    }}
+                    isStreaming={isLoading && message.role === "assistant"}
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- React type version mismatch with react-jsx-parser
+                    components={componentBindings as any}
+                  />
+                ))
               )}
 
               {/* Loading Indicator */}
