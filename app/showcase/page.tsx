@@ -8,7 +8,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 // Import new components
 import {
@@ -60,6 +60,53 @@ import {
   TimelineTitle,
 } from "@/components/ai-elements/timeline-client";
 import type { TimelineData } from "@/components/ai-elements/timeline-client";
+
+import {
+  Latex,
+  LatexActions,
+  LatexContent,
+  LatexCopyButton,
+  LatexError,
+  LatexFullscreenButton,
+  LatexHeader,
+  LatexTitle,
+} from "@/components/ai-elements/latex-client";
+import type { LatexData } from "@/components/ai-elements/latex-client";
+
+import {
+  Maps,
+  MapsActions,
+  MapsContent,
+  MapsCopyButton,
+  MapsFullscreenButton,
+  MapsHeader,
+  MapsTitle,
+} from "@/components/ai-elements/maps-client";
+import type { MapsData } from "@/components/ai-elements/maps-client";
+
+import {
+  ThreeScene,
+  ThreeSceneActions,
+  ThreeSceneContent,
+  ThreeSceneCopyButton,
+  ThreeSceneFullscreenButton,
+  ThreeSceneResetButton,
+  ThreeSceneHeader,
+  ThreeSceneTitle,
+} from "@/components/ai-elements/threescene-client";
+import type { ThreeSceneData } from "@/components/ai-elements/threescene-client";
+
+import {
+  ModelViewer,
+  ModelViewerActions,
+  ModelViewerContent,
+  ModelViewerCopyButton,
+  ModelViewerFullscreenButton,
+  ModelViewerResetButton,
+  ModelViewerHeader,
+  ModelViewerTitle,
+} from "@/components/ai-elements/model-viewer-client";
+import type { ModelViewerData } from "@/components/ai-elements/model-viewer-client";
 
 // Sample data for components
 const sampleSVG = `<svg width="300" height="200" xmlns="http://www.w3.org/2000/svg">
@@ -221,8 +268,143 @@ const sampleKnowledgeGraph: KnowledgeGraphData = {
   ],
 };
 
+const sampleLatex: LatexData = {
+  equations: [
+    {
+      equation: "E = mc^2",
+      displayMode: true,
+      label: "Einstein's mass-energy equivalence",
+    },
+    {
+      equation: "\\nabla \\cdot \\mathbf{E} = \\frac{\\rho}{\\epsilon_0}",
+      displayMode: true,
+      label: "Gauss's law",
+    },
+    {
+      equation:
+        "\\int_a^b f(x) \\, dx = F(b) - F(a) \\quad \\text{where } F'(x) = f(x)",
+      displayMode: true,
+      label: "Fundamental theorem of calculus",
+    },
+  ],
+};
+
+const sampleMaps: MapsData = {
+  center: {
+    longitude: -122.4194,
+    latitude: 37.7749,
+  },
+  zoom: 12,
+  markers: [
+    {
+      id: "marker1",
+      coordinates: {
+        longitude: -122.4194,
+        latitude: 37.7749,
+      },
+      color: "#ef4444",
+      label: "San Francisco",
+    },
+    {
+      id: "marker2",
+      coordinates: {
+        longitude: -122.4083,
+        latitude: 37.7833,
+      },
+      color: "#3b82f6",
+      label: "Golden Gate Park",
+    },
+    {
+      id: "marker3",
+      coordinates: {
+        longitude: -122.3959,
+        latitude: 37.7937,
+      },
+      color: "#10b981",
+      label: "Fisherman's Wharf",
+    },
+  ],
+};
+
+const sampleModelViewer: ModelViewerData = {
+  url: "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Duck/glTF-Binary/Duck.glb",
+  format: "glb",
+  scale: 0.5,
+};
+
 export default function ShowcasePage() {
   const [activeTab, setActiveTab] = useState("svg");
+  const [isMounted, setIsMounted] = useState(false);
+  const [sampleThreeScene, setSampleThreeScene] = useState<ThreeSceneData | null>(null);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
+    // Only create 3D scene when the tab is active
+    if (!isMounted || activeTab !== "threescene" || sampleThreeScene) return;
+
+    // Create 3D objects only on client
+    const createObjects = async () => {
+      const THREE = await import("three");
+
+      // Create a rotating cube
+      const geometry = new THREE.BoxGeometry(1, 1, 1);
+      const material = new THREE.MeshStandardMaterial({
+        color: 0x00ff88,
+        metalness: 0.3,
+        roughness: 0.4,
+      });
+      const cube = new THREE.Mesh(geometry, material);
+
+      // Create a sphere
+      const sphereGeometry = new THREE.SphereGeometry(0.7, 32, 32);
+      const sphereMaterial = new THREE.MeshStandardMaterial({
+        color: 0x4ecdc4,
+        metalness: 0.7,
+        roughness: 0.3,
+      });
+      const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+
+      setSampleThreeScene({
+        camera: {
+          type: "perspective",
+          position: { x: 4, y: 4, z: 4 },
+          fov: 75,
+        },
+        lights: [
+          {
+            type: "ambient",
+            color: 0xffffff,
+            intensity: 0.6,
+          },
+          {
+            type: "directional",
+            color: 0xffffff,
+            intensity: 0.8,
+            position: { x: 5, y: 10, z: 7.5 },
+          },
+        ],
+        background: 0x1a1a1a,
+        objects: [
+          {
+            id: "cube",
+            object: cube,
+            position: { x: -1.5, y: 0, z: 0 },
+            rotation: { x: 0.5, y: 0.5, z: 0 },
+          },
+          {
+            id: "sphere",
+            object: sphere,
+            position: { x: 1.5, y: 0, z: 0 },
+          },
+        ],
+      });
+    };
+
+    createObjects();
+  }, [isMounted, activeTab, sampleThreeScene]);
 
   return (
     <div className="min-h-screen bg-background">
@@ -234,7 +416,7 @@ export default function ShowcasePage() {
           </h1>
           <p className="text-muted-foreground text-lg">
             Explore interactive AI elements: SVG Preview, Timeline, Node Editor,
-            and Knowledge Graph
+            Knowledge Graph, LaTeX, Maps, Three.js Scenes, and 3D Model Viewer
           </p>
         </div>
       </header>
@@ -242,11 +424,15 @@ export default function ShowcasePage() {
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="mb-8 grid w-full grid-cols-4">
-            <TabsTrigger value="svg">SVG Preview</TabsTrigger>
+          <TabsList className="mb-8 grid w-full grid-cols-8">
+            <TabsTrigger value="svg">SVG</TabsTrigger>
             <TabsTrigger value="timeline">Timeline</TabsTrigger>
-            <TabsTrigger value="node-editor">Node Editor</TabsTrigger>
-            <TabsTrigger value="knowledge-graph">Knowledge Graph</TabsTrigger>
+            <TabsTrigger value="node-editor">Nodes</TabsTrigger>
+            <TabsTrigger value="knowledge-graph">Graph</TabsTrigger>
+            <TabsTrigger value="latex">LaTeX</TabsTrigger>
+            <TabsTrigger value="maps">Maps</TabsTrigger>
+            <TabsTrigger value="threescene">3D</TabsTrigger>
+            <TabsTrigger value="model-viewer">Models</TabsTrigger>
           </TabsList>
 
           {/* SVG Preview Tab */}
@@ -261,18 +447,20 @@ export default function ShowcasePage() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <SVGPreview svg={sampleSVG} title="Gradient Example">
-                  <SVGPreviewHeader>
-                    <SVGPreviewTitle />
-                    <SVGPreviewActions>
-                      <SVGPreviewModeToggle />
-                      <SVGPreviewCopyButton />
-                      <SVGPreviewDownloadButton />
-                    </SVGPreviewActions>
-                  </SVGPreviewHeader>
-                  <SVGPreviewError />
-                  <SVGPreviewContent />
-                </SVGPreview>
+                {activeTab === "svg" && (
+                  <SVGPreview svg={sampleSVG} title="Gradient Example">
+                    <SVGPreviewHeader>
+                      <SVGPreviewTitle />
+                      <SVGPreviewActions>
+                        <SVGPreviewModeToggle />
+                        <SVGPreviewCopyButton />
+                        <SVGPreviewDownloadButton />
+                      </SVGPreviewActions>
+                    </SVGPreviewHeader>
+                    <SVGPreviewError />
+                    <SVGPreviewContent />
+                  </SVGPreview>
+                )}
               </CardContent>
             </Card>
 
@@ -304,16 +492,18 @@ export default function ShowcasePage() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <Timeline data={sampleTimeline}>
-                  <TimelineHeader>
-                    <TimelineTitle />
-                    <TimelineActions>
-                      <TimelineCopyButton />
-                      <TimelineFullscreenButton />
-                    </TimelineActions>
-                  </TimelineHeader>
-                  <TimelineContent />
-                </Timeline>
+                {activeTab === "timeline" && (
+                  <Timeline data={sampleTimeline}>
+                    <TimelineHeader>
+                      <TimelineTitle />
+                      <TimelineActions>
+                        <TimelineCopyButton />
+                        <TimelineFullscreenButton />
+                      </TimelineActions>
+                    </TimelineHeader>
+                    <TimelineContent />
+                  </Timeline>
+                )}
               </CardContent>
             </Card>
 
@@ -346,17 +536,19 @@ export default function ShowcasePage() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <NodeEditor data={sampleNodeEditor}>
-                  <NodeEditorHeader>
-                    <NodeEditorTitle />
-                    <NodeEditorActions>
-                      <NodeEditorCopyButton />
-                      <NodeEditorFullscreenButton />
-                    </NodeEditorActions>
-                  </NodeEditorHeader>
-                  <NodeEditorError />
-                  <NodeEditorContent />
-                </NodeEditor>
+                {activeTab === "node-editor" && (
+                  <NodeEditor data={sampleNodeEditor}>
+                    <NodeEditorHeader>
+                      <NodeEditorTitle />
+                      <NodeEditorActions>
+                        <NodeEditorCopyButton />
+                        <NodeEditorFullscreenButton />
+                      </NodeEditorActions>
+                    </NodeEditorHeader>
+                    <NodeEditorError />
+                    <NodeEditorContent />
+                  </NodeEditor>
+                )}
               </CardContent>
             </Card>
 
@@ -389,19 +581,21 @@ export default function ShowcasePage() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <KnowledgeGraph data={sampleKnowledgeGraph} title="AI Concepts">
-                  <KnowledgeGraphHeader>
-                    <KnowledgeGraphTitle />
-                    <KnowledgeGraphActions>
-                      <KnowledgeGraphSearch />
-                      <KnowledgeGraphCopyButton />
-                      <KnowledgeGraphFullscreenButton />
-                    </KnowledgeGraphActions>
-                  </KnowledgeGraphHeader>
-                  <KnowledgeGraphError />
-                  <KnowledgeGraphContent />
-                  <KnowledgeGraphLegend />
-                </KnowledgeGraph>
+                {activeTab === "knowledge-graph" && (
+                  <KnowledgeGraph data={sampleKnowledgeGraph} title="AI Concepts">
+                    <KnowledgeGraphHeader>
+                      <KnowledgeGraphTitle />
+                      <KnowledgeGraphActions>
+                        <KnowledgeGraphSearch />
+                        <KnowledgeGraphCopyButton />
+                        <KnowledgeGraphFullscreenButton />
+                      </KnowledgeGraphActions>
+                    </KnowledgeGraphHeader>
+                    <KnowledgeGraphError />
+                    <KnowledgeGraphContent />
+                    <KnowledgeGraphLegend />
+                  </KnowledgeGraph>
+                )}
               </CardContent>
             </Card>
 
@@ -425,6 +619,215 @@ export default function ShowcasePage() {
               </CardContent>
             </Card>
           </TabsContent>
+
+          {/* LaTeX Tab */}
+          <TabsContent value="latex" className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle>LaTeX Component</CardTitle>
+                <CardDescription>
+                  Render beautiful mathematical equations using KaTeX. Perfect for
+                  displaying formulas, theorems, and mathematical notation.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {activeTab === "latex" && (
+                  <Latex data={sampleLatex}>
+                    <LatexHeader>
+                      <LatexTitle>Mathematical Equations</LatexTitle>
+                      <LatexActions>
+                        <LatexCopyButton />
+                        <LatexFullscreenButton />
+                      </LatexActions>
+                    </LatexHeader>
+                    <LatexContent />
+                  </Latex>
+                )}
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Features</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ul className="list-disc space-y-2 pl-5 text-muted-foreground text-sm">
+                  <li>Fast rendering with KaTeX</li>
+                  <li>Display mode (block) and inline mode</li>
+                  <li>Support for multiple equations</li>
+                  <li>Equation labels and descriptions</li>
+                  <li>Custom macros and options</li>
+                  <li>Error handling for invalid LaTeX</li>
+                  <li>Copy equation source and fullscreen mode</li>
+                  <li>MathML and HTML output support</li>
+                </ul>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Maps Tab */}
+          <TabsContent value="maps" className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle>Maps Component</CardTitle>
+                <CardDescription>
+                  Display interactive maps with markers using Leaflet. Perfect for
+                  showing locations, routes, and geographic data.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {activeTab === "maps" && (
+                  <Maps data={sampleMaps}>
+                    <MapsHeader>
+                      <MapsTitle>San Francisco</MapsTitle>
+                      <MapsActions>
+                        <MapsCopyButton />
+                        <MapsFullscreenButton />
+                      </MapsActions>
+                    </MapsHeader>
+                    <MapsContent />
+                  </Maps>
+                )}
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Features</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ul className="list-disc space-y-2 pl-5 text-muted-foreground text-sm">
+                  <li>Interactive map with Leaflet</li>
+                  <li>Pan, zoom, and navigation controls</li>
+                  <li>Custom colored markers</li>
+                  <li>Marker labels and popups</li>
+                  <li>OpenStreetMap tiles</li>
+                  <li>Center and zoom control</li>
+                  <li>Copy map data and fullscreen mode</li>
+                  <li>Programmatic map control via ref</li>
+                </ul>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* ThreeScene Tab */}
+          <TabsContent value="threescene" className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle>Three.js Scene Component</CardTitle>
+                <CardDescription>
+                  Render interactive 3D scenes with Three.js. Perfect for
+                  visualizing 3D models, data, and interactive graphics.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {activeTab === "threescene" && sampleThreeScene ? (
+                  <ThreeScene
+                    data={sampleThreeScene}
+                    options={{
+                      height: 500,
+                      enableControls: true,
+                      autoRotate: false,
+                      gridHelper: true,
+                      axesHelper: true,
+                      antialias: true,
+                    }}
+                  >
+                    <ThreeSceneHeader>
+                      <ThreeSceneTitle>Interactive 3D Scene</ThreeSceneTitle>
+                      <ThreeSceneActions>
+                        <ThreeSceneResetButton />
+                        <ThreeSceneCopyButton />
+                        <ThreeSceneFullscreenButton />
+                      </ThreeSceneActions>
+                    </ThreeSceneHeader>
+                    <ThreeSceneContent />
+                  </ThreeScene>
+                ) : activeTab === "threescene" ? (
+                  <div className="flex h-[500px] items-center justify-center text-muted-foreground">
+                    Loading 3D scene...
+                  </div>
+                ) : null}
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Features</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ul className="list-disc space-y-2 pl-5 text-muted-foreground text-sm">
+                  <li>Three.js integration with WebGL rendering</li>
+                  <li>OrbitControls for camera manipulation</li>
+                  <li>Custom 3D objects and meshes</li>
+                  <li>Multiple light types (ambient, directional, point, spot)</li>
+                  <li>Grid and axes helpers</li>
+                  <li>Auto-rotation and animation support</li>
+                  <li>Reset camera and fullscreen mode</li>
+                  <li>Customizable background and rendering options</li>
+                </ul>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* ModelViewer Tab */}
+          <TabsContent value="model-viewer" className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle>3D Model Viewer Component</CardTitle>
+                <CardDescription>
+                  Load and view 3D models in various formats (GLTF, OBJ, FBX, STL,
+                  Collada). Perfect for displaying product models, architectural
+                  visualizations, and 3D assets.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {activeTab === "model-viewer" && (
+                  <ModelViewer
+                    data={sampleModelViewer}
+                    options={{
+                      height: 500,
+                      enableControls: true,
+                      autoRotate: true,
+                      autoRotateSpeed: 1.0,
+                      showGrid: true,
+                      showAxes: false,
+                      antialias: true,
+                    }}
+                  >
+                    <ModelViewerHeader>
+                      <ModelViewerTitle>Duck Model (GLB)</ModelViewerTitle>
+                      <ModelViewerActions>
+                        <ModelViewerResetButton />
+                        <ModelViewerCopyButton />
+                        <ModelViewerFullscreenButton />
+                      </ModelViewerActions>
+                    </ModelViewerHeader>
+                    <ModelViewerContent />
+                  </ModelViewer>
+                )}
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Features</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ul className="list-disc space-y-2 pl-5 text-muted-foreground text-sm">
+                  <li>Support for 5 3D formats: GLTF/GLB, OBJ, FBX, STL, DAE</li>
+                  <li>Interactive OrbitControls (rotate, pan, zoom)</li>
+                  <li>Auto-rotation with configurable speed</li>
+                  <li>Grid and axes helpers for orientation</li>
+                  <li>Reset camera to initial position</li>
+                  <li>Copy model data and fullscreen mode</li>
+                  <li>Automatic model centering and scaling</li>
+                  <li>Loading states and error handling</li>
+                  <li>Proper memory cleanup on unmount</li>
+                </ul>
+              </CardContent>
+            </Card>
+          </TabsContent>
         </Tabs>
 
         {/* Quick Stats */}
@@ -439,7 +842,7 @@ export default function ShowcasePage() {
           <CardContent>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
               <div className="rounded-lg border bg-card p-4">
-                <div className="mb-2 font-bold text-2xl">4</div>
+                <div className="mb-2 font-bold text-2xl">8</div>
                 <div className="text-muted-foreground text-sm">
                   Components Created
                 </div>
