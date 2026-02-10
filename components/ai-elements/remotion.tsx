@@ -25,22 +25,25 @@ import {
   useRef,
   useState,
 } from "react";
+import { Player, PlayerRef } from "@remotion/player";
+import {
+  compositionRegistry,
+  type CompositionType,
+} from "./remotion-compositions";
 
 // --- Types ---
 
 export interface RemotionComposition {
-  id: string;
-  component: string; // Serialized React component or composition
+  type: CompositionType;
   width: number;
   height: number;
   fps: number;
   durationInFrames: number;
-  defaultProps?: Record<string, unknown>;
+  props: Record<string, unknown>;
 }
 
 export interface RemotionData {
   composition: RemotionComposition;
-  inputProps?: Record<string, unknown>;
 }
 
 export interface RemotionOptions {
@@ -68,11 +71,7 @@ interface RemotionContextValue {
   setError: (error: string | null) => void;
   fullscreen: boolean;
   setFullscreen: (fullscreen: boolean) => void;
-  isPlaying: boolean;
-  setIsPlaying: (isPlaying: boolean) => void;
-  currentFrame: number;
-  setCurrentFrame: (frame: number) => void;
-  remotionRef: React.RefObject<RemotionRef | null>;
+  playerRef: React.RefObject<PlayerRef | null>;
 }
 
 const RemotionContext = createContext<RemotionContextValue | null>(null);
@@ -97,12 +96,30 @@ export const Remotion = forwardRef<RemotionRef, RemotionProps>(
   ({ data, options, children, className, ...props }, ref) => {
     const [error, setError] = useState<string | null>(null);
     const [fullscreen, setFullscreen] = useState(false);
-    const [isPlaying, setIsPlaying] = useState(options?.autoPlay ?? false);
-    const [currentFrame, setCurrentFrame] = useState(0);
-    const remotionRef = useRef<RemotionRef | null>(null);
+    const playerRef = useRef<PlayerRef | null>(null);
 
     // Expose ref
-    useImperativeHandle(ref, () => remotionRef.current as RemotionRef, []);
+    useImperativeHandle(
+      ref,
+      () => ({
+        play: () => {
+          playerRef.current?.play();
+        },
+        pause: () => {
+          playerRef.current?.pause();
+        },
+        seekTo: (frame: number) => {
+          playerRef.current?.seekTo(frame);
+        },
+        getCurrentFrame: () => {
+          return playerRef.current?.getCurrentFrame() ?? 0;
+        },
+        getDuration: () => {
+          return data.composition.durationInFrames;
+        },
+      }),
+      [data.composition.durationInFrames]
+    );
 
     const contextValue: RemotionContextValue = {
       data,
@@ -111,11 +128,7 @@ export const Remotion = forwardRef<RemotionRef, RemotionProps>(
       setError,
       fullscreen,
       setFullscreen,
-      isPlaying,
-      setIsPlaying,
-      currentFrame,
-      setCurrentFrame,
-      remotionRef,
+      playerRef,
     };
 
     return (
@@ -170,7 +183,7 @@ export const RemotionTitle = forwardRef<
   return (
     <div ref={ref} className={cn("flex items-center gap-2", className)} {...props}>
       <span className="font-mono">
-        {children || data.composition.id || "Remotion Video"}
+        {children || data.composition.type || "Remotion Video"}
       </span>
     </div>
   );
@@ -203,29 +216,31 @@ export const RemotionPlayButton = forwardRef<
   HTMLButtonElement,
   ComponentProps<typeof Button>
 >(({ className, ...props }, ref) => {
-  const { isPlaying, remotionRef } = useRemotionContext();
+  const { playerRef } = useRemotionContext();
+  const [playing, setPlaying] = useState(false);
 
-  const togglePlay = () => {
-    if (isPlaying) {
-      remotionRef.current?.pause();
+  const handleToggle = useCallback(() => {
+    if (playing) {
+      playerRef.current?.pause();
     } else {
-      remotionRef.current?.play();
+      playerRef.current?.play();
     }
-  };
+    setPlaying(!playing);
+  }, [playing, playerRef]);
 
   return (
     <Button
       ref={ref}
       variant="ghost"
       size="icon"
-      className={cn("h-8 w-8", className)}
-      onClick={togglePlay}
+      className={cn("h-7 w-7 hover:bg-muted", className)}
+      onClick={handleToggle}
       {...props}
     >
-      {isPlaying ? (
-        <PauseIcon className="h-4 w-4" />
+      {playing ? (
+        <PauseIcon className="h-3.5 w-3.5" />
       ) : (
-        <PlayIcon className="h-4 w-4" />
+        <PlayIcon className="h-3.5 w-3.5" />
       )}
     </Button>
   );
@@ -239,22 +254,23 @@ export const RemotionResetButton = forwardRef<
   HTMLButtonElement,
   ComponentProps<typeof Button>
 >(({ className, ...props }, ref) => {
-  const { remotionRef } = useRemotionContext();
+  const { playerRef } = useRemotionContext();
 
-  const handleReset = () => {
-    remotionRef.current?.seekTo(0);
-  };
+  const handleReset = useCallback(() => {
+    playerRef.current?.seekTo(0);
+    playerRef.current?.pause();
+  }, [playerRef]);
 
   return (
     <Button
       ref={ref}
       variant="ghost"
       size="icon"
-      className={cn("h-8 w-8", className)}
+      className={cn("h-7 w-7 hover:bg-muted", className)}
       onClick={handleReset}
       {...props}
     >
-      <RotateCcwIcon className="h-4 w-4" />
+      <RotateCcwIcon className="h-3.5 w-3.5" />
     </Button>
   );
 });
@@ -270,29 +286,25 @@ export const RemotionCopyButton = forwardRef<
   const { data } = useRemotionContext();
   const [copied, setCopied] = useState(false);
 
-  const handleCopy = async () => {
-    try {
-      await navigator.clipboard.writeText(JSON.stringify(data, null, 2));
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch (err) {
-      console.error("Failed to copy:", err);
-    }
-  };
+  const handleCopy = useCallback(() => {
+    navigator.clipboard.writeText(JSON.stringify(data, null, 2));
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  }, [data]);
 
   return (
     <Button
       ref={ref}
       variant="ghost"
       size="icon"
-      className={cn("h-8 w-8", className)}
+      className={cn("h-7 w-7 hover:bg-muted", className)}
       onClick={handleCopy}
       {...props}
     >
       {copied ? (
-        <CheckIcon className="h-4 w-4" />
+        <CheckIcon className="h-3.5 w-3.5" />
       ) : (
-        <CopyIcon className="h-4 w-4" />
+        <CopyIcon className="h-3.5 w-3.5" />
       )}
     </Button>
   );
@@ -308,19 +320,23 @@ export const RemotionFullscreenButton = forwardRef<
 >(({ className, ...props }, ref) => {
   const { fullscreen, setFullscreen } = useRemotionContext();
 
+  const handleToggle = useCallback(() => {
+    setFullscreen(!fullscreen);
+  }, [fullscreen, setFullscreen]);
+
   return (
     <Button
       ref={ref}
       variant="ghost"
       size="icon"
-      className={cn("h-8 w-8", className)}
-      onClick={() => setFullscreen(!fullscreen)}
+      className={cn("h-7 w-7 hover:bg-muted", className)}
+      onClick={handleToggle}
       {...props}
     >
       {fullscreen ? (
-        <MinimizeIcon className="h-4 w-4" />
+        <MinimizeIcon className="h-3.5 w-3.5" />
       ) : (
-        <MaximizeIcon className="h-4 w-4" />
+        <MaximizeIcon className="h-3.5 w-3.5" />
       )}
     </Button>
   );
@@ -334,42 +350,46 @@ export const RemotionTimeline = forwardRef<
   HTMLDivElement,
   HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => {
-  const { data, currentFrame, setCurrentFrame, remotionRef } =
-    useRemotionContext();
+  const { data, playerRef } = useRemotionContext();
+  const [currentFrame, setCurrentFrame] = useState(0);
+
+  // Update current frame
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const frame = playerRef.current?.getCurrentFrame();
+      if (frame !== undefined) {
+        setCurrentFrame(frame);
+      }
+    }, 100);
+
+    return () => clearInterval(interval);
+  }, [playerRef]);
 
   const handleSeek = useCallback(
-    (values: number[]) => {
-      const frame = values[0];
+    (value: number[]) => {
+      const frame = value[0];
+      playerRef.current?.seekTo(frame);
       setCurrentFrame(frame);
-      remotionRef.current?.seekTo(frame);
     },
-    [setCurrentFrame, remotionRef]
+    [playerRef]
   );
-
-  const maxFrame = data.composition.durationInFrames - 1;
-  const timeInSeconds = (currentFrame / data.composition.fps).toFixed(2);
-  const totalTimeInSeconds = (maxFrame / data.composition.fps).toFixed(2);
 
   return (
     <div
       ref={ref}
-      className={cn("flex items-center gap-3 px-4 py-2", className)}
+      className={cn("flex items-center gap-4 border-t bg-muted/50 px-4 py-3", className)}
       {...props}
     >
-      <span className="text-muted-foreground text-xs font-mono whitespace-nowrap">
-        {timeInSeconds}s / {totalTimeInSeconds}s
-      </span>
+      <div className="text-xs font-mono text-muted-foreground whitespace-nowrap">
+        {currentFrame} / {data.composition.durationInFrames - 1}
+      </div>
       <Slider
         value={[currentFrame]}
         onValueChange={handleSeek}
-        max={maxFrame}
-        min={0}
+        max={data.composition.durationInFrames - 1}
         step={1}
         className="flex-1"
       />
-      <span className="text-muted-foreground text-xs font-mono whitespace-nowrap">
-        {currentFrame} / {maxFrame}
-      </span>
     </div>
   );
 });
@@ -381,114 +401,31 @@ RemotionTimeline.displayName = "RemotionTimeline";
 export const RemotionContent = memo(
   forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
     ({ className, ...props }, ref) => {
-      const {
-        data,
-        options,
-        error,
-        setError,
-        fullscreen,
-        isPlaying,
-        setIsPlaying,
-        currentFrame,
-        setCurrentFrame,
-        remotionRef,
-      } = useRemotionContext();
+      const { data, options, error, setError, fullscreen, playerRef } =
+        useRemotionContext();
 
-      const containerRef = useRef<HTMLDivElement>(null);
       const [isMounted, setIsMounted] = useState(false);
-      const animationFrameRef = useRef<number | undefined>(undefined);
-      const lastTimeRef = useRef<number>(0);
 
       // Only render on client
       useEffect(() => {
         setIsMounted(true);
       }, []);
 
-      // Simple frame-based playback (simplified Remotion simulation)
+      // Validate composition type
       useEffect(() => {
-        if (!isMounted || !isPlaying) return;
-
-        const fps = data.composition.fps;
-        const frameDuration = 1000 / fps;
-
-        const animate = (time: number) => {
-          if (lastTimeRef.current === 0) {
-            lastTimeRef.current = time;
-          }
-
-          const elapsed = time - lastTimeRef.current;
-
-          if (elapsed >= frameDuration) {
-            setCurrentFrame((prev) => {
-              const nextFrame = prev + 1;
-              if (nextFrame >= data.composition.durationInFrames) {
-                if (options?.loop) {
-                  return 0;
-                } else {
-                  setIsPlaying(false);
-                  return data.composition.durationInFrames - 1;
-                }
-              }
-              return nextFrame;
-            });
-
-            lastTimeRef.current = time;
-          }
-
-          if (isPlaying) {
-            animationFrameRef.current = requestAnimationFrame(animate);
-          }
-        };
-
-        animationFrameRef.current = requestAnimationFrame(animate);
-
-        return () => {
-          if (animationFrameRef.current) {
-            cancelAnimationFrame(animationFrameRef.current);
-          }
-          lastTimeRef.current = 0;
-        };
-      }, [
-        isMounted,
-        isPlaying,
-        data.composition.fps,
-        data.composition.durationInFrames,
-        options?.loop,
-        setCurrentFrame,
-        setIsPlaying,
-      ]);
-
-      // Setup ref methods
-      useEffect(() => {
-        remotionRef.current = {
-          play: () => setIsPlaying(true),
-          pause: () => setIsPlaying(false),
-          seekTo: (frame: number) => {
-            setCurrentFrame(
-              Math.max(0, Math.min(frame, data.composition.durationInFrames - 1))
-            );
-          },
-          getCurrentFrame: () => currentFrame,
-          getDuration: () => data.composition.durationInFrames,
-        };
-      }, [
-        remotionRef,
-        setIsPlaying,
-        setCurrentFrame,
-        currentFrame,
-        data.composition.durationInFrames,
-      ]);
+        if (!compositionRegistry[data.composition.type]) {
+          setError(`Unknown composition type: ${data.composition.type}`);
+        } else {
+          setError(null);
+        }
+      }, [data.composition.type, setError]);
 
       if (error) {
         return <RemotionError error={error} />;
       }
 
-      const height = fullscreen
-        ? "100%"
-        : data.composition.height || 600;
-      const width = fullscreen
-        ? "100%"
-        : data.composition.width || 800;
+      const height = fullscreen ? "100%" : data.composition.height || 600;
+      const width = fullscreen ? "100%" : data.composition.width || 800;
 
       if (!isMounted) {
         return (
@@ -512,35 +449,30 @@ export const RemotionContent = memo(
         );
       }
 
+      const Component = compositionRegistry[data.composition.type];
+
       return (
         <div
           ref={ref}
           className={cn("relative flex-1 p-4", className)}
           {...props}
         >
-          <div
-            ref={containerRef}
-            className="flex items-center justify-center bg-black rounded"
+          <Player
+            ref={playerRef}
+            component={Component as React.ComponentType<any>}
+            inputProps={data.composition.props}
+            durationInFrames={data.composition.durationInFrames}
+            fps={data.composition.fps}
+            compositionWidth={data.composition.width}
+            compositionHeight={data.composition.height}
+            controls={options?.controls ?? false}
+            loop={options?.loop ?? true}
+            autoPlay={options?.autoPlay ?? false}
             style={{
               width: typeof width === "number" ? `${width}px` : width,
               height: typeof height === "number" ? `${height}px` : height,
             }}
-          >
-            <div className="text-white text-center p-8">
-              <div className="text-2xl font-bold mb-2">
-                {data.composition.id}
-              </div>
-              <div className="text-sm opacity-70">
-                Frame: {currentFrame} / {data.composition.durationInFrames - 1}
-              </div>
-              <div className="text-xs opacity-50 mt-4">
-                {data.composition.width}x{data.composition.height} @ {data.composition.fps}fps
-              </div>
-              <div className="text-xs opacity-30 mt-2">
-                Remotion composition preview
-              </div>
-            </div>
-          </div>
+          />
         </div>
       );
     }
@@ -571,3 +503,12 @@ export const RemotionError = forwardRef<
 });
 
 RemotionError.displayName = "RemotionError";
+
+// Re-export types
+export type {
+  CompositionType,
+  TextAnimationProps,
+  ShapeAnimationProps,
+  CountdownTimerProps,
+  LogoRevealProps,
+} from "./remotion-compositions";
