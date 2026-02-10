@@ -36,6 +36,21 @@ export * from './mermaid.schema';
 // Remotion schemas
 export * from './remotion.schema';
 
+// Geospatial schemas
+export * from './geospatial.schema';
+
+// ToolUI schemas
+export * from './toolui.schema';
+
+// Charts schemas
+export * from './charts.schema';
+
+// WYSIWYG schemas
+export * from './wysiwyg.schema';
+
+// VRM schemas
+export * from './vrm.schema';
+
 /**
  * Registry of all component schemas
  * Maps component type to its props schema
@@ -51,7 +66,12 @@ import {
   ModelViewerPropsSchema,
   PhaserPropsSchema,
   MermaidPropsSchema,
-  RemotionPropsSchema
+  RemotionPropsSchema,
+  GeospatialPropsSchema,
+  ToolUIPropsSchema,
+  ChartsPropsSchema,
+  WYSIWYGPropsSchema,
+  VRMPropsSchema
 } from '.';
 
 import type { ZodSchema } from 'zod';
@@ -67,7 +87,12 @@ export const schemaRegistry: Record<string, ZodSchema> = {
   ModelViewer: ModelViewerPropsSchema,
   Phaser: PhaserPropsSchema,
   Mermaid: MermaidPropsSchema,
-  Remotion: RemotionPropsSchema
+  Remotion: RemotionPropsSchema,
+  Geospatial: GeospatialPropsSchema,
+  ToolUI: ToolUIPropsSchema,
+  Charts: ChartsPropsSchema,
+  WYSIWYG: WYSIWYGPropsSchema,
+  VRM: VRMPropsSchema
 };
 
 /**

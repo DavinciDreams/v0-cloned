@@ -346,6 +346,291 @@ const remotionExamples: ComponentExample[] = [
 ];
 
 /**
+ * Geospatial Component Examples
+ */
+const geospatialExamples: ComponentExample[] = [
+  {
+    description: 'Heatmap of population density',
+    spec: {
+      id: 'geospatial-1',
+      component: {
+        Geospatial: {
+          data: {
+            center: { lng: -122.4194, lat: 37.7749 },
+            zoom: 10,
+            layers: [
+              {
+                id: 'population-heatmap',
+                type: 'heatmap',
+                data: [
+                  { lng: -122.4194, lat: 37.7749, value: 100 },
+                  { lng: -122.4084, lat: 37.7849, value: 80 },
+                  { lng: -122.4294, lat: 37.7649, value: 120 }
+                ],
+                style: {
+                  color: ['#blue', '#red'],
+                  opacity: 0.6
+                }
+              }
+            ],
+            basemap: 'dark'
+          },
+          options: {
+            height: 600,
+            showControls: true
+          }
+        }
+      }
+    }
+  },
+  {
+    description: 'Hexagon binning visualization',
+    spec: {
+      id: 'geospatial-2',
+      component: {
+        Geospatial: {
+          data: {
+            center: { lng: -73.9857, lat: 40.7484 },
+            zoom: 11,
+            layers: [
+              {
+                id: 'hexagon-layer',
+                type: 'hexagon',
+                data: [
+                  { lng: -73.9857, lat: 40.7484, value: 50 },
+                  { lng: -73.9757, lat: 40.7584, value: 75 }
+                ],
+                style: {
+                  color: '#3b82f6',
+                  opacity: 0.8
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+];
+
+/**
+ * ToolUI Component Examples
+ */
+const toolUIExamples: ComponentExample[] = [
+  {
+    description: 'Successful tool invocation',
+    spec: {
+      id: 'toolui-1',
+      component: {
+        ToolUI: {
+          data: {
+            tool: {
+              name: 'searchDatabase',
+              description: 'Search the database for records',
+              parameters: {
+                query: {
+                  type: 'string',
+                  description: 'Search query string',
+                  required: true
+                },
+                limit: {
+                  type: 'number',
+                  description: 'Maximum results to return',
+                  default: 10
+                }
+              }
+            },
+            invocation: {
+              args: { query: 'user data', limit: 5 },
+              result: { count: 5, records: ['Record 1', 'Record 2'] },
+              status: 'success'
+            }
+          }
+        }
+      }
+    }
+  },
+  {
+    description: 'Failed tool invocation',
+    spec: {
+      id: 'toolui-2',
+      component: {
+        ToolUI: {
+          data: {
+            tool: {
+              name: 'deleteFile',
+              description: 'Delete a file from storage',
+              parameters: {
+                path: {
+                  type: 'string',
+                  description: 'File path',
+                  required: true
+                }
+              }
+            },
+            invocation: {
+              args: { path: '/invalid/path' },
+              status: 'error',
+              error: 'File not found: /invalid/path'
+            }
+          }
+        }
+      }
+    }
+  }
+];
+
+/**
+ * Charts Component Examples
+ */
+const chartsExamples: ComponentExample[] = [
+  {
+    description: 'Line chart with multiple series',
+    spec: {
+      id: 'charts-1',
+      component: {
+        Charts: {
+          data: {
+            type: 'line',
+            series: [
+              {
+                name: 'Revenue',
+                data: [
+                  { x: 'Jan', y: 1000 },
+                  { x: 'Feb', y: 1200 },
+                  { x: 'Mar', y: 1500 }
+                ],
+                color: '#3b82f6'
+              },
+              {
+                name: 'Costs',
+                data: [
+                  { x: 'Jan', y: 800 },
+                  { x: 'Feb', y: 900 },
+                  { x: 'Mar', y: 1100 }
+                ],
+                color: '#ef4444'
+              }
+            ],
+            title: 'Monthly Revenue vs Costs'
+          },
+          options: {
+            height: 400,
+            showLegend: true,
+            animated: true
+          }
+        }
+      }
+    }
+  },
+  {
+    description: 'Pie chart',
+    spec: {
+      id: 'charts-2',
+      component: {
+        Charts: {
+          data: {
+            type: 'pie',
+            series: [
+              {
+                name: 'Market Share',
+                data: [
+                  { x: 'Product A', y: 45 },
+                  { x: 'Product B', y: 30 },
+                  { x: 'Product C', y: 25 }
+                ]
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+];
+
+/**
+ * WYSIWYG Component Examples
+ */
+const wysiwygExamples: ComponentExample[] = [
+  {
+    description: 'Rich text editor with HTML content',
+    spec: {
+      id: 'wysiwyg-1',
+      component: {
+        WYSIWYG: {
+          data: {
+            content: '<h2>Hello World</h2><p>This is <strong>bold</strong> text.</p>',
+            format: 'html',
+            editable: true
+          },
+          options: {
+            height: 300,
+            placeholder: 'Start typing...'
+          }
+        }
+      }
+    }
+  },
+  {
+    description: 'Markdown viewer (read-only)',
+    spec: {
+      id: 'wysiwyg-2',
+      component: {
+        WYSIWYG: {
+          data: {
+            content: '# Title\n\nThis is a paragraph with **bold** text.',
+            format: 'markdown',
+            editable: false
+          }
+        }
+      }
+    }
+  }
+];
+
+/**
+ * VRM Component Examples
+ */
+const vrmExamples: ComponentExample[] = [
+  {
+    description: 'VRM avatar with animation',
+    spec: {
+      id: 'vrm-1',
+      component: {
+        VRM: {
+          data: {
+            modelUrl: 'https://example.com/avatar.vrm',
+            animations: [
+              {
+                name: 'wave',
+                loop: true
+              }
+            ],
+            camera: {
+              position: { x: 0, y: 1.5, z: 2 },
+              target: { x: 0, y: 1, z: 0 }
+            },
+            lighting: {
+              ambient: 0.5,
+              directional: {
+                color: '#ffffff',
+                intensity: 1
+              }
+            },
+            background: '#f0f0f0'
+          },
+          options: {
+            height: 500,
+            enableControls: true,
+            antialias: true
+          }
+        }
+      }
+    }
+  }
+];
+
+/**
  * Specialized Component Catalog
  *
  * Advanced data visualization and interactive components
@@ -520,6 +805,88 @@ export const specializedCatalog: ComponentCatalog = {
     Note: This is a simplified preview. Full Remotion features require server-side rendering.`,
     props: ['data', 'options'],
     examples: remotionExamples
+  },
+
+  Geospatial: {
+    type: 'Geospatial',
+    description: `Advanced geospatial visualization using AntV L7. Supports large-scale
+    point data (100k+ points) and complex visualizations. Supports:
+    - Heatmaps for density visualization
+    - Hexagon binning for spatial aggregation
+    - Point, line, polygon, and arc layers
+    - Multiple simultaneous layers
+    - Layer visibility toggling
+    - Custom color scales and styling
+    - Different basemaps (light, dark, satellite)
+    Note: Different from Maps component - L7 is for advanced geospatial analytics,
+    while Maps is for simple 2D marker visualization.`,
+    props: ['data', 'options'],
+    examples: geospatialExamples
+  },
+
+  ToolUI: {
+    type: 'ToolUI',
+    description: `Tool call visualization component using @assistant-ui/react patterns.
+    Displays AI tool definitions, invocations, and results. Supports:
+    - Tool definition display (name, description, parameters)
+    - Parameter type and requirement indicators
+    - Invocation argument display
+    - Result visualization with status (pending/success/error)
+    - Color-coded status indicators
+    - Error message display
+    - Copy to clipboard functionality
+    Note: Useful for debugging AI tool calls and showing execution flow.`,
+    props: ['data', 'options'],
+    examples: toolUIExamples
+  },
+
+  Charts: {
+    type: 'Charts',
+    description: `Interactive data visualizations using amCharts 5. Professional-grade
+    charts with smooth animations and rich interactions. Supports:
+    - Line, bar, pie, scatter, area, and radar charts
+    - Multiple series on same chart
+    - Custom axis configuration (category, value, time)
+    - Legend and tooltips
+    - Zoom and pan interactions
+    - Custom colors per series
+    - Export to image (PNG/SVG)
+    - Responsive sizing
+    Note: amCharts 5 provides professional data visualization with extensive customization.`,
+    props: ['data', 'options'],
+    examples: chartsExamples
+  },
+
+  WYSIWYG: {
+    type: 'WYSIWYG',
+    description: `Rich text editor component with HTML and Markdown support.
+    Content-editable WYSIWYG interface. Supports:
+    - HTML and Markdown content formats
+    - Editable and read-only modes
+    - Basic formatting toolbar (bold, italic, underline, lists)
+    - Custom placeholder text
+    - Copy content to clipboard
+    - Configurable height and width
+    - Light and dark themes
+    Note: Provides basic rich text editing. For advanced features, consider specialized editors.`,
+    props: ['data', 'options'],
+    examples: wysiwygExamples
+  },
+
+  VRM: {
+    type: 'VRM',
+    description: `VRM avatar viewer using three-vrm and Three.js. Display and animate
+    3D VRM avatars in the browser. Supports:
+    - VRM model loading from URL
+    - Multiple animations with looping
+    - Camera positioning and targeting
+    - Ambient and directional lighting
+    - Custom background colors
+    - OrbitControls for interaction
+    - Antialiasing and alpha transparency
+    Note: VRM is a 3D avatar file format for VR applications. Models must be in .vrm format.`,
+    props: ['data', 'options'],
+    examples: vrmExamples
   }
 };
 

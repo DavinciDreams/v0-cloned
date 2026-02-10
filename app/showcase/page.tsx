@@ -108,6 +108,99 @@ import {
 } from "@/components/ai-elements/model-viewer-client";
 import type { ModelViewerData } from "@/components/ai-elements/model-viewer-client";
 
+import {
+  Phaser,
+  PhaserActions,
+  PhaserContent,
+  PhaserCopyButton,
+  PhaserFullscreenButton,
+  PhaserHeader,
+  PhaserPlayButton,
+  PhaserResetButton,
+  PhaserTitle,
+} from "@/components/ai-elements/phaser";
+import type { PhaserData } from "@/components/ai-elements/phaser";
+
+import {
+  Mermaid,
+  MermaidActions,
+  MermaidContent,
+  MermaidCopyButton,
+  MermaidDownloadButton,
+  MermaidFullscreenButton,
+  MermaidHeader,
+  MermaidModeToggle,
+  MermaidTitle,
+} from "@/components/ai-elements/mermaid";
+import type { MermaidData } from "@/components/ai-elements/mermaid";
+
+import {
+  Remotion,
+  RemotionActions,
+  RemotionContent,
+  RemotionCopyButton,
+  RemotionFullscreenButton,
+  RemotionHeader,
+  RemotionPlayButton,
+  RemotionResetButton,
+  RemotionTimeline,
+  RemotionTitle,
+} from "@/components/ai-elements/remotion";
+import type { RemotionData } from "@/components/ai-elements/remotion";
+
+import {
+  Charts,
+  ChartsActions,
+  ChartsContent,
+  ChartsCopyButton,
+  ChartsFullscreenButton,
+  ChartsHeader,
+  ChartsTitle,
+  ChartsLegend,
+} from "@/components/ai-elements/charts";
+import type { ChartsData } from "@/components/ai-elements/charts";
+
+import {
+  Geospatial,
+  GeospatialActions,
+  GeospatialContent,
+  GeospatialCopyButton,
+  GeospatialFullscreenButton,
+  GeospatialHeader,
+  GeospatialLayerToggle,
+  GeospatialLegend,
+  GeospatialTitle,
+} from "@/components/ai-elements/geospatial";
+import type { GeospatialData } from "@/components/ai-elements/geospatial";
+
+import {
+  WYSIWYG,
+  WYSIWYGActions,
+  WYSIWYGContent,
+  WYSIWYGCopyButton,
+  WYSIWYGExportButton,
+  WYSIWYGHeader,
+  WYSIWYGTitle,
+} from "@/components/ai-elements/wysiwyg";
+import type { WYSIWYGData } from "@/components/ai-elements/wysiwyg";
+
+import {
+  VRM,
+  VRMActions,
+  VRMAnimationToggle,
+  VRMContent,
+  VRMControls,
+  VRMCopyButton,
+  VRMFullscreenButton,
+  VRMHeader,
+  VRMResetButton,
+  VRMTitle,
+} from "@/components/ai-elements/vrm";
+import type { VRMData } from "@/components/ai-elements/vrm";
+
+import { ToolUI } from "@/components/ai-elements/toolui";
+import type { ToolUIData } from "@/lib/schemas/toolui.schema";
+
 // Sample data for components
 const sampleSVG = `<svg width="300" height="200" xmlns="http://www.w3.org/2000/svg">
   <defs>
@@ -332,6 +425,195 @@ const sampleModelViewer: ModelViewerData = {
   scale: 0.5,
 };
 
+const samplePhaser: PhaserData = {
+  config: {
+    width: 800,
+    height: 600,
+    backgroundColor: "#2d2d2d",
+    physics: {
+      default: "arcade",
+    },
+  },
+  scenes: [
+    {
+      key: "main",
+      create: `
+        scene.add.text(400, 100, 'Phaser Game Demo', {
+          fontSize: '48px',
+          color: '#ffffff',
+          fontStyle: 'bold'
+        }).setOrigin(0.5);
+
+        scene.add.text(400, 200, 'Interactive HTML5 game engine', {
+          fontSize: '24px',
+          color: '#cccccc'
+        }).setOrigin(0.5);
+
+        const circle = scene.add.circle(400, 350, 60, 0x00ff88);
+
+        scene.add.text(400, 500, 'Click the green circle!', {
+          fontSize: '18px',
+          color: '#888888'
+        }).setOrigin(0.5);
+
+        circle.setInteractive();
+        circle.on('pointerdown', function() {
+          circle.setFillStyle(0xff0088);
+        });
+        circle.on('pointerup', function() {
+          circle.setFillStyle(0x00ff88);
+        });
+      `,
+    },
+  ],
+};
+
+const sampleMermaid: MermaidData = {
+  diagram: `graph TB
+    A[Start] --> B{Is it working?}
+    B -->|Yes| C[Great!]
+    B -->|No| D[Debug]
+    D --> E[Fix Bug]
+    E --> F[Test Again]
+    F --> B
+    C --> G[Deploy]
+    G --> H[Monitor]
+    H --> I{Issues?}
+    I -->|Yes| D
+    I -->|No| J[Success!]
+
+    style A fill:#90EE90
+    style J fill:#90EE90
+    style D fill:#FFB6C1
+    style G fill:#87CEEB`,
+  theme: "default",
+};
+
+const sampleRemotion: RemotionData = {
+  composition: {
+    type: "TextAnimation",
+    width: 1920,
+    height: 1080,
+    fps: 30,
+    durationInFrames: 90,
+    props: {
+      text: "Programmatic Video with React",
+      color: "#ffffff",
+      fontSize: 70,
+      backgroundColor: "#0066ff",
+    },
+  },
+};
+
+const sampleCharts: ChartsData = {
+  type: "sankey",
+  title: "Energy Flow Diagram",
+  sankeyNodes: [
+    { id: "coal", name: "Coal" },
+    { id: "gas", name: "Natural Gas" },
+    { id: "nuclear", name: "Nuclear" },
+    { id: "renewables", name: "Renewables" },
+    { id: "electricity", name: "Electricity" },
+    { id: "heat", name: "Heat" },
+    { id: "industrial", name: "Industrial" },
+    { id: "residential", name: "Residential" },
+    { id: "commercial", name: "Commercial" },
+  ],
+  sankeyLinks: [
+    { from: "coal", to: "electricity", value: 30 },
+    { from: "coal", to: "heat", value: 15 },
+    { from: "gas", to: "electricity", value: 25 },
+    { from: "gas", to: "heat", value: 20 },
+    { from: "nuclear", to: "electricity", value: 20 },
+    { from: "renewables", to: "electricity", value: 15 },
+    { from: "electricity", to: "industrial", value: 35 },
+    { from: "electricity", to: "residential", value: 30 },
+    { from: "electricity", to: "commercial", value: 25 },
+    { from: "heat", to: "industrial", value: 15 },
+    { from: "heat", to: "residential", value: 20 },
+  ],
+};
+
+const sampleGeospatial: GeospatialData = {
+  center: { lng: -122.4194, lat: 37.7749 },
+  zoom: 11,
+  layers: [
+    {
+      id: "heatmap-layer",
+      type: "heatmap",
+      data: [
+        { lng: -122.45, lat: 37.78, value: 100 },
+        { lng: -122.43, lat: 37.77, value: 80 },
+        { lng: -122.41, lat: 37.79, value: 120 },
+        { lng: -122.39, lat: 37.76, value: 95 },
+        { lng: -122.42, lat: 37.75, value: 110 },
+      ],
+      style: {
+        color: ["#0000ff", "#00ff00", "#ffff00", "#ff0000"],
+        opacity: 0.6,
+      },
+    },
+  ],
+  basemap: "dark",
+};
+
+const sampleWYSIWYG: WYSIWYGData = {
+  content: `# Welcome to WYSIWYG Editor
+
+This is a **rich text editor** powered by Novel and Tiptap.
+
+## Features
+
+- **Bold** and *italic* text
+- Ordered and unordered lists
+- Code blocks
+- And much more!
+
+\`\`\`javascript
+console.log('Hello, World!');
+\`\`\`
+
+> This is a blockquote with **formatting**.`,
+  format: "markdown",
+  editable: false,
+};
+
+const sampleVRM: VRMData = {
+  modelUrl: "https://pixiv.github.io/three-vrm/packages/three-vrm/examples/models/VRM1_Constraint_Twist_Sample.vrm",
+  camera: {
+    position: { x: 0, y: 1.5, z: 2 },
+    target: { x: 0, y: 1.5, z: 0 },
+  },
+  lighting: {
+    ambient: 0.5,
+    directional: {
+      color: "#ffffff",
+      intensity: 1.0,
+    },
+  },
+  background: "#1a1a1a",
+};
+
+const sampleToolUI: ToolUIData = {
+  type: "x-post" as const,
+  data: {
+    id: "1",
+    author: {
+      name: "Claude AI",
+      handle: "anthropic",
+      avatarUrl: "https://pbs.twimg.com/profile_images/1730224114344218624/lEvxqKhS_400x400.jpg",
+      verified: true,
+    },
+    text: "Just integrated 18 new UI components from @assistant-ui/tool-ui! 🎉\n\nNow supporting social posts, image galleries, video players, data tables, workflow components, and more. The future of AI interfaces is composable! ✨",
+    stats: {
+      likes: 247,
+      isLiked: false,
+      isReposted: false,
+    },
+    createdAt: new Date().toISOString(),
+  },
+};
+
 export default function ShowcasePage() {
   const [activeTab, setActiveTab] = useState("svg");
   const [isMounted, setIsMounted] = useState(false);
@@ -415,8 +697,10 @@ export default function ShowcasePage() {
             Component Showcase
           </h1>
           <p className="text-muted-foreground text-lg">
-            Explore interactive AI elements: SVG Preview, Timeline, Node Editor,
-            Knowledge Graph, LaTeX, Maps, Three.js Scenes, and 3D Model Viewer
+            Explore 16 interactive AI elements: SVG Preview, Timeline, Node Editor,
+            Knowledge Graph, LaTeX, Maps, Three.js Scenes, 3D Model Viewer,
+            Phaser Games, Mermaid Diagrams, Remotion Videos, Charts, Geospatial,
+            WYSIWYG Editor, VRM Avatars, and Tool UI
           </p>
         </div>
       </header>
@@ -424,7 +708,7 @@ export default function ShowcasePage() {
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="mb-8 grid w-full grid-cols-8">
+          <TabsList className="mb-8 grid w-full grid-cols-16">
             <TabsTrigger value="svg">SVG</TabsTrigger>
             <TabsTrigger value="timeline">Timeline</TabsTrigger>
             <TabsTrigger value="node-editor">Nodes</TabsTrigger>
@@ -433,6 +717,14 @@ export default function ShowcasePage() {
             <TabsTrigger value="maps">Maps</TabsTrigger>
             <TabsTrigger value="threescene">3D</TabsTrigger>
             <TabsTrigger value="model-viewer">Models</TabsTrigger>
+            <TabsTrigger value="phaser">Phaser</TabsTrigger>
+            <TabsTrigger value="mermaid">Mermaid</TabsTrigger>
+            <TabsTrigger value="remotion">Remotion</TabsTrigger>
+            <TabsTrigger value="charts">Charts</TabsTrigger>
+            <TabsTrigger value="geospatial">Geo</TabsTrigger>
+            <TabsTrigger value="wysiwyg">Editor</TabsTrigger>
+            <TabsTrigger value="vrm">VRM</TabsTrigger>
+            <TabsTrigger value="toolui">Tools</TabsTrigger>
           </TabsList>
 
           {/* SVG Preview Tab */}
@@ -828,6 +1120,368 @@ export default function ShowcasePage() {
               </CardContent>
             </Card>
           </TabsContent>
+
+          {/* Phaser Tab */}
+          <TabsContent value="phaser" className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle>Phaser Game Component</CardTitle>
+                <CardDescription>
+                  Create interactive HTML5 games with Phaser 3. Build 2D games with
+                  physics, sprites, and custom game logic.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {activeTab === "phaser" && (
+                  <Phaser
+                    data={samplePhaser}
+                    options={{ autoStart: true, showControls: true }}
+                  >
+                    <PhaserHeader>
+                      <PhaserTitle>Phaser Game Demo</PhaserTitle>
+                      <PhaserActions>
+                        <PhaserPlayButton />
+                        <PhaserResetButton />
+                        <PhaserCopyButton />
+                        <PhaserFullscreenButton />
+                      </PhaserActions>
+                    </PhaserHeader>
+                    <PhaserContent />
+                  </Phaser>
+                )}
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Features</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ul className="list-disc space-y-2 pl-5 text-muted-foreground text-sm">
+                  <li>Full Phaser 3 game engine support</li>
+                  <li>WebGL and Canvas rendering</li>
+                  <li>Physics engines (Arcade, Matter, Impact)</li>
+                  <li>Scene management with lifecycle methods</li>
+                  <li>Interactive game objects</li>
+                  <li>Play, pause, and reset controls</li>
+                  <li>Custom game logic via JavaScript code</li>
+                  <li>Sprite, animation, and particle support</li>
+                </ul>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Mermaid Tab */}
+          <TabsContent value="mermaid" className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle>Mermaid Diagram Component</CardTitle>
+                <CardDescription>
+                  Create diagrams from text using Mermaid.js. Perfect for
+                  flowcharts, sequence diagrams, class diagrams, and more.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {activeTab === "mermaid" && (
+                  <Mermaid data={sampleMermaid} title="Development Workflow">
+                    <MermaidHeader>
+                      <MermaidTitle />
+                      <MermaidActions>
+                        <MermaidModeToggle />
+                        <MermaidCopyButton />
+                        <MermaidDownloadButton />
+                        <MermaidFullscreenButton />
+                      </MermaidActions>
+                    </MermaidHeader>
+                    <MermaidContent />
+                  </Mermaid>
+                )}
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Features</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ul className="list-disc space-y-2 pl-5 text-muted-foreground text-sm">
+                  <li>Create diagrams from markdown-like syntax</li>
+                  <li>Flowcharts, sequence diagrams, class diagrams</li>
+                  <li>State diagrams, ER diagrams, Gantt charts</li>
+                  <li>Multiple themes (default, dark, forest, neutral)</li>
+                  <li>Toggle between preview and source code</li>
+                  <li>Copy diagram source or download</li>
+                  <li>Fullscreen mode support</li>
+                  <li>Real-time rendering</li>
+                </ul>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Remotion Tab */}
+          <TabsContent value="remotion" className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle>Remotion Video Component</CardTitle>
+                <CardDescription>
+                  Create programmatic videos with React using Remotion. Build
+                  frame-based compositions with full control.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {activeTab === "remotion" && (
+                  <Remotion
+                    data={sampleRemotion}
+                    options={{
+                      autoPlay: false,
+                      loop: true,
+                      controls: true,
+                    }}
+                  >
+                    <RemotionHeader>
+                      <RemotionTitle />
+                      <RemotionActions>
+                        <RemotionPlayButton />
+                        <RemotionResetButton />
+                        <RemotionCopyButton />
+                        <RemotionFullscreenButton />
+                      </RemotionActions>
+                    </RemotionHeader>
+                    <RemotionContent />
+                    <RemotionTimeline />
+                  </Remotion>
+                )}
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Features</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ul className="list-disc space-y-2 pl-5 text-muted-foreground text-sm">
+                  <li>Create videos programmatically with React</li>
+                  <li>Frame-based composition control</li>
+                  <li>Custom width, height, and FPS settings</li>
+                  <li>Play, pause, and scrub through frames</li>
+                  <li>Loop and autoplay options</li>
+                  <li>Timeline scrubber for frame navigation</li>
+                  <li>Fullscreen mode support</li>
+                  <li>Preview mode (full rendering requires server-side)</li>
+                </ul>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="charts" className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle>Charts Component</CardTitle>
+                <CardDescription>
+                  Interactive data visualizations using amCharts 5. Supports line, bar, pie, scatter, area, and radar charts.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {activeTab === "charts" && (
+                  <Charts data={sampleCharts} options={{ height: 400, showLegend: true }}>
+                    <ChartsHeader>
+                      <ChartsTitle />
+                      <ChartsActions>
+                        <ChartsCopyButton />
+                        <ChartsFullscreenButton />
+                      </ChartsActions>
+                    </ChartsHeader>
+                    <ChartsContent />
+                    <ChartsLegend />
+                  </Charts>
+                )}
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Features</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ul className="list-disc space-y-2 pl-5 text-muted-foreground text-sm">
+                  <li><strong>Basic charts:</strong> line, bar, pie, scatter, area, radar</li>
+                  <li><strong>Advanced charts:</strong> Sankey, Chord, TreeMap, Force-Directed, Hierarchy, WordCloud, Venn</li>
+                  <li>Multiple series with custom colors</li>
+                  <li>Interactive pan, zoom, and cursor controls</li>
+                  <li>Configurable axes and styling</li>
+                  <li>Automatic legend generation</li>
+                  <li>Export to PNG/SVG</li>
+                  <li>Fullscreen mode with smooth animations</li>
+                </ul>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="geospatial" className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle>Geospatial Component</CardTitle>
+                <CardDescription>
+                  Advanced geospatial visualizations using L7 by AntV. Supports heatmaps, hexagons, and large-scale data (100k+ points).
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {activeTab === "geospatial" && (
+                  <Geospatial data={sampleGeospatial} options={{ height: 500 }}>
+                    <GeospatialHeader>
+                      <GeospatialTitle />
+                      <GeospatialActions>
+                        <GeospatialLayerToggle />
+                        <GeospatialCopyButton />
+                        <GeospatialFullscreenButton />
+                      </GeospatialActions>
+                    </GeospatialHeader>
+                    <GeospatialContent />
+                    <GeospatialLegend />
+                  </Geospatial>
+                )}
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Features</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ul className="list-disc space-y-2 pl-5 text-muted-foreground text-sm">
+                  <li>Multiple layer types: heatmap, hexagon, point, line, polygon, arc</li>
+                  <li>WebGL-powered rendering for 100k+ points</li>
+                  <li>Layer visibility toggles</li>
+                  <li>Custom color scales and styling</li>
+                  <li>3 basemap options: light, dark, satellite</li>
+                  <li>Legend with layer descriptions</li>
+                  <li>Fullscreen mode support</li>
+                  <li>Complementary to existing Maps component</li>
+                </ul>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="wysiwyg" className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle>WYSIWYG Editor Component</CardTitle>
+                <CardDescription>
+                  Rich text editor powered by Novel and Tiptap. Supports markdown, HTML, and JSON formats with editable and read-only modes.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {activeTab === "wysiwyg" && (
+                  <WYSIWYG data={sampleWYSIWYG} options={{ height: 400 }}>
+                    <WYSIWYGHeader>
+                      <WYSIWYGTitle />
+                      <WYSIWYGActions>
+                        <WYSIWYGExportButton />
+                        <WYSIWYGCopyButton />
+                      </WYSIWYGActions>
+                    </WYSIWYGHeader>
+                    <WYSIWYGContent />
+                  </WYSIWYG>
+                )}
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Features</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ul className="list-disc space-y-2 pl-5 text-muted-foreground text-sm">
+                  <li>Support for markdown, HTML, and JSON formats</li>
+                  <li>Editable and read-only modes</li>
+                  <li>Export to markdown/HTML files</li>
+                  <li>Copy to clipboard</li>
+                  <li>Configurable height and width</li>
+                  <li>Content state management</li>
+                  <li>Prose styling for read-only content</li>
+                  <li>Custom placeholder text</li>
+                </ul>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="vrm" className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle>VRM Avatar Component</CardTitle>
+                <CardDescription>
+                  3D avatar viewer using three-vrm. Load VRM models with animations, spring bone physics, and interactive controls.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {activeTab === "vrm" && (
+                  <VRM data={sampleVRM} options={{ height: 500 }}>
+                    <VRMHeader>
+                      <VRMTitle />
+                      <VRMActions>
+                        <VRMAnimationToggle />
+                        <VRMResetButton />
+                        <VRMCopyButton />
+                        <VRMFullscreenButton />
+                      </VRMActions>
+                    </VRMHeader>
+                    <VRMContent />
+                    <VRMControls />
+                  </VRM>
+                )}
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Features</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ul className="list-disc space-y-2 pl-5 text-muted-foreground text-sm">
+                  <li>VRM 0.0 and VRM 1.0 format support</li>
+                  <li>Animation support with play/pause toggle</li>
+                  <li>OrbitControls for interactive camera</li>
+                  <li>Configurable lighting (ambient + directional)</li>
+                  <li>Automatic spring bone physics</li>
+                  <li>Reset camera functionality</li>
+                  <li>Fullscreen mode</li>
+                  <li>Uses existing Three.js infrastructure</li>
+                </ul>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="toolui" className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle>Tool UI Component</CardTitle>
+                <CardDescription>
+                  AI tool call visualization using @assistant-ui. Display tool definitions, invocations, and results with status indicators.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {activeTab === "toolui" && <ToolUI data={sampleToolUI} />}
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Features</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ul className="list-disc space-y-2 pl-5 text-muted-foreground text-sm">
+                  <li>Social posts (X/Twitter, Instagram, LinkedIn)</li>
+                  <li>Media (image gallery, video player)</li>
+                  <li>Data visualization (stats, tables, charts)</li>
+                  <li>Workflow (progress trackers, forms, approvals)</li>
+                  <li>E-commerce (order summaries, pricing)</li>
+                  <li>Utilities (link previews, weather, carousels)</li>
+                  <li>18 unique components from @assistant-ui/tool-ui</li>
+                  <li>Type-safe with Zod validation</li>
+                </ul>
+              </CardContent>
+            </Card>
+          </TabsContent>
         </Tabs>
 
         {/* Quick Stats */}
@@ -842,7 +1496,7 @@ export default function ShowcasePage() {
           <CardContent>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
               <div className="rounded-lg border bg-card p-4">
-                <div className="mb-2 font-bold text-2xl">8</div>
+                <div className="mb-2 font-bold text-2xl">16</div>
                 <div className="text-muted-foreground text-sm">
                   Components Created
                 </div>

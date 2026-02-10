@@ -3,7 +3,7 @@
  *
  * Combines all available components:
  * - Standard UI adapters (76 from shadcn)
- * - Specialized composable components (11 data viz/interactive)
+ * - Specialized composable components (16 data viz/interactive)
  * - AI element adapters (to be expanded)
  */
 
@@ -22,6 +22,11 @@ import { ModelViewer } from '@/components/ai-elements/model-viewer';
 import { Phaser } from '@/components/ai-elements/phaser';
 import { Mermaid } from '@/components/ai-elements/mermaid';
 import { Remotion } from '@/components/ai-elements/remotion';
+import { Charts } from '@/components/ai-elements/charts';
+import { Geospatial } from '@/components/ai-elements/geospatial';
+import { WYSIWYG } from '@/components/ai-elements/wysiwyg';
+import { VRM } from '@/components/ai-elements/vrm';
+import { ToolUI } from '@/components/ai-elements/toolui';
 
 /**
  * Specialized components that use the composable pattern
@@ -39,6 +44,11 @@ export const specializedComponents = {
   Phaser,
   Mermaid,
   Remotion,
+  Charts,
+  Geospatial,
+  WYSIWYG,
+  VRM,
+  ToolUI,
 } as const;
 
 /**
@@ -51,7 +61,8 @@ export const specializedComponents = {
  */
 export const a2uiComponents: ComponentMapping = {
   // Specialized components (highest priority)
-  ...specializedComponents,
+  // Cast needed because these use their own prop types, not A2UIComponentProps
+  ...(specializedComponents as any),
 
   // Standard UI adapters
   ...shadcnAdapters,
@@ -87,7 +98,8 @@ export function getComponent(type: string) {
 export const componentCategories = {
   specialized: [
     'Timeline', 'Maps', 'ThreeScene', 'SVGPreview', 'NodeEditor',
-    'KnowledgeGraph', 'Latex', 'ModelViewer', 'Phaser', 'Mermaid', 'Remotion'
+    'KnowledgeGraph', 'Latex', 'ModelViewer', 'Phaser', 'Mermaid', 'Remotion',
+    'Charts', 'Geospatial', 'WYSIWYG', 'VRM', 'ToolUI'
   ],
   layout: [
     'Row', 'Column', 'HStack', 'VStack', 'Stack',
