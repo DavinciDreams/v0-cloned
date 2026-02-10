@@ -18,29 +18,20 @@ import {
   useEffect,
   useState,
 } from "react";
+import type {
+  WYSIWYGData,
+  WYSIWYGOptions,
+  FeaturesConfig,
+  ContentFormat,
+} from "@/lib/schemas/wysiwyg.schema";
 
-// --- Types ---
+// --- Re-export types for convenience ---
 
-export interface FeaturesConfig {
-  images?: boolean;
-  tables?: boolean;
-  codeBlocks?: boolean;
-  links?: boolean;
-  mentions?: boolean;
-}
-
-export interface WYSIWYGData {
-  content: string;
-  format: 'markdown' | 'html' | 'json';
-  editable?: boolean;
-  features?: FeaturesConfig;
-}
-
-export interface WYSIWYGOptions {
-  height?: number | string;
-  width?: number | string;
-  placeholder?: string;
-  className?: string;
+export type {
+  WYSIWYGData,
+  WYSIWYGOptions,
+  FeaturesConfig,
+  ContentFormat,
 }
 
 // --- Context ---
