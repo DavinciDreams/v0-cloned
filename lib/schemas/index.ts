@@ -60,6 +60,15 @@ export * from './jsonviewer.schema';
 // CodeEditor schemas
 export * from './codeeditor.schema';
 
+// Markdown schemas
+export * from './markdown.schema';
+
+// DataTable schemas
+export * from './datatable.schema';
+
+// ImageGallery schemas
+export * from './imagegallery.schema';
+
 /**
  * Registry of all component schemas
  * Maps component type to its props schema
@@ -83,7 +92,10 @@ import {
   VRMPropsSchema,
   CalendarPropsSchema,
   JSONViewerPropsSchema,
-  CodeEditorPropsSchema
+  CodeEditorPropsSchema,
+  MarkdownPropsSchema,
+  DataTablePropsSchema,
+  ImageGalleryPropsSchema
 } from '.';
 
 import type { ZodSchema } from 'zod';
@@ -107,7 +119,10 @@ export const schemaRegistry: Record<string, ZodSchema> = {
   VRM: VRMPropsSchema,
   Calendar: CalendarPropsSchema,
   JSONViewer: JSONViewerPropsSchema,
-  CodeEditor: CodeEditorPropsSchema
+  CodeEditor: CodeEditorPropsSchema,
+  Markdown: MarkdownPropsSchema,
+  DataTable: DataTablePropsSchema,
+  ImageGallery: ImageGalleryPropsSchema
 };
 
 /**

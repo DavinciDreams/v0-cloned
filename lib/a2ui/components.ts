@@ -30,6 +30,9 @@ import { ToolUI } from '@/components/ai-elements/toolui';
 import { Calendar } from '@/components/ai-elements/calendar';
 import { JSONViewer } from '@/components/ai-elements/jsonviewer';
 import { CodeEditor } from '@/components/ai-elements/codeeditor';
+import { Markdown } from '@/components/ai-elements/markdown';
+import { DataTable } from '@/components/ai-elements/datatable';
+import { ImageGallery } from '@/components/ai-elements/imagegallery';
 
 /**
  * Specialized components that use the composable pattern
@@ -55,6 +58,9 @@ export const specializedComponents = {
   Calendar,
   JSONViewer,
   CodeEditor,
+  Markdown,
+  DataTable,
+  ImageGallery,
 } as const;
 
 /**
@@ -105,7 +111,7 @@ export const componentCategories = {
   specialized: [
     'Timeline', 'Maps', 'ThreeScene', 'SVGPreview', 'NodeEditor',
     'KnowledgeGraph', 'Latex', 'ModelViewer', 'Phaser', 'Mermaid', 'Remotion',
-    'Charts', 'Geospatial', 'WYSIWYG', 'VRM', 'ToolUI', 'Calendar', 'JSONViewer', 'CodeEditor'
+    'Charts', 'Geospatial', 'WYSIWYG', 'VRM', 'ToolUI', 'Calendar', 'JSONViewer', 'CodeEditor', 'Markdown', 'DataTable', 'ImageGallery'
   ],
   layout: [
     'Row', 'Column', 'HStack', 'VStack', 'Stack',
