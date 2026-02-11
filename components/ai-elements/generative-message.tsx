@@ -194,25 +194,10 @@ export const GenerativeMessage = memo(
 
     // Parse content to extract ALL blocks (text, JSX, A2UI)
     const contentBlocks = useMemo(() => {
-      // If explicit jsx prop is provided, use legacy format
-      if (jsx) {
-        return [
-          {
-            type: 'text' as const,
-            content,
-            id: `text-${id}`,
-          },
-          {
-            type: 'jsx' as const,
-            code: jsx,
-            id: `jsx-${id}`,
-          },
-        ];
-      }
-
-      // Otherwise, parse content for mixed blocks
+      // Always use parseMessageContent to correctly split text/JSX/A2UI blocks.
+      // This avoids the legacy path where jsx prop + full content caused double rendering.
       return parseMessageContent(content);
-    }, [content, jsx, id]);
+    }, [content, id]);
 
     // Don't render for system messages
     if (role === "system") {

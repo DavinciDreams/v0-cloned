@@ -1,11 +1,94 @@
 # Project State Log - v0-clone AI Elements Library
 
-**Last Updated:** 2026-02-10
-**Status:** ✅ Production Ready - Build Passing, All Components Integrated
+**Last Updated:** 2026-02-11
+**Status:** ✅ Production Ready - Build Passing, JSX Rendering Fixed, Geospatial Migrated to Leaflet
 
 ---
 
-## Latest Session (2026-02-10) - Phase 2: Hybrid Renderer System Prompt Enhancement
+## Latest Session (2026-02-11) - JSX Rendering Fixes & Geospatial Migration
+
+### ✅ **COMPLETED - Fixed JSX/Component Rendering Pipeline**
+
+**Session Focus:** Investigate and fix JSX and component rendering issues on the frontend
+
+**Problems Identified:**
+
+1. **Double JSX Rendering (Critical)**
+   - `app/page.tsx` lines 228-237 extracted JSX from AI response and set `message.jsx`
+   - `GenerativeMessage` legacy path (when `jsx` prop exists) created text block with FULL content (including code fences) + separate JSX render
+   - Result: users saw raw code block AND rendered component simultaneously
+
+2. **Streaming Flag on All Messages**
+   - `app/page.tsx` line 297: `isStreaming={isLoading && message.role === "assistant"}`
+   - Marked ALL assistant messages as streaming, not just the latest one
+   - Caused `completeJsxTag()` to run on already-complete messages
+
+3. **Geospatial Map Tiles Not Loading**
+   - Used `GaodeMap` (Chinese map provider requiring API key)
+   - L7 built-in `Map` class has no tile loading (blank canvas)
+   - L7's MapLibre integration requires `window.maplibregl` global (fragile in Next.js)
+
+**Fixes Applied:**
+
+1. **app/page.tsx** (MODIFIED)
+   - Removed post-streaming JSX extraction (old lines 228-237)
+   - Removed `jsx` prop from `GenerativeMessage` message object
+   - Fixed streaming flag: `isStreaming={isLoading && message.role === "assistant" && index === messages.length - 1}`
+   - Added navigation bar with categorized links to all test pages (collapsible "Components" dropdown)
+   - Added `navGroups` data structure with 7 categories, 31 links
+   - Added `Link` from `next/link` and `useState` for nav toggle
+
+2. **components/ai-elements/generative-message.tsx** (MODIFIED)
+   - Removed legacy `jsx` prop path in `contentBlocks` useMemo
+   - Now always uses `parseMessageContent()` which correctly splits text/JSX/A2UI blocks
+   - Protects against old persisted messages that still have `jsx` field in localStorage
+
+3. **components/ai-elements/geospatial.tsx** (REWRITTEN - Leaflet migration)
+   - Replaced entire L7/AntV rendering engine with Leaflet + leaflet.heat
+   - Added `import "leaflet/dist/leaflet.css"`
+   - Added tile URL configs for light (OSM), dark (CARTO), satellite (Esri)
+   - Heatmap layers use `leaflet.heat` plugin
+   - Point layers use `L.circleMarker` with popups showing properties
+   - Line/arc layers use `L.polyline`
+   - Polygon layers use `L.polygon`
+   - Layer toggle now works via actual Leaflet `addLayer`/`removeLayer`
+   - Added `overflow: hidden` to container for proper containment
+
+4. **app/jsx-diagnostic/page.tsx** (NEW - diagnostic test page)
+   - 8 tests for JSX rendering pipeline
+   - Tests direct JSXPreview, parseMessageContent, legacy vs modern path, streaming
+
+**New Dependencies:**
+- `leaflet.heat@0.2.0` - Heatmap layer plugin for Leaflet
+- `@types/leaflet.heat` - TypeScript types
+
+**Verification:**
+- ✅ TypeScript compiles with no errors (`npx tsc --noEmit`)
+- ✅ All pages load (200 status codes confirmed)
+- ✅ JSXPreview renders components correctly (Tests 1-4 confirmed by user)
+- ✅ parseMessageContent correctly splits blocks (Test 5 confirmed)
+- ✅ Legacy double-render bug fixed (Test 6 confirmed by user)
+- ✅ Modern path works correctly (Test 7 confirmed by user)
+
+**Architecture Notes:**
+- **Maps component** (`maps.tsx`): Uses Leaflet with OSM tiles - for simple 2D maps with markers
+- **Geospatial component** (`geospatial.tsx`): Uses Leaflet + leaflet.heat - for advanced geospatial viz (heatmaps, multi-layer, styled points)
+- Both share Leaflet as the map engine (consistent stack, no duplicate map libs)
+- Future: Cesium could be added for 3D globe visualization as a separate component
+
+**Known Issues:**
+- ⚠️ Old messages persisted in localStorage may still have `jsx` field (harmless - legacy path removed)
+- ⚠️ `react-jsx-parser` v2.4.1 works with React 19 but has `any` type cast on component bindings due to type mismatch
+
+**Next Steps:**
+- Clear localStorage to purge old message format
+- Test geospatial heatmap + layer toggling in browser
+- Consider adding Cesium for 3D globe component
+- Manual test AI chat flow with JSX generation end-to-end
+
+---
+
+## Previous Session (2026-02-10) - Phase 2: Hybrid Renderer System Prompt Enhancement
 
 ### ✅ **COMPLETED - Enhanced System Prompt with Format Selection Guide**
 

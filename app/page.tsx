@@ -2,9 +2,10 @@
 
 import type { FormEvent, ComponentType } from "react";
 import { nanoid } from "nanoid";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import type { FileUIPart } from "ai";
 import type { StickToBottomContext } from "use-stick-to-bottom";
+import Link from "next/link";
 
 // ============================================================================
 // Store Hooks
@@ -133,6 +134,78 @@ const componentBindings: ComponentRegistry = {
 };
 
 // ============================================================================
+// Navigation Links
+// ============================================================================
+const navGroups = [
+  {
+    label: "Pages",
+    links: [
+      { href: "/a2ui-chat", name: "A2UI Chat" },
+      { href: "/a2ui-demo", name: "A2UI Demo" },
+      { href: "/showcase", name: "Showcase" },
+      { href: "/canvas", name: "Canvas" },
+      { href: "/docs", name: "Docs" },
+      { href: "/code", name: "Code" },
+    ],
+  },
+  {
+    label: "Data",
+    links: [
+      { href: "/datatable-test", name: "DataTable" },
+      { href: "/jsonviewer-test", name: "JSON Viewer" },
+      { href: "/calendar-test", name: "Calendar" },
+      { href: "/charts-test", name: "Charts" },
+      { href: "/charts-new-test", name: "Charts v2" },
+    ],
+  },
+  {
+    label: "Editors",
+    links: [
+      { href: "/codeeditor-test", name: "Code Editor" },
+      { href: "/markdown-test", name: "Markdown" },
+      { href: "/wysiwyg-test", name: "WYSIWYG" },
+      { href: "/latex-test", name: "LaTeX" },
+    ],
+  },
+  {
+    label: "Media",
+    links: [
+      { href: "/imagegallery-test", name: "Image Gallery" },
+      { href: "/mermaid-test", name: "Mermaid" },
+      { href: "/svg-preview-test", name: "SVG Preview" },
+      { href: "/remotion-test", name: "Remotion" },
+    ],
+  },
+  {
+    label: "3D & Graphics",
+    links: [
+      { href: "/threescene-test", name: "Three.js" },
+      { href: "/model-viewer-test", name: "Model Viewer" },
+      { href: "/vrm-test", name: "VRM" },
+      { href: "/phaser-test", name: "Phaser" },
+    ],
+  },
+  {
+    label: "Maps & Graphs",
+    links: [
+      { href: "/maps-test", name: "Maps" },
+      { href: "/geospatial-test", name: "Geospatial" },
+      { href: "/timeline-test", name: "Timeline" },
+      { href: "/node-editor-test", name: "Node Editor" },
+      { href: "/knowledge-graph-test", name: "Knowledge Graph" },
+    ],
+  },
+  {
+    label: "Other",
+    links: [
+      { href: "/toolui-test", name: "Tool UI" },
+      { href: "/toggle-group-test", name: "Toggle Group" },
+      { href: "/jsx-diagnostic", name: "JSX Diagnostic" },
+    ],
+  },
+];
+
+// ============================================================================
 // Main Page Component
 // ============================================================================
 export default function Page() {
@@ -141,6 +214,7 @@ export default function Page() {
   // =====================
   const { messages, addMessage, updateMessage } = useMessages();
   const { isLoading, error, setLoading, setError } = useAppState();
+  const [navOpen, setNavOpen] = useState(false);
 
   // =====================
   // Chat Functionality
@@ -225,17 +299,6 @@ export default function Page() {
         }
       }
 
-      // Extract JSX from the response and add to message
-      const jsxMatch = fullContent.match(/```(?:jsx|tsx)\s*\n([\s\S]*?)```/);
-      console.log('[DEBUG] JSX extraction:', { matched: !!jsxMatch, fullContent: fullContent.substring(0, 200) });
-      if (jsxMatch) {
-        const extractedJsx = jsxMatch[1].trim();
-        console.log('[DEBUG] Extracted JSX:', extractedJsx);
-        updateMessage(assistantMessageId, {
-          jsx: extractedJsx,
-        });
-      }
-
     } catch (err) {
       console.error("Chat error:", err);
       const errorMessage = err instanceof Error ? err.message : "An unexpected error occurred";
@@ -267,6 +330,44 @@ export default function Page() {
   // =====================
   return (
     <div className="flex h-screen w-full flex-col bg-background">
+      {/* Navigation Bar */}
+      <div className="border-b bg-background flex-shrink-0">
+        <div className="mx-auto max-w-5xl px-4">
+          <div className="flex items-center justify-between h-10">
+            <Link href="/" className="text-sm font-semibold text-foreground whitespace-nowrap">
+              Generative UI
+            </Link>
+            <button
+              type="button"
+              onClick={() => setNavOpen(!navOpen)}
+              className="text-xs text-muted-foreground hover:text-foreground transition-colors px-2 py-1 rounded-md hover:bg-muted"
+            >
+              {navOpen ? "Hide" : "Components"} {navOpen ? "\u25B2" : "\u25BC"}
+            </button>
+          </div>
+          {navOpen && (
+            <div className="pb-3 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-4 text-xs">
+              {navGroups.map((group) => (
+                <div key={group.label}>
+                  <div className="font-medium text-muted-foreground mb-1.5">{group.label}</div>
+                  <div className="space-y-0.5">
+                    {group.links.map((link) => (
+                      <Link
+                        key={link.href}
+                        href={link.href}
+                        className="block text-foreground/80 hover:text-foreground hover:bg-muted rounded px-1.5 py-0.5 transition-colors"
+                      >
+                        {link.name}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+
       {/* Messages Display - Conversation handles scroll behavior */}
       <Conversation className="flex-1">
         <ConversationContent className="overflow-y-auto">
@@ -284,17 +385,16 @@ export default function Page() {
                   </div>
                 </div>
               ) : (
-                messages.map((message) => (
+                messages.map((message, index) => (
                   <GenerativeMessage
                     key={message.id}
                     message={{
                       id: message.id,
                       role: message.role,
                       content: message.content,
-                      jsx: message.jsx,
                       timestamp: message.timestamp,
                     }}
-                    isStreaming={isLoading && message.role === "assistant"}
+                    isStreaming={isLoading && message.role === "assistant" && index === messages.length - 1}
                     // eslint-disable-next-line @typescript-eslint/no-explicit-any -- React type version mismatch with react-jsx-parser
                     components={componentBindings as any}
                   />

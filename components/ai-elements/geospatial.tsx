@@ -23,6 +23,9 @@ import {
   useState,
 } from "react";
 
+// Import Leaflet styles
+import "leaflet/dist/leaflet.css";
+
 // --- Types ---
 
 export interface GeospatialCoordinates {
@@ -328,6 +331,20 @@ export const GeospatialFullscreenButton = forwardRef<
 
 GeospatialFullscreenButton.displayName = "GeospatialFullscreenButton";
 
+// --- Tile URLs for basemaps ---
+
+const TILE_URLS: Record<string, string> = {
+  light: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+  dark: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+  satellite: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+};
+
+const TILE_ATTRIBUTIONS: Record<string, string> = {
+  light: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+  dark: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>',
+  satellite: '&copy; <a href="https://www.esri.com/">Esri</a>',
+};
+
 // --- Geospatial Content ---
 
 export const GeospatialContent = memo(
@@ -351,107 +368,148 @@ export const GeospatialContent = memo(
         setIsMounted(true);
       }, []);
 
-      // Initialize L7 map
+      // Initialize Leaflet map with geospatial layers
       useEffect(() => {
         if (!isMounted || !containerRef.current) return;
 
         const initMap = async () => {
           try {
-            const { Scene, GaodeMap, PointLayer, HeatmapLayer } = await import('@antv/l7');
+            const L = (await import("leaflet")).default;
+            // Import leaflet.heat - it attaches to L automatically
+            await import("leaflet.heat");
 
-            const scene = new Scene({
-              id: containerRef.current!,
-              map: new GaodeMap({
-                center: [data.center.lng, data.center.lat],
-                zoom: data.zoom,
-                style: data.basemap || 'light',
-              }),
+            // Fix default marker icons
+            delete (L.Icon.Default.prototype as any)._getIconUrl;
+            L.Icon.Default.mergeOptions({
+              iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png',
+              iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png',
+              shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
             });
 
-            await scene.on('loaded', () => {
-              // Add layers
-              data.layers.forEach((layer) => {
-                const isVisible = layerVisibility.get(layer.id) ?? true;
-                if (!isVisible) return;
-
-                const geoData = {
-                  type: 'FeatureCollection',
-                  features: layer.data.map((point) => ({
-                    type: 'Feature',
-                    properties: {
-                      ...point.properties,
-                      value: point.value || 1, // Ensure value is in properties
-                    },
-                    geometry: {
-                      type: 'Point',
-                      coordinates: [point.lng, point.lat],
-                    },
-                  })),
-                };
-
-                if (layer.type === 'heatmap') {
-                  const heatmapLayer = new HeatmapLayer({})
-                    .source(geoData)
-                    .size('value', [0, 1])
-                    .shape('heatmap')
-                    .style({
-                      intensity: 3,
-                      radius: 30,
-                      opacity: layer.style.opacity || 0.8,
-                      rampColors: {
-                        colors: Array.isArray(layer.style.color)
-                          ? layer.style.color
-                          : ['#0000ff', '#00ff00', '#ffff00', '#ff0000'],
-                        positions: [0, 0.33, 0.66, 1],
-                      },
-                    });
-                  scene.addLayer(heatmapLayer);
-                } else if (layer.type === 'hexagon') {
-                  // HexagonLayer not available in @antv/l7 - using PointLayer as fallback
-                  const pointLayer = new PointLayer({})
-                    .source(geoData)
-                    .shape('circle')
-                    .size(layer.style.size || 8)
-                    .color(layer.style.color)
-                    .style({
-                      opacity: layer.style.opacity || 0.8,
-                    });
-                  scene.addLayer(pointLayer);
-                } else {
-                  const pointLayer = new PointLayer({})
-                    .source(geoData)
-                    .shape('circle')
-                    .size(layer.style.size || 5)
-                    .color(layer.style.color)
-                    .style({
-                      opacity: layer.style.opacity || 0.8,
-                    });
-                  scene.addLayer(pointLayer);
-                }
-              });
+            const map = L.map(containerRef.current!, {
+              center: [data.center.lat, data.center.lng],
+              zoom: data.zoom,
+              zoomControl: options?.showControls !== false,
             });
 
-            sceneRef.current = scene;
+            // Add tile layer based on basemap setting
+            const basemap = data.basemap || 'light';
+            L.tileLayer(TILE_URLS[basemap] || TILE_URLS.light, {
+              attribution: TILE_ATTRIBUTIONS[basemap] || TILE_ATTRIBUTIONS.light,
+              maxZoom: 19,
+            }).addTo(map);
+
+            // Track Leaflet layers for toggling
+            const leafletLayers = new Map<string, L.Layer>();
+
+            // Add data layers
+            data.layers.forEach((layer) => {
+              const isVisible = layerVisibility.get(layer.id) ?? true;
+
+              if (layer.type === 'heatmap') {
+                // Use leaflet.heat for heatmap layers
+                const heatData: Array<[number, number, number]> = layer.data.map((point) => [
+                  point.lat,
+                  point.lng,
+                  point.value || 1,
+                ]);
+
+                const heatLayer = (L as any).heatLayer(heatData, {
+                  radius: layer.style.size || 25,
+                  blur: 15,
+                  maxZoom: 17,
+                  max: Math.max(...layer.data.map(p => p.value || 1)),
+                  gradient: Array.isArray(layer.style.color)
+                    ? layer.style.color.reduce((acc: Record<number, string>, color: string, i: number, arr: string[]) => {
+                        acc[i / (arr.length - 1)] = color;
+                        return acc;
+                      }, {} as Record<number, string>)
+                    : undefined,
+                });
+
+                leafletLayers.set(layer.id, heatLayer);
+                if (isVisible) heatLayer.addTo(map);
+
+              } else if (layer.type === 'point' || layer.type === 'hexagon') {
+                // Point layers as circle markers
+                const layerGroup = L.layerGroup();
+                layer.data.forEach((point) => {
+                  const color = Array.isArray(layer.style.color) ? layer.style.color[0] : layer.style.color;
+                  L.circleMarker([point.lat, point.lng], {
+                    radius: layer.style.size || 6,
+                    fillColor: color,
+                    color: color,
+                    weight: 1,
+                    opacity: layer.style.opacity || 0.9,
+                    fillOpacity: layer.style.opacity || 0.7,
+                  })
+                    .bindPopup(
+                      point.properties
+                        ? Object.entries(point.properties).map(([k, v]) => `<b>${k}:</b> ${v}`).join('<br/>')
+                        : `${point.lat.toFixed(4)}, ${point.lng.toFixed(4)}`
+                    )
+                    .addTo(layerGroup);
+                });
+
+                leafletLayers.set(layer.id, layerGroup);
+                if (isVisible) layerGroup.addTo(map);
+
+              } else if (layer.type === 'line' || layer.type === 'arc') {
+                // Line/arc layers as polylines
+                const color = Array.isArray(layer.style.color) ? layer.style.color[0] : layer.style.color;
+                const coords = layer.data.map(p => [p.lat, p.lng] as [number, number]);
+                const polyline = L.polyline(coords, {
+                  color,
+                  weight: layer.style.size || 2,
+                  opacity: layer.style.opacity || 0.8,
+                });
+
+                leafletLayers.set(layer.id, polyline);
+                if (isVisible) polyline.addTo(map);
+
+              } else if (layer.type === 'polygon') {
+                // Polygon layers
+                const color = Array.isArray(layer.style.color) ? layer.style.color[0] : layer.style.color;
+                const coords = layer.data.map(p => [p.lat, p.lng] as [number, number]);
+                const polygon = L.polygon(coords, {
+                  color,
+                  fillColor: color,
+                  weight: 2,
+                  opacity: layer.style.opacity || 0.8,
+                  fillOpacity: (layer.style.opacity || 0.8) * 0.3,
+                });
+
+                leafletLayers.set(layer.id, polygon);
+                if (isVisible) polygon.addTo(map);
+              }
+            });
+
+            sceneRef.current = { map, leafletLayers };
 
             // Set up ref methods
             geospatialRef.current = {
               flyTo: (coords: GeospatialCoordinates, zoom?: number) => {
-                scene.setCenter([coords.lng, coords.lat]);
-                if (zoom) scene.setZoom(zoom);
+                map.flyTo([coords.lat, coords.lng], zoom || map.getZoom());
               },
               setZoom: (zoom: number) => {
-                scene.setZoom(zoom);
+                map.setZoom(zoom);
               },
               toggleLayer: (layerId: string) => {
-                // Implementation for layer toggle
-                console.log('Toggle layer:', layerId);
+                const layer = leafletLayers.get(layerId);
+                if (layer) {
+                  if (map.hasLayer(layer)) {
+                    map.removeLayer(layer);
+                  } else {
+                    layer.addTo(map);
+                  }
+                }
               },
               getCenter: () => {
-                const center = scene.getCenter();
+                const center = map.getCenter();
                 return { lng: center.lng, lat: center.lat };
               },
               getZoom: () => {
-                return scene.getZoom();
+                return map.getZoom();
               },
             };
           } catch (err) {
@@ -462,13 +520,13 @@ export const GeospatialContent = memo(
         initMap();
 
         return () => {
-          if (sceneRef.current) {
-            sceneRef.current.destroy();
+          if (sceneRef.current?.map) {
+            sceneRef.current.map.remove();
             sceneRef.current = null;
             geospatialRef.current = null;
           }
         };
-      }, [isMounted, data, layerVisibility, sceneRef, geospatialRef]);
+      }, [isMounted, data, layerVisibility, sceneRef, geospatialRef, options]);
 
       if (error) {
         return <GeospatialError error={error} />;
@@ -482,7 +540,7 @@ export const GeospatialContent = memo(
         return (
           <div
             ref={ref}
-            className={cn("relative flex-1 p-4", className)}
+            className={cn("relative flex-1 overflow-hidden", className)}
             {...props}
           >
             <div
@@ -503,7 +561,7 @@ export const GeospatialContent = memo(
       return (
         <div
           ref={ref}
-          className={cn("relative flex-1 p-4", className)}
+          className={cn("relative flex-1 overflow-hidden", className)}
           {...props}
         >
           <div
