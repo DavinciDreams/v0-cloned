@@ -990,6 +990,93 @@ print(f"Mean: {result}")`,
 ];
 
 /**
+ * Markdown Examples
+ */
+const markdownExamples: ComponentExample[] = [
+  {
+    description: 'Documentation with live preview',
+    spec: {
+      id: 'markdown-1',
+      component: {
+        Markdown: {
+          data: {
+            title: "Getting Started",
+            content: `# Getting Started
+
+## Installation
+
+Install the package using npm:
+
+\`\`\`bash
+npm install awesome-package
+\`\`\`
+
+## Quick Example
+
+\`\`\`javascript
+import { Component } from 'awesome-package';
+
+function App() {
+  return <Component title="Hello World" />;
+}
+\`\`\`
+
+## Features
+
+- ✅ Easy to use
+- ✅ Fully typed
+- ✅ Well documented`
+          },
+          options: {
+            height: 500,
+            mode: "live"
+          }
+        }
+      }
+    }
+  },
+  {
+    description: 'Read-only documentation preview',
+    spec: {
+      id: 'markdown-2',
+      component: {
+        Markdown: {
+          data: {
+            title: "README",
+            content: `# Project Name
+
+> A brief description of your project
+
+## Overview
+
+This project helps developers build amazing applications.
+
+### Key Features
+
+1. **Fast** - Optimized for performance
+2. **Reliable** - Battle-tested in production
+3. **Scalable** - Handles millions of requests
+
+## Usage
+
+\`\`\`typescript
+const result = await api.getData();
+console.log(result);
+\`\`\`
+
+For more information, visit our [documentation](https://docs.example.com).`
+          },
+          options: {
+            height: 500,
+            mode: "preview"
+          }
+        }
+      }
+    }
+  }
+];
+
+/**
  * Specialized Component Catalog
  *
  * Advanced data visualization and interactive components
@@ -1319,6 +1406,29 @@ export const specializedCatalog: ComponentCatalog = {
     Uses @uiw/react-codemirror and CodeMirror 6.`,
     props: ['data', 'options', 'onChange'],
     examples: codeEditorExamples
+  },
+
+  Markdown: {
+    type: 'Markdown',
+    description: `Full-featured markdown editor with live preview. Edit and preview markdown content
+    with GitHub-flavored markdown support. Supports:
+    - Three modes: Edit (editor only), Preview (viewer only), Live (side-by-side)
+    - GitHub-flavored markdown (GFM) syntax
+    - Syntax highlighting in code blocks
+    - Live preview as you type
+    - Rich editing toolbar with formatting shortcuts
+    - Copy to clipboard functionality
+    - Download markdown as .md file
+    - Fullscreen editing mode
+    - Synchronized scrolling between editor and preview
+    - Tables, task lists, and emoji support
+    - Customizable height and width
+    - Toggle toolbar visibility
+    - Drag bar to resize editor/preview split
+    Note: Perfect for documentation, README files, blog posts, technical writing, and note-taking.
+    Uses @uiw/react-md-editor with full MDX support.`,
+    props: ['data', 'options', 'onChange'],
+    examples: markdownExamples
   }
 };
 
