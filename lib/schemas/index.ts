@@ -54,6 +54,9 @@ export * from './vrm.schema';
 // Calendar schemas
 export * from './calendar.schema';
 
+// JSONViewer schemas
+export * from './jsonviewer.schema';
+
 /**
  * Registry of all component schemas
  * Maps component type to its props schema
@@ -75,7 +78,8 @@ import {
   ChartsPropsSchema,
   WYSIWYGPropsSchema,
   VRMPropsSchema,
-  CalendarPropsSchema
+  CalendarPropsSchema,
+  JSONViewerPropsSchema
 } from '.';
 
 import type { ZodSchema } from 'zod';
@@ -97,7 +101,8 @@ export const schemaRegistry: Record<string, ZodSchema> = {
   Charts: ChartsPropsSchema,
   WYSIWYG: WYSIWYGPropsSchema,
   VRM: VRMPropsSchema,
-  Calendar: CalendarPropsSchema
+  Calendar: CalendarPropsSchema,
+  JSONViewer: JSONViewerPropsSchema
 };
 
 /**

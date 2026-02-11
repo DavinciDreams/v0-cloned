@@ -858,6 +858,76 @@ const calendarExamples: ComponentExample[] = [
 ];
 
 /**
+ * JSONViewer Examples
+ */
+const jsonViewerExamples: ComponentExample[] = [
+  {
+    description: 'Simple JSON object viewer',
+    spec: {
+      id: 'jsonviewer-1',
+      component: {
+        JSONViewer: {
+          data: {
+            value: {
+              name: "John Doe",
+              age: 30,
+              email: "john@example.com",
+              active: true,
+              roles: ["admin", "user"]
+            },
+            rootName: "User",
+            collapsed: false
+          },
+          options: {
+            height: 400,
+            displayDataTypes: true,
+            enableClipboard: true
+          }
+        }
+      }
+    }
+  },
+  {
+    description: 'Complex nested JSON with theming',
+    spec: {
+      id: 'jsonviewer-2',
+      component: {
+        JSONViewer: {
+          data: {
+            value: {
+              id: "api-response-123",
+              success: true,
+              data: {
+                users: [
+                  {
+                    id: 1,
+                    name: "Alice Smith",
+                    email: "alice@company.com",
+                    stats: {
+                      commits: 247,
+                      reviews: 89
+                    }
+                  }
+                ],
+                total: 1
+              }
+            },
+            rootName: "API Response",
+            collapsed: 2
+          },
+          options: {
+            height: 500,
+            theme: "dark",
+            displayObjectSize: true,
+            displayDataTypes: true
+          }
+        }
+      }
+    }
+  }
+];
+
+/**
  * Specialized Component Catalog
  *
  * Advanced data visualization and interactive components
@@ -1138,6 +1208,29 @@ export const specializedCatalog: ComponentCatalog = {
     Note: Perfect for scheduling apps, booking systems, and event management. Uses schedule-x library.`,
     props: ['data', 'options'],
     examples: calendarExamples
+  },
+
+  JSONViewer: {
+    type: 'JSONViewer',
+    description: `Interactive JSON data visualizer with tree view. Displays JSON data with
+    expand/collapse, syntax highlighting, and data exploration features. Supports:
+    - Interactive tree view with expand/collapse
+    - Syntax highlighting for values
+    - Data type indicators (string, number, boolean, null, array, object)
+    - Object and array size display
+    - Copy to clipboard functionality
+    - Download as .json file
+    - Multiple themes (light, dark, GitHub, VSCode)
+    - Customizable indent width
+    - Sort object keys alphabetically
+    - Show/hide quotes on keys
+    - Collapsed depth control (collapse at specific nesting level)
+    - Root node naming
+    - Fullscreen mode
+    Note: Perfect for debugging AI responses, visualizing API data, and exploring complex JSON structures.
+    Uses @uiw/react-json-view library.`,
+    props: ['data', 'options'],
+    examples: jsonViewerExamples
   }
 };
 
