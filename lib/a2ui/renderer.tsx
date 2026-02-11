@@ -118,6 +118,48 @@ import {
   RemotionTimeline,
   RemotionContent
 } from '@/components/ai-elements/remotion';
+import {
+  Geospatial,
+  GeospatialHeader,
+  GeospatialTitle,
+  GeospatialActions,
+  GeospatialLayerToggle,
+  GeospatialCopyButton,
+  GeospatialFullscreenButton,
+  GeospatialContent,
+  GeospatialLegend
+} from '@/components/ai-elements/geospatial';
+import { ToolUI } from '@/components/ai-elements/toolui';
+import {
+  Charts,
+  ChartsHeader,
+  ChartsTitle,
+  ChartsActions,
+  ChartsCopyButton,
+  ChartsFullscreenButton,
+  ChartsContent
+} from '@/components/ai-elements/charts';
+import {
+  WYSIWYG,
+  WYSIWYGHeader,
+  WYSIWYGTitle,
+  WYSIWYGActions,
+  WYSIWYGExportButton,
+  WYSIWYGCopyButton,
+  WYSIWYGContent
+} from '@/components/ai-elements/wysiwyg';
+import {
+  VRM,
+  VRMHeader,
+  VRMTitle,
+  VRMActions,
+  VRMAnimationToggle,
+  VRMResetButton,
+  VRMCopyButton,
+  VRMFullscreenButton,
+  VRMContent,
+  VRMControls
+} from '@/components/ai-elements/vrm';
 import { validateProps } from '@/lib/schemas';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertCircle } from 'lucide-react';
@@ -135,6 +177,11 @@ import type { ModelViewerProps } from '@/lib/schemas/modelviewer.schema';
 import type { PhaserProps } from '@/lib/schemas/phaser.schema';
 import type { MermaidProps } from '@/lib/schemas/mermaid.schema';
 import type { RemotionProps } from '@/lib/schemas/remotion.schema';
+import type { GeospatialProps } from '@/lib/schemas/geospatial.schema';
+import type { ToolUIProps, ToolUIData } from '@/lib/schemas/toolui.schema';
+import type { ChartsProps } from '@/lib/schemas/charts.schema';
+import type { WYSIWYGProps } from '@/lib/schemas/wysiwyg.schema';
+import type { VRMProps } from '@/lib/schemas/vrm.schema';
 
 /**
  * List of specialized components that use Zod validation and composable pattern
@@ -152,6 +199,11 @@ const SPECIALIZED_COMPONENTS = new Set([
   'Phaser',
   'Mermaid',
   'Remotion',
+  'Geospatial',
+  'ToolUI',
+  'Charts',
+  'WYSIWYG',
+  'VRM',
 ]);
 
 /**
@@ -330,7 +382,7 @@ export function renderA2UIComponent(
         const nodeEditorProps = validation.data as NodeEditorProps;
         return (
           <div key={componentId} data-a2ui-id={componentId} data-a2ui-type={componentType}>
-            <NodeEditor {...nodeEditorProps}>
+            <NodeEditor {...(nodeEditorProps as any)}>
               <NodeEditorHeader>
                 <NodeEditorTitle />
                 <NodeEditorActions>
@@ -458,6 +510,92 @@ export function renderA2UIComponent(
               <RemotionContent />
               <RemotionTimeline />
             </Remotion>
+          </div>
+        );
+      }
+
+      case 'Geospatial': {
+        const geospatialProps = validation.data as GeospatialProps;
+        return (
+          <div key={componentId} data-a2ui-id={componentId} data-a2ui-type={componentType}>
+            <Geospatial {...geospatialProps}>
+              <GeospatialHeader>
+                <GeospatialTitle />
+                <GeospatialActions>
+                  <GeospatialLayerToggle />
+                  <GeospatialCopyButton />
+                  <GeospatialFullscreenButton />
+                </GeospatialActions>
+              </GeospatialHeader>
+              <GeospatialContent />
+              <GeospatialLegend />
+            </Geospatial>
+          </div>
+        );
+      }
+
+      case 'ToolUI': {
+        const toolUIProps = validation.data as ToolUIProps;
+        return (
+          <div key={componentId} data-a2ui-id={componentId} data-a2ui-type={componentType}>
+            <ToolUI data={toolUIProps.data} options={toolUIProps.options} />
+          </div>
+        );
+      }
+
+      case 'Charts': {
+        const chartsProps = validation.data as ChartsProps;
+        return (
+          <div key={componentId} data-a2ui-id={componentId} data-a2ui-type={componentType}>
+            <Charts {...chartsProps}>
+              <ChartsHeader>
+                <ChartsTitle />
+                <ChartsActions>
+                  <ChartsCopyButton />
+                  <ChartsFullscreenButton />
+                </ChartsActions>
+              </ChartsHeader>
+              <ChartsContent />
+            </Charts>
+          </div>
+        );
+      }
+
+      case 'WYSIWYG': {
+        const wysiwygProps = validation.data as WYSIWYGProps;
+        return (
+          <div key={componentId} data-a2ui-id={componentId} data-a2ui-type={componentType}>
+            <WYSIWYG {...wysiwygProps}>
+              <WYSIWYGHeader>
+                <WYSIWYGTitle />
+                <WYSIWYGActions>
+                  <WYSIWYGExportButton />
+                  <WYSIWYGCopyButton />
+                </WYSIWYGActions>
+              </WYSIWYGHeader>
+              <WYSIWYGContent />
+            </WYSIWYG>
+          </div>
+        );
+      }
+
+      case 'VRM': {
+        const vrmProps = validation.data as VRMProps;
+        return (
+          <div key={componentId} data-a2ui-id={componentId} data-a2ui-type={componentType}>
+            <VRM {...vrmProps}>
+              <VRMHeader>
+                <VRMTitle />
+                <VRMActions>
+                  <VRMAnimationToggle />
+                  <VRMResetButton />
+                  <VRMCopyButton />
+                  <VRMFullscreenButton />
+                </VRMActions>
+              </VRMHeader>
+              <VRMContent />
+              <VRMControls />
+            </VRM>
           </div>
         );
       }

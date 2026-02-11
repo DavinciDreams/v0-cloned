@@ -1,0 +1,591 @@
+"use client";
+
+import { ToolUI } from "@/components/ai-elements/toolui";
+import type { ToolUIData } from "@/lib/schemas/toolui.schema";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+
+// Social Post Examples
+const xPostExample: ToolUIData = {
+  type: "x-post",
+  data: {
+    id: "1",
+    author: {
+      name: "Claude AI",
+      handle: "anthropic",
+      avatarUrl: "https://pbs.twimg.com/profile_images/1730224114344218624/lEvxqKhS_400x400.jpg",
+      verified: true,
+    },
+    text: "Building the future of AI interfaces with @assistant-ui/tool-ui 🚀\n\nJust shipped support for 18 new UI components including social posts, data tables, and workflow visualizations. The composable approach makes it so easy to create rich AI experiences!",
+    stats: {
+      likes: 342,
+      isLiked: true,
+    },
+    createdAt: new Date(Date.now() - 3600000).toISOString(),
+  },
+};
+
+const instagramPostExample: ToolUIData = {
+  type: "instagram-post",
+  data: {
+    id: "1",
+    author: {
+      name: "AI Design",
+      handle: "aidesign",
+      avatarUrl: "https://i.pravatar.cc/150?img=1",
+      verified: true,
+    },
+    text: "Exploring the intersection of AI and beautiful UI design ✨ #AIDesign #UIComponents",
+    media: [
+      { type: "image" as const, url: "https://picsum.photos/400/400?random=1", alt: "Design sample 1" },
+      { type: "image" as const, url: "https://picsum.photos/400/400?random=2", alt: "Design sample 2" },
+    ],
+    stats: {
+      likes: 1247,
+    },
+    createdAt: new Date(Date.now() - 7200000).toISOString(),
+  },
+};
+
+const linkedInPostExample: ToolUIData = {
+  type: "linkedin-post",
+  data: {
+    id: "1",
+    author: {
+      name: "Tech Lead",
+      headline: "Senior Engineer at AI Corp",
+      avatarUrl: "https://i.pravatar.cc/150?img=3",
+    },
+    text: "Excited to share our latest work on composable AI UI components! We've integrated @assistant-ui/tool-ui into our platform, enabling rich social media embeds, data visualizations, and interactive workflows. The type-safe approach with Zod validation has been game-changing for our development velocity.",
+    stats: {
+      likes: 523,
+      isLiked: false,
+    },
+    createdAt: new Date(Date.now() - 86400000).toISOString(),
+  },
+};
+
+// Media Examples
+const imageGalleryExample: ToolUIData = {
+  type: "image-gallery",
+  data: {
+    images: [
+      { url: "https://picsum.photos/800/600?random=10", alt: "Gallery image 1", caption: "Beautiful landscape" },
+      { url: "https://picsum.photos/800/600?random=11", alt: "Gallery image 2", caption: "Urban architecture" },
+      { url: "https://picsum.photos/800/600?random=12", alt: "Gallery image 3", caption: "Nature close-up" },
+      { url: "https://picsum.photos/800/600?random=13", alt: "Gallery image 4", caption: "City lights" },
+    ],
+    layout: "grid",
+  },
+};
+
+const videoExample: ToolUIData = {
+  type: "video",
+  data: {
+    url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+    title: "Sample Video Demo",
+    description: "Demonstrating video player component with controls",
+    thumbnail: "https://picsum.photos/800/450?random=20",
+  },
+};
+
+// Data Visualization Examples
+const statsDisplayExample: ToolUIData = {
+  type: "stats-display",
+  data: {
+    stats: [
+      { label: "Total Users", value: "12.4K", change: 15.3, trend: "up" as const },
+      { label: "Revenue", value: "$48,291", change: -3.2, trend: "down" as const },
+      { label: "Conversion Rate", value: "3.24%", change: 0.8, trend: "up" as const },
+      { label: "Active Sessions", value: "847", trend: "neutral" as const },
+    ],
+    layout: "grid",
+  },
+};
+
+const dataTableExample: ToolUIData = {
+  type: "data-table",
+  data: {
+    columns: [
+      { id: "name", header: "Name", type: "text" },
+      { id: "email", header: "Email", type: "text" },
+      { id: "role", header: "Role", type: "badge" },
+      { id: "signupDate", header: "Signup Date", type: "date" },
+      { id: "active", header: "Active", type: "boolean" },
+    ],
+    rows: [
+      { name: "Alice Johnson", email: "alice@example.com", role: "Admin", signupDate: "2024-01-15", active: true },
+      { name: "Bob Smith", email: "bob@example.com", role: "User", signupDate: "2024-02-20", active: true },
+      { name: "Charlie Brown", email: "charlie@example.com", role: "Editor", signupDate: "2024-03-10", active: false },
+      { name: "Diana Prince", email: "diana@example.com", role: "User", signupDate: "2024-01-25", active: true },
+    ],
+    sortable: true,
+    filterable: true,
+  },
+};
+
+// UI Component Examples
+const optionListExample: ToolUIData = {
+  type: "option-list",
+  data: {
+    options: [
+      { id: "1", label: "React", description: "A JavaScript library for building user interfaces", icon: "⚛️" },
+      { id: "2", label: "Vue", description: "The Progressive JavaScript Framework", icon: "💚" },
+      { id: "3", label: "Angular", description: "Platform for building mobile and desktop web applications", icon: "🅰️" },
+      { id: "4", label: "Svelte", description: "Cybernetically enhanced web apps", icon: "🔥", disabled: true },
+    ],
+    multiSelect: false,
+    selected: "1",
+  },
+};
+
+const parameterSliderExample: ToolUIData = {
+  type: "parameter-slider",
+  data: {
+    label: "Temperature",
+    value: 0.7,
+    min: 0,
+    max: 1,
+    step: 0.1,
+    description: "Controls randomness in AI generation. Higher values = more creative",
+  },
+};
+
+// Workflow Examples
+const progressTrackerExample: ToolUIData = {
+  type: "progress-tracker",
+  data: {
+    steps: [
+      { id: "1", label: "Data Collection", description: "Gathering input data", status: "completed" },
+      { id: "2", label: "Processing", description: "Analyzing and transforming data", status: "completed" },
+      { id: "3", label: "Model Training", description: "Training ML model", status: "in-progress" },
+      { id: "4", label: "Evaluation", description: "Testing model performance", status: "pending" },
+      { id: "5", label: "Deployment", description: "Deploy to production", status: "pending" },
+    ],
+    currentStep: 2,
+  },
+};
+
+const questionFlowExample: ToolUIData = {
+  type: "question-flow",
+  data: {
+    questions: [
+      {
+        id: "1",
+        question: "What is your primary goal?",
+        type: "choice",
+        options: ["Learning", "Building a product", "Research"],
+        answer: "Building a product",
+      },
+      {
+        id: "2",
+        question: "Select your preferred technologies:",
+        type: "multi-choice",
+        options: ["React", "TypeScript", "Next.js", "Tailwind CSS"],
+        answer: ["React", "TypeScript"],
+      },
+      {
+        id: "3",
+        question: "Rate your experience level:",
+        type: "rating",
+      },
+    ],
+    currentQuestion: 1,
+  },
+};
+
+const approvalCardExample: ToolUIData = {
+  type: "approval-card",
+  data: {
+    title: "Deploy to Production",
+    description: "This will deploy version 2.1.0 to the production environment",
+    details: {
+      version: "2.1.0",
+      environment: "production",
+      deployedBy: "Alice Johnson",
+      estimatedDowntime: "5 minutes",
+    },
+    status: "pending",
+  },
+};
+
+const messageDraftExample: ToolUIData = {
+  type: "message-draft",
+  data: {
+    to: "team@company.com",
+    subject: "Q1 Planning Meeting",
+    body: "Hi team,\n\nI'd like to schedule our Q1 planning meeting for next Tuesday at 2pm. Please review the attached deck beforehand.\n\nTopics:\n- Q4 Review\n- Q1 Goals\n- Resource Planning\n\nLet me know if you have any conflicts.\n\nBest,\nAlice",
+  },
+};
+
+const orderSummaryExample: ToolUIData = {
+  type: "order-summary",
+  data: {
+    orderId: "ORD-2024-001234",
+    items: [
+      {
+        id: "1",
+        name: "Wireless Headphones",
+        quantity: 1,
+        price: 129.99,
+        image: "https://picsum.photos/80/80?random=30",
+      },
+      {
+        id: "2",
+        name: "USB-C Cable (2m)",
+        quantity: 2,
+        price: 12.99,
+      },
+    ],
+    subtotal: 155.97,
+    tax: 12.48,
+    shipping: 8.99,
+    total: 177.44,
+    currency: "USD",
+  },
+};
+
+// Specialized Examples
+const linkPreviewExample: ToolUIData = {
+  type: "link-preview",
+  data: {
+    url: "https://github.com/assistant-ui/tool-ui",
+    title: "assistant-ui/tool-ui: UI components for AI interfaces",
+    description: "Responsive, accessible, typed, copy-pasteable UI components built on Radix, shadcn/ui, and Tailwind for rendering rich content in AI assistant applications.",
+    imageUrl: "https://opengraph.githubassets.com/1/assistant-ui/tool-ui",
+    domain: "github.com",
+  },
+};
+
+const weatherWidgetExample: ToolUIData = {
+  type: "weather-widget",
+  data: {
+    location: "San Francisco, CA",
+    temperature: 68,
+    condition: "Partly Cloudy",
+    humidity: 65,
+    windSpeed: 12,
+    forecast: [
+      { day: "Mon", high: 70, low: 58, condition: "Sunny" },
+      { day: "Tue", high: 68, low: 56, condition: "Cloudy" },
+      { day: "Wed", high: 65, low: 54, condition: "Rain" },
+    ],
+  },
+};
+
+const preferencesPanelExample: ToolUIData = {
+  type: "preferences-panel",
+  data: {
+    sections: [
+      {
+        id: "general",
+        title: "General Settings",
+        settings: [
+          { id: "notifications", label: "Enable Notifications", type: "toggle", value: true },
+          { id: "theme", label: "Theme", type: "select", value: "dark", options: ["light", "dark", "auto"] },
+        ],
+      },
+      {
+        id: "privacy",
+        title: "Privacy",
+        settings: [
+          { id: "analytics", label: "Share Analytics", type: "toggle", value: false },
+          { id: "publicProfile", label: "Public Profile", type: "toggle", value: true },
+        ],
+      },
+    ],
+  },
+};
+
+const itemCarouselExample: ToolUIData = {
+  type: "item-carousel",
+  data: {
+    items: [
+      {
+        id: "1",
+        image: "https://picsum.photos/400/300?random=40",
+        title: "Product 1",
+        description: "Amazing product description",
+      },
+      {
+        id: "2",
+        image: "https://picsum.photos/400/300?random=41",
+        title: "Product 2",
+        description: "Another great product",
+      },
+      {
+        id: "3",
+        image: "https://picsum.photos/400/300?random=42",
+        title: "Product 3",
+        description: "The best product yet",
+      },
+    ],
+    autoplay: false,
+  },
+};
+
+export default function ToolUITestPage() {
+  return (
+    <div className="container mx-auto p-8 space-y-8">
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold">Tool UI Component Gallery</h1>
+        <p className="text-muted-foreground mt-2 text-lg">
+          Comprehensive showcase of all 18 unique @assistant-ui/tool-ui components integrated into the AI elements library.
+        </p>
+      </div>
+
+      <Tabs defaultValue="social" className="w-full">
+        <TabsList className="grid w-full grid-cols-5">
+          <TabsTrigger value="social">Social</TabsTrigger>
+          <TabsTrigger value="media">Media</TabsTrigger>
+          <TabsTrigger value="data">Data</TabsTrigger>
+          <TabsTrigger value="workflow">Workflow</TabsTrigger>
+          <TabsTrigger value="specialized">Specialized</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="social" className="space-y-6 mt-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>X (Twitter) Post</CardTitle>
+              <CardDescription>Render X/Twitter posts with author, text, media, and engagement stats</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ToolUI data={xPostExample} />
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Instagram Post</CardTitle>
+              <CardDescription>Display Instagram posts with multi-image galleries</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ToolUI data={instagramPostExample} />
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>LinkedIn Post</CardTitle>
+              <CardDescription>Professional posts with author headlines and engagement metrics</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ToolUI data={linkedInPostExample} />
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="media" className="space-y-6 mt-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Image Gallery</CardTitle>
+              <CardDescription>Multi-image gallery with lightbox and navigation</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ToolUI data={imageGalleryExample} />
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Video Player</CardTitle>
+              <CardDescription>Video player with controls and metadata</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ToolUI data={videoExample} />
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="data" className="space-y-6 mt-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Stats Display</CardTitle>
+              <CardDescription>KPI metrics with trend indicators</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ToolUI data={statsDisplayExample} />
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Data Table</CardTitle>
+              <CardDescription>Advanced table with sorting and filtering</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ToolUI data={dataTableExample} />
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Option List</CardTitle>
+              <CardDescription>Selectable list with single or multi-select</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ToolUI data={optionListExample} />
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Parameter Slider</CardTitle>
+              <CardDescription>Numeric slider with constraints and formatting</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ToolUI data={parameterSliderExample} />
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="workflow" className="space-y-6 mt-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Progress Tracker</CardTitle>
+              <CardDescription>Multi-step process visualization with status indicators</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ToolUI data={progressTrackerExample} />
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Question Flow</CardTitle>
+              <CardDescription>Interactive multi-step form with various question types</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ToolUI data={questionFlowExample} />
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Approval Card</CardTitle>
+              <CardDescription>Approval workflow with details and status</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ToolUI data={approvalCardExample} />
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Message Draft</CardTitle>
+              <CardDescription>Email or message composition interface</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ToolUI data={messageDraftExample} />
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Order Summary</CardTitle>
+              <CardDescription>E-commerce order summary with pricing breakdown</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ToolUI data={orderSummaryExample} />
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="specialized" className="space-y-6 mt-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Link Preview</CardTitle>
+              <CardDescription>Rich URL preview with Open Graph metadata</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ToolUI data={linkPreviewExample} />
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Weather Widget</CardTitle>
+              <CardDescription>Weather display with forecast and celestial effects</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ToolUI data={weatherWidgetExample} />
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Preferences Panel</CardTitle>
+              <CardDescription>Settings interface with various input types</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ToolUI data={preferencesPanelExample} />
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Item Carousel</CardTitle>
+              <CardDescription>Horizontal carousel with smooth scrolling</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ToolUI data={itemCarouselExample} />
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
+
+      <Card className="mt-8">
+        <CardHeader>
+          <CardTitle>Component Summary</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+            <div>
+              <h3 className="font-semibold mb-2">Social Media (3)</h3>
+              <ul className="list-disc list-inside space-y-1 text-muted-foreground">
+                <li>X/Twitter posts</li>
+                <li>Instagram posts</li>
+                <li>LinkedIn posts</li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="font-semibold mb-2">Media (2)</h3>
+              <ul className="list-disc list-inside space-y-1 text-muted-foreground">
+                <li>Image galleries</li>
+                <li>Video players</li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="font-semibold mb-2">Data Visualization (4)</h3>
+              <ul className="list-disc list-inside space-y-1 text-muted-foreground">
+                <li>Stats displays</li>
+                <li>Data tables</li>
+                <li>Option lists</li>
+                <li>Parameter sliders</li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="font-semibold mb-2">Workflow (5)</h3>
+              <ul className="list-disc list-inside space-y-1 text-muted-foreground">
+                <li>Progress trackers</li>
+                <li>Question flows</li>
+                <li>Approval cards</li>
+                <li>Message drafts</li>
+                <li>Order summaries</li>
+              </ul>
+            </div>
+            <div className="md:col-span-2">
+              <h3 className="font-semibold mb-2">Specialized (4)</h3>
+              <ul className="list-disc list-inside space-y-1 text-muted-foreground">
+                <li>Link previews</li>
+                <li>Weather widgets</li>
+                <li>Preferences panels</li>
+                <li>Item carousels</li>
+              </ul>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}

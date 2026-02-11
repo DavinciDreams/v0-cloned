@@ -72,12 +72,16 @@ export const ProgressAdapter = createAdapter(Progress, {
 // Spinner component
 export const SpinnerAdapter = createAdapter(Spinner, {
   mapProps: (a2ui, ctx) => {
-    const size = extractValue(a2ui.size) ?? 'default';
-    const variant = extractValue(a2ui.variant) ?? 'default';
+    const size = extractValue(a2ui.size);
+
+    // Map size to className
+    let sizeClass = 'size-4'; // default
+    if (size === 'small' || size === 'sm') sizeClass = 'size-3';
+    if (size === 'large' || size === 'lg') sizeClass = 'size-6';
+    if (size === 'xl') sizeClass = 'size-8';
 
     return {
-      size,
-      variant,
+      className: cn(sizeClass, extractValue(a2ui.className)),
     };
   },
   displayName: 'A2UI(Spinner)',

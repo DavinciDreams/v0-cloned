@@ -5,7 +5,7 @@
  * to React component props. Based on a2ui-bridge adapter pattern.
  */
 
-import { createElement, type ComponentType, type ReactNode } from 'react';
+import React, { createElement, type ComponentType, type ReactNode } from 'react';
 
 /**
  * User action event sent from client to server.
@@ -111,7 +111,7 @@ export interface AdapterOptions<TTargetProps> {
  * ```
  */
 export function createAdapter<TTargetProps extends Record<string, any>>(
-  Component: ComponentType<TTargetProps>,
+  Component: ComponentType<TTargetProps> | keyof React.JSX.IntrinsicElements,
   options: AdapterOptions<TTargetProps>
 ): ComponentType<A2UIComponentProps<A2UINode>> {
   const { mapProps, childrenProp = 'children', displayName } = options;
@@ -140,7 +140,7 @@ export function createAdapter<TTargetProps extends Record<string, any>>(
     return createElement(Component as ComponentType<any>, targetProps);
   }
 
-  AdaptedComponent.displayName = displayName || `A2UIAdapter(${Component.displayName || Component.name || 'Component'})`;
+  AdaptedComponent.displayName = displayName || `A2UIAdapter(${typeof Component === 'string' ? Component : (Component.displayName || Component.name || 'Component')})`;
 
   return AdaptedComponent;
 }
@@ -250,16 +250,16 @@ export function mapVariant<T extends string>(
  * });
  * ```
  */
-export function createPassthroughAdapter<TTargetProps extends { children?: ReactNode }>(
-  Component: ComponentType<TTargetProps> | string,
+export function createPassthroughAdapter<TTargetProps extends Record<string, any> = any>(
+  Component: ComponentType<TTargetProps> | keyof React.JSX.IntrinsicElements,
   defaultProps?: Partial<TTargetProps>
 ): ComponentType<A2UIComponentProps<A2UINode>> {
-  return createAdapter(Component as ComponentType<TTargetProps>, {
+  return createAdapter(Component as any, {
     mapProps: (_, ctx) => ({
       ...defaultProps,
       children: ctx.children,
-    } as TTargetProps),
-    displayName: `Passthrough(${typeof Component === 'string' ? Component : Component.displayName || Component.name || 'Component'})`,
+    } as unknown as TTargetProps),
+    displayName: `Passthrough(${typeof Component === 'string' ? Component : (Component as any).displayName || (Component as any).name || 'Component'})`,
   });
 }
 
