@@ -133,14 +133,30 @@ export const Calendar = memo(
                 if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
                   return Temporal.PlainDate.from(dateStr);
                 }
-                // Otherwise treat as date-time
-                return Temporal.PlainDateTime.from(dateStr);
+                // For datetime strings, convert to ZonedDateTime (Schedule-X requirement)
+                // Parse as PlainDateTime first, then convert to ZonedDateTime with system timezone
+                const plainDateTime = Temporal.PlainDateTime.from(dateStr);
+                return plainDateTime.toZonedDateTime(Temporal.Now.timeZoneId());
               } catch (error) {
                 console.error("Failed to parse date:", dateStr, error);
-                // Fallback to today
+                // Fallback to today as PlainDate
                 return Temporal.Now.plainDateISO();
               }
             };
+
+            // Map color to Schedule-X _options format
+            const options = event.color
+              ? {
+                  ...event._options,
+                  additionalClasses: [
+                    ...(event._options?.additionalClasses || []),
+                  ],
+                  style: {
+                    ...event._options?.style,
+                    backgroundColor: event.color,
+                  },
+                }
+              : event._options;
 
             return {
               id: event.id,
@@ -151,7 +167,7 @@ export const Calendar = memo(
               location: event.location,
               people: event.people,
               calendarId: event.calendarId,
-              _options: event._options,
+              _options: options,
             };
           }),
         [data.events]
