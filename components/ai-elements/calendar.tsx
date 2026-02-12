@@ -124,6 +124,7 @@ export const Calendar = memo(
       // Memoize event transformation
       const scheduleXEvents = useMemo(
         () =>
+<<<<<<< components
           data.events.map((event) => {
             // Convert date strings to Temporal objects
             // Schedule-X requires Temporal.PlainDate or Temporal.PlainDateTime
@@ -154,6 +155,19 @@ export const Calendar = memo(
               _options: event._options,
             };
           }),
+=======
+          data.events.map((event) => ({
+            id: event.id,
+            title: event.title,
+            start: event.start,
+            end: event.end,
+            description: event.description,
+            location: event.location,
+            people: event.people,
+            calendarId: event.calendarId,
+            _options: event._options,
+          })),
+>>>>>>> master
         [data.events]
       );
 
