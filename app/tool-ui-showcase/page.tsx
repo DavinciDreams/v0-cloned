@@ -17,6 +17,14 @@ import { ParameterSlider } from "@/components/ai-elements/parameter-slider";
 import { PreferencesPanel } from "@/components/ai-elements/preferences-panel";
 import { QuestionFlow } from "@/components/ai-elements/question-flow";
 
+// Pre-calculate timestamps at module level to avoid impure function calls during render
+const NOW = Date.now();
+const ONE_HOUR_AGO = NOW - 3600000;
+const ONE_DAY_AGO = NOW - 86400000;
+const TWO_HOURS_AGO = NOW - 7200000;
+const FOUR_HOURS_AGO = NOW - 14400000;
+const EIGHT_HOURS_AGO = NOW - 28800000;
+
 export default function ToolUIShowcasePage() {
   return (
     <div className="container mx-auto p-8 space-y-16">
@@ -41,7 +49,7 @@ export default function ToolUIShowcasePage() {
                 email: "sarah@company.com",
                 avatar: "https://i.pravatar.cc/150?u=sarah",
               },
-              timestamp: Date.now() - 3600000,
+              timestamp: ONE_HOUR_AGO,
               metadata: [
                 { label: "Environment", value: "Production" },
                 { label: "Version", value: "2.5.0" },
@@ -57,7 +65,7 @@ export default function ToolUIShowcasePage() {
                 name: "Michael Brown",
                 email: "michael@company.com",
               },
-              timestamp: Date.now() - 86400000,
+              timestamp: ONE_DAY_AGO,
             }}
           />
         </div>
@@ -138,14 +146,14 @@ export default function ToolUIShowcasePage() {
                 title: "Code Review",
                 description: "Review all changes and approve",
                 status: "completed",
-                timestamp: Date.now() - 7200000,
+                timestamp: TWO_HOURS_AGO,
               },
               {
                 id: "2",
                 title: "Run Tests",
                 description: "Execute full test suite",
                 status: "completed",
-                timestamp: Date.now() - 3600000,
+                timestamp: ONE_HOUR_AGO,
               },
               {
                 id: "3",
@@ -219,7 +227,7 @@ export default function ToolUIShowcasePage() {
               images: ["https://picsum.photos/600/600?random=1"],
               likes: 1234,
               comments: 89,
-              timestamp: Date.now() - 7200000,
+              timestamp: TWO_HOURS_AGO,
               location: "San Francisco, CA",
               hashtags: ["AI", "Innovation", "TechStartup"],
             }}
@@ -234,7 +242,7 @@ export default function ToolUIShowcasePage() {
               },
               text: "Thrilled to share that our team just launched the new AI features! Big thanks to everyone involved.",
               stats: { likes: 456, isLiked: false },
-              createdAt: Date.now() - 14400000,
+              createdAt: FOUR_HOURS_AGO,
             }}
           />
           <XPost
@@ -248,7 +256,7 @@ export default function ToolUIShowcasePage() {
               },
               text: "Breaking: New AI breakthrough enables real-time language translation with 99% accuracy 🎯",
               stats: { likes: 8932, isLiked: true },
-              createdAt: Date.now() - 28800000,
+              createdAt: EIGHT_HOURS_AGO,
             }}
           />
         </div>
