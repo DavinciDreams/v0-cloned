@@ -19,6 +19,7 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from "react";
@@ -102,85 +103,100 @@ export const Calendar = memo(
       ref
     ) => {
       const [isFullscreen, setIsFullscreen] = useState(false);
-      const eventsServiceRef = useRef<any>(null);
 
-      // Create events service plugin
-      if (!eventsServiceRef.current) {
-        eventsServiceRef.current = createEventsServicePlugin();
-      }
+      // Create events service plugin once and memoize it
+      const eventsService = useMemo(() => createEventsServicePlugin(), []);
 
-      // Determine which views to use
-      const views = data.views || [data.defaultView || "month-grid"];
-      const viewsConfig = views.map(createViewFromType);
+      // Memoize view configuration
+      const viewsConfig = useMemo(() => {
+        const views = data.views || [data.defaultView || "month-grid"];
+        const configs = views.map(createViewFromType);
+        // Ensure at least one view (schedule-x requires non-empty array)
+        if (configs.length === 0) {
+          configs.push(createViewMonthGrid());
+        }
+        return configs as [any, ...any[]];
+      }, [data.views, data.defaultView]);
 
-      // Ensure at least one view (schedule-x requires non-empty array)
-      if (viewsConfig.length === 0) {
-        viewsConfig.push(createViewMonthGrid());
-      }
+      // Memoize event transformation
+      const scheduleXEvents = useMemo(
+        () =>
+          data.events.map((event) => ({
+            id: event.id,
+            title: event.title,
+            start: event.start,
+            end: event.end,
+            description: event.description,
+            location: event.location,
+            people: event.people,
+            calendarId: event.calendarId,
+            _options: event._options,
+          })),
+        [data.events]
+      );
 
-      // Convert CalendarEvent[] to schedule-x format
-      const scheduleXEvents = data.events.map((event) => ({
-        id: event.id,
-        title: event.title,
-        start: event.start,
-        end: event.end,
-        description: event.description,
-        location: event.location,
-        people: event.people,
-        calendarId: event.calendarId,
-        _options: event._options,
-      }));
+      // Memoize calendar config
+      const calendarConfig = useMemo(() => {
+        const config: any = {
+          views: viewsConfig,
+          events: scheduleXEvents,
+          plugins: [eventsService],
+        };
 
-      // Initialize calendar
-      const calendarConfig: any = {
-        views: viewsConfig as [any, ...any[]],
-        events: scheduleXEvents,
-        plugins: [eventsServiceRef.current],
-      };
+        // Add optional config fields only if defined
+        if (data.selectedDate) config.selectedDate = data.selectedDate;
+        if (data.config?.locale) config.locale = data.config.locale;
+        if (data.config?.firstDayOfWeek !== undefined) config.firstDayOfWeek = data.config.firstDayOfWeek;
+        if (data.config?.weekOptions) config.weekOptions = data.config.weekOptions;
+        if (data.config?.monthGridOptions) config.monthGridOptions = data.config.monthGridOptions;
+        if (data.config?.dayBoundaries) config.dayBoundaries = data.config.dayBoundaries;
+        if (data.config?.minDate) config.minDate = data.config.minDate;
+        if (data.config?.maxDate) config.maxDate = data.config.maxDate;
 
-      // Add optional config fields only if defined
-      if (data.selectedDate) calendarConfig.selectedDate = data.selectedDate;
-      if (data.config?.locale) calendarConfig.locale = data.config.locale;
-      if (data.config?.firstDayOfWeek !== undefined) calendarConfig.firstDayOfWeek = data.config.firstDayOfWeek;
-      if (data.config?.weekOptions) calendarConfig.weekOptions = data.config.weekOptions;
-      if (data.config?.monthGridOptions) calendarConfig.monthGridOptions = data.config.monthGridOptions;
-      if (data.config?.dayBoundaries) calendarConfig.dayBoundaries = data.config.dayBoundaries;
-      if (data.config?.minDate) calendarConfig.minDate = data.config.minDate;
-      if (data.config?.maxDate) calendarConfig.maxDate = data.config.maxDate;
+        // Add callbacks
+        config.callbacks = {
+          onEventClick: (calendarEvent: any) => {
+            if (onEventClick) {
+              const event: CalendarEvent = {
+                id: calendarEvent.id,
+                title: calendarEvent.title,
+                start: calendarEvent.start,
+                end: calendarEvent.end,
+                description: calendarEvent.description,
+                location: calendarEvent.location,
+                people: calendarEvent.people,
+                calendarId: calendarEvent.calendarId,
+              };
+              onEventClick(event);
+            }
+          },
+          onEventUpdate: (calendarEvent: any) => {
+            if (onEventUpdate) {
+              const event: CalendarEvent = {
+                id: calendarEvent.id,
+                title: calendarEvent.title,
+                start: calendarEvent.start,
+                end: calendarEvent.end,
+                description: calendarEvent.description,
+                location: calendarEvent.location,
+                people: calendarEvent.people,
+                calendarId: calendarEvent.calendarId,
+              };
+              onEventUpdate(event);
+            }
+          },
+        };
 
-      // Add callbacks
-      calendarConfig.callbacks = {
-        onEventClick: (calendarEvent: any) => {
-          if (onEventClick) {
-            const event: CalendarEvent = {
-              id: calendarEvent.id,
-              title: calendarEvent.title,
-              start: calendarEvent.start,
-              end: calendarEvent.end,
-              description: calendarEvent.description,
-              location: calendarEvent.location,
-              people: calendarEvent.people,
-              calendarId: calendarEvent.calendarId,
-            };
-            onEventClick(event);
-          }
-        },
-        onEventUpdate: (calendarEvent: any) => {
-          if (onEventUpdate) {
-            const event: CalendarEvent = {
-              id: calendarEvent.id,
-              title: calendarEvent.title,
-              start: calendarEvent.start,
-              end: calendarEvent.end,
-              description: calendarEvent.description,
-              location: calendarEvent.location,
-              people: calendarEvent.people,
-              calendarId: calendarEvent.calendarId,
-            };
-            onEventUpdate(event);
-          }
-        },
-      };
+        return config;
+      }, [
+        viewsConfig,
+        scheduleXEvents,
+        eventsService,
+        data.selectedDate,
+        data.config,
+        onEventClick,
+        onEventUpdate,
+      ]);
 
       const calendar = useCalendarApp(calendarConfig);
 
@@ -190,7 +206,7 @@ export const Calendar = memo(
         isFullscreen,
         setIsFullscreen,
         calendarApp: calendar,
-        eventsService: eventsServiceRef.current,
+        eventsService: eventsService,
       };
 
       return (
@@ -411,15 +427,30 @@ export const CalendarContent = memo(
     ({ className, ...props }, ref) => {
       const { calendarApp, options } = useCalendar();
       const containerRef = useRef<HTMLDivElement>(null);
+      const hasRendered = useRef(false);
 
       useEffect(() => {
-        if (containerRef.current && calendarApp) {
-          // Clear previous content
-          containerRef.current.innerHTML = "";
-
-          // Render calendar
-          calendarApp.render(containerRef.current);
+        if (containerRef.current && calendarApp && !hasRendered.current) {
+          // Render calendar only once on mount
+          try {
+            calendarApp.render(containerRef.current);
+            hasRendered.current = true;
+          } catch (error) {
+            console.error("Failed to render calendar:", error);
+          }
         }
+
+        // Cleanup on unmount
+        return () => {
+          if (calendarApp && hasRendered.current) {
+            try {
+              calendarApp.destroy?.();
+            } catch (error) {
+              console.error("Failed to destroy calendar:", error);
+            }
+            hasRendered.current = false;
+          }
+        };
       }, [calendarApp]);
 
       return (
