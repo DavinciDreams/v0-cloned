@@ -1,7 +1,7 @@
 /**
  * Geospatial Component Schema
  * Advanced geospatial visualizations using deck.gl + MapLibre GL
- * Temporal visualizations using kepler.gl
+ * Temporal visualizations using deck.gl TripsLayer
  */
 
 import { z } from "zod";
