@@ -62,27 +62,42 @@ export type WeatherWidgetProps = ComponentProps<"div"> & {
 };
 
 export function WeatherWidget({ data, options = {}, ...props }: WeatherWidgetProps) {
-  // Map A2UI data to tool-ui props
+  // Map A2UI weather conditions to tool-ui conditions
+  const conditionMap: Record<string, any> = {
+    "sunny": "clear",
+    "cloudy": "cloudy",
+    "rainy": "rain",
+    "snowy": "snow",
+    "stormy": "thunderstorm",
+    "partly-cloudy": "partly-cloudy",
+    "foggy": "fog",
+  };
+
+  // Map A2UI data to tool-ui props structure
   const toolUIProps: ToolUIWeatherWidgetProps = {
-    temperature: data.temperature,
-    unit: data.unit || "celsius",
-    condition: data.condition,
+    id: "weather-widget",
     location: data.location,
-    humidity: data.humidity,
-    windSpeed: data.windSpeed,
-    windDirection: data.windDirection,
-    precipitation: data.precipitation,
-    uvIndex: data.uvIndex,
-    high: data.high,
-    low: data.low,
-    sunrise: data.sunrise,
-    sunset: data.sunset,
-    forecast: data.forecast,
-    showForecast: options.showForecast,
-    showDetails: options.showDetails ?? true,
-    compact: options.compact,
+    current: {
+      temp: data.temperature,
+      tempMin: data.low ?? data.temperature - 5,
+      tempMax: data.high ?? data.temperature + 5,
+      condition: conditionMap[data.condition] || "clear",
+      humidity: data.humidity,
+      windSpeed: data.windSpeed,
+      windDirection: data.windDirection ? parseFloat(data.windDirection) : undefined,
+      precipitation: data.precipitation ?
+        (data.precipitation > 75 ? "heavy" : data.precipitation > 50 ? "moderate" : data.precipitation > 25 ? "light" : "none") as any
+        : undefined,
+    },
+    forecast: data.forecast?.map(f => ({
+      day: f.day,
+      tempMin: f.low,
+      tempMax: f.high,
+      condition: conditionMap[f.condition] || "clear",
+    })) || [],
+    unit: data.unit || "celsius",
     className: options.className,
   };
 
-  return <ToolUIWeatherWidget {...toolUIProps} {...props} />;
+  return <ToolUIWeatherWidget {...toolUIProps} />;
 }

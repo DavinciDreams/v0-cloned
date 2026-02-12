@@ -108,16 +108,38 @@ export function QuestionFlow({
   onComplete,
   ...props
 }: QuestionFlowProps) {
-  // Map A2UI data to tool-ui props
-  const toolUIProps: ToolUIQuestionFlowProps = {
-    ...data,
-    className: options.className,
-    defaultValue,
-    onSelect,
-    onBack,
-    onStepChange,
-    onComplete,
-  } as ToolUIQuestionFlowProps;
+  // Type guards to determine which mode we're in
+  const isProgressiveMode = 'step' in data && 'options' in data;
+  const isUpfrontMode = 'steps' in data;
+  const isReceiptMode = 'choice' in data;
 
-  return <ToolUIQuestionFlow {...toolUIProps} {...props} />;
+  // Build props based on mode - only pass callbacks that are valid for each mode
+  let toolUIProps: ToolUIQuestionFlowProps;
+
+  if (isProgressiveMode) {
+    // Progressive mode: step-by-step with onSelect, onBack
+    toolUIProps = {
+      ...data,
+      className: options.className,
+      defaultValue,
+      onSelect,
+      onBack,
+    };
+  } else if (isUpfrontMode) {
+    // Upfront mode: all steps shown with onStepChange, onComplete
+    toolUIProps = {
+      ...data,
+      className: options.className,
+      onStepChange,
+      onComplete,
+    };
+  } else {
+    // Receipt mode: completed state, no interactive callbacks
+    toolUIProps = {
+      ...data,
+      className: options.className,
+    };
+  }
+
+  return <ToolUIQuestionFlow {...toolUIProps} />;
 }

@@ -44,9 +44,9 @@ export interface VideoData {
 
 export interface VideoOptions {
   /** Aspect ratio */
-  ratio?: "16:9" | "4:3" | "1:1" | "21:9" | "9:16";
+  ratio?: "auto" | "16:9" | "4:3" | "1:1" | "9:16";
   /** Video fit mode */
-  fit?: "cover" | "contain" | "fill";
+  fit?: "cover" | "contain";
   /** Auto play */
   autoPlay?: boolean;
   /** Default muted state */
@@ -96,5 +96,5 @@ export function Video({ data, options = {}, onNavigate, onMediaEvent, onResponse
     onResponseAction,
   };
 
-  return <ToolUIVideo {...toolUIProps} {...props} />;
+  return <ToolUIVideo {...toolUIProps} />;
 }

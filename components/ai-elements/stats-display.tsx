@@ -10,6 +10,8 @@ import type { StatsDisplayProps as ToolUIStatsDisplayProps } from "@/components/
  */
 
 export interface Stat {
+  /** Unique key for the stat (optional - will use label as fallback) */
+  key?: string;
   /** Stat label */
   label: string;
   /** Stat value */
@@ -53,15 +55,29 @@ export type StatsDisplayProps = ComponentProps<"div"> & {
 
 export function StatsDisplay({ data, options = {}, ...props }: StatsDisplayProps) {
   // Map A2UI data to tool-ui props
+  // Transform stats to include required 'key' property and map to tool-ui format
+  const stats = data.stats.map((stat, index) => ({
+    key: stat.key || stat.label || `stat-${index}`,
+    label: stat.label,
+    value: stat.value,
+    // Map change/trend to diff format if present
+    diff: stat.change !== undefined ? {
+      value: stat.change,
+      upIsPositive: stat.trend !== "down",
+      label: stat.changePeriod,
+    } : undefined,
+    // Map sparkline if present
+    sparkline: stat.sparkline ? {
+      data: stat.sparkline,
+    } : undefined,
+  }));
+
   const toolUIProps: ToolUIStatsDisplayProps = {
-    stats: data.stats,
+    id: "stats-display",
+    stats,
     title: data.title,
-    layout: options.layout || "grid",
-    columns: options.columns || 3,
-    showSparklines: options.showSparklines ?? true,
-    compact: options.compact,
     className: options.className,
   };
 
-  return <ToolUIStatsDisplay {...toolUIProps} {...props} />;
+  return <ToolUIStatsDisplay {...toolUIProps} />;
 }
