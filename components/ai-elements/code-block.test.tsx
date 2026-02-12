@@ -13,6 +13,19 @@ import {
   highlightCode,
 } from './code-block';
 
+// Mock clipboard at module level
+const clipboardWriteTextMock = vi.fn(() => Promise.resolve());
+const clipboardReadTextMock = vi.fn(() => Promise.resolve(''));
+
+Object.defineProperty(navigator, 'clipboard', {
+  value: {
+    writeText: clipboardWriteTextMock,
+    readText: clipboardReadTextMock,
+  },
+  writable: false,
+  configurable: true,
+});
+
 // Mock shiki
 vi.mock('shiki', () => ({
   createHighlighter: vi.fn(() =>
@@ -212,7 +225,9 @@ describe('CodeBlock', () => {
       const button = screen.getByRole('button');
       await user.click(button);
 
-      expect(navigator.clipboard.writeText).toHaveBeenCalledWith(sampleCode);
+      await waitFor(() => {
+        expect(clipboardWriteTextMock).toHaveBeenCalledWith(sampleCode);
+      });
     });
 
     it('shows check icon after successful copy', async () => {
@@ -252,8 +267,8 @@ describe('CodeBlock', () => {
       const user = userEvent.setup();
       const onError = vi.fn();
 
-      // Mock clipboard to fail
-      vi.mocked(navigator.clipboard.writeText).mockRejectedValueOnce(
+      // Mock clipboard to fail (use module-level mock)
+      clipboardWriteTextMock.mockRejectedValueOnce(
         new Error('Copy failed')
       );
 
@@ -396,7 +411,10 @@ describe('CodeBlock', () => {
       expect(button).toHaveFocus();
 
       await user.keyboard('{Enter}');
-      expect(navigator.clipboard.writeText).toHaveBeenCalled();
+
+      await waitFor(() => {
+        expect(clipboardWriteTextMock).toHaveBeenCalled();
+      });
     });
   });
 
