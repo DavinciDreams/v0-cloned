@@ -30,6 +30,9 @@ import { createViewDay, createViewWeek, createViewMonthGrid, createViewMonthAgen
 import "@schedule-x/theme-default/dist/index.css";
 import { createEventsServicePlugin } from "@schedule-x/events-service";
 
+// Temporal polyfill for date handling
+import { Temporal } from "temporal-polyfill";
+
 // Import schemas
 import type {
   CalendarData,
@@ -121,17 +124,36 @@ export const Calendar = memo(
       // Memoize event transformation
       const scheduleXEvents = useMemo(
         () =>
-          data.events.map((event) => ({
-            id: event.id,
-            title: event.title,
-            start: event.start,
-            end: event.end,
-            description: event.description,
-            location: event.location,
-            people: event.people,
-            calendarId: event.calendarId,
-            _options: event._options,
-          })),
+          data.events.map((event) => {
+            // Convert date strings to Temporal objects
+            // Schedule-X requires Temporal.PlainDate or Temporal.PlainDateTime
+            const parseDateTime = (dateStr: string) => {
+              try {
+                // Check if it's a date-only string (YYYY-MM-DD)
+                if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
+                  return Temporal.PlainDate.from(dateStr);
+                }
+                // Otherwise treat as date-time
+                return Temporal.PlainDateTime.from(dateStr);
+              } catch (error) {
+                console.error("Failed to parse date:", dateStr, error);
+                // Fallback to today
+                return Temporal.Now.plainDateISO();
+              }
+            };
+
+            return {
+              id: event.id,
+              title: event.title,
+              start: parseDateTime(event.start),
+              end: parseDateTime(event.end),
+              description: event.description,
+              location: event.location,
+              people: event.people,
+              calendarId: event.calendarId,
+              _options: event._options,
+            };
+          }),
         [data.events]
       );
 

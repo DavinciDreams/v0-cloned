@@ -16,7 +16,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 // ============================================================================
-// BASIC CHART TYPES
+// BASIC CHART TYPES (6)
 // ============================================================================
 
 const lineChartData: ChartsData = {
@@ -183,7 +183,7 @@ const radarChartData: ChartsData = {
 };
 
 // ============================================================================
-// ADVANCED CHART TYPES
+// ADVANCED CHART TYPES (7)
 // ============================================================================
 
 const sankeyChartData: ChartsData = {
@@ -370,22 +370,123 @@ const vennChartData: ChartsData = {
   ],
 };
 
+// ============================================================================
+// BUSINESS ANALYTICS CHART TYPES (5)
+// ============================================================================
+
+const histogramData: ChartsData = {
+  type: "histogram",
+  series: [
+    {
+      name: "Frequency",
+      data: [
+        { x: "0-10", y: 5 },
+        { x: "10-20", y: 15 },
+        { x: "20-30", y: 25 },
+        { x: "30-40", y: 35 },
+        { x: "40-50", y: 30 },
+        { x: "50-60", y: 20 },
+        { x: "60-70", y: 10 },
+      ],
+      color: "#8b5cf6",
+    },
+  ],
+  title: "Age Distribution",
+};
+
+const heatmapData: ChartsData = {
+  type: "heatmap",
+  data: [
+    { x: "Mon", y: "9am", value: 10 },
+    { x: "Mon", y: "12pm", value: 25 },
+    { x: "Mon", y: "3pm", value: 15 },
+    { x: "Mon", y: "6pm", value: 8 },
+    { x: "Tue", y: "9am", value: 20 },
+    { x: "Tue", y: "12pm", value: 30 },
+    { x: "Tue", y: "3pm", value: 18 },
+    { x: "Tue", y: "6pm", value: 12 },
+    { x: "Wed", y: "9am", value: 15 },
+    { x: "Wed", y: "12pm", value: 28 },
+    { x: "Wed", y: "3pm", value: 22 },
+    { x: "Wed", y: "6pm", value: 10 },
+    { x: "Thu", y: "9am", value: 18 },
+    { x: "Thu", y: "12pm", value: 32 },
+    { x: "Thu", y: "3pm", value: 20 },
+    { x: "Thu", y: "6pm", value: 14 },
+    { x: "Fri", y: "9am", value: 22 },
+    { x: "Fri", y: "12pm", value: 35 },
+    { x: "Fri", y: "3pm", value: 25 },
+    { x: "Fri", y: "6pm", value: 16 },
+  ],
+  title: "Activity Heatmap",
+};
+
+const funnelData: ChartsData = {
+  type: "funnel",
+  stages: [
+    { name: "Website Visits", value: 10000 },
+    { name: "Product Views", value: 5000 },
+    { name: "Add to Cart", value: 2000 },
+    { name: "Checkout Started", value: 800 },
+    { name: "Purchase Completed", value: 500 },
+  ],
+  title: "Sales Funnel",
+};
+
+const gaugeData: ChartsData = {
+  type: "gauge",
+  value: 75,
+  min: 0,
+  max: 100,
+  ranges: [
+    { start: 0, end: 33, color: "#ef4444", label: "Low" },
+    { start: 33, end: 66, color: "#f59e0b", label: "Medium" },
+    { start: 66, end: 100, color: "#10b981", label: "High" },
+  ],
+  target: 80,
+  title: "Customer Satisfaction Score",
+};
+
+const candlestickData: ChartsData = {
+  type: "candlestick",
+  data: [
+    { date: "2026-01-01", open: 100, high: 110, low: 95, close: 105, volume: 1000000 },
+    { date: "2026-01-02", open: 105, high: 115, low: 103, close: 112, volume: 1200000 },
+    { date: "2026-01-03", open: 112, high: 118, low: 108, close: 110, volume: 950000 },
+    { date: "2026-01-04", open: 110, high: 112, low: 102, close: 108, volume: 1100000 },
+    { date: "2026-01-05", open: 108, high: 120, low: 107, close: 118, volume: 1500000 },
+    { date: "2026-01-08", open: 118, high: 125, low: 115, close: 122, volume: 1400000 },
+    { date: "2026-01-09", open: 122, high: 128, low: 120, close: 124, volume: 1300000 },
+    { date: "2026-01-10", open: 124, high: 130, low: 122, close: 128, volume: 1600000 },
+  ],
+  showVolume: true,
+  title: "Stock Price (AAPL)",
+};
+
+// ============================================================================
+// PAGE COMPONENT
+// ============================================================================
+
 export default function ChartsTestPage() {
   return (
     <div className="container mx-auto p-8 space-y-8">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold">Charts Component Gallery</h1>
+        <h1 className="text-3xl font-bold">Comprehensive Charts Gallery</h1>
         <p className="text-muted-foreground mt-2 text-lg">
-          Comprehensive showcase of all 13 chart types powered by amCharts 5
+          Complete showcase of all 18 chart types powered by amCharts 5
         </p>
       </div>
 
       <Tabs defaultValue="basic" className="w-full">
-        <TabsList className="grid w-full grid-cols-2">
+        <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="basic">Basic Charts (6)</TabsTrigger>
           <TabsTrigger value="advanced">Advanced Charts (7)</TabsTrigger>
+          <TabsTrigger value="analytics">Business Analytics (5)</TabsTrigger>
         </TabsList>
 
+        {/* ============================================================ */}
+        {/* BASIC CHARTS TAB */}
+        {/* ============================================================ */}
         <TabsContent value="basic" className="space-y-6 mt-6">
           <Card>
             <CardHeader>
@@ -513,6 +614,9 @@ export default function ChartsTestPage() {
           </Card>
         </TabsContent>
 
+        {/* ============================================================ */}
+        {/* ADVANCED CHARTS TAB */}
+        {/* ============================================================ */}
         <TabsContent value="advanced" className="space-y-6 mt-6">
           <Card>
             <CardHeader>
@@ -654,14 +758,123 @@ export default function ChartsTestPage() {
             </CardContent>
           </Card>
         </TabsContent>
+
+        {/* ============================================================ */}
+        {/* BUSINESS ANALYTICS TAB */}
+        {/* ============================================================ */}
+        <TabsContent value="analytics" className="space-y-6 mt-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Histogram</CardTitle>
+              <CardDescription>Statistical distribution analysis for age, scores, and frequency data</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Charts data={histogramData} options={{ height: 400 }}>
+                <ChartsHeader>
+                  <ChartsTitle />
+                  <ChartsActions>
+                    <ChartsExportButton />
+                    <ChartsCopyButton />
+                    <ChartsFullscreenButton />
+                  </ChartsActions>
+                </ChartsHeader>
+                <ChartsContent />
+              </Charts>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Heatmap</CardTitle>
+              <CardDescription>Correlation matrices, activity patterns, and time-series density visualization</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Charts data={heatmapData} options={{ height: 400 }}>
+                <ChartsHeader>
+                  <ChartsTitle />
+                  <ChartsActions>
+                    <ChartsExportButton />
+                    <ChartsCopyButton />
+                    <ChartsFullscreenButton />
+                  </ChartsActions>
+                </ChartsHeader>
+                <ChartsContent />
+              </Charts>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Funnel Chart</CardTitle>
+              <CardDescription>Conversion analytics, sales pipelines, and step-by-step process tracking</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Charts data={funnelData} options={{ height: 400 }}>
+                <ChartsHeader>
+                  <ChartsTitle />
+                  <ChartsActions>
+                    <ChartsExportButton />
+                    <ChartsCopyButton />
+                    <ChartsFullscreenButton />
+                  </ChartsActions>
+                </ChartsHeader>
+                <ChartsContent />
+              </Charts>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Gauge</CardTitle>
+              <CardDescription>KPI dashboards, progress tracking, and performance metrics visualization</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Charts data={gaugeData} options={{ height: 400 }}>
+                <ChartsHeader>
+                  <ChartsTitle />
+                  <ChartsActions>
+                    <ChartsExportButton />
+                    <ChartsCopyButton />
+                    <ChartsFullscreenButton />
+                  </ChartsActions>
+                </ChartsHeader>
+                <ChartsContent />
+              </Charts>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Candlestick Chart</CardTitle>
+              <CardDescription>Financial data visualization with OHLC (Open-High-Low-Close) and volume analysis</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Charts data={candlestickData} options={{ height: 500 }}>
+                <ChartsHeader>
+                  <ChartsTitle />
+                  <ChartsActions>
+                    <ChartsExportButton />
+                    <ChartsCopyButton />
+                    <ChartsFullscreenButton />
+                  </ChartsActions>
+                </ChartsHeader>
+                <ChartsContent />
+              </Charts>
+            </CardContent>
+          </Card>
+        </TabsContent>
       </Tabs>
 
+      {/* ============================================================ */}
+      {/* SUMMARY CARD */}
+      {/* ============================================================ */}
       <Card className="mt-8">
         <CardHeader>
           <CardTitle>Chart Types Summary</CardTitle>
+          <CardDescription>Complete overview of all 18 available chart types</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm">
             <div>
               <h3 className="font-semibold mb-3 text-base">Basic Charts (6)</h3>
               <ul className="space-y-2 text-muted-foreground">
@@ -685,20 +898,33 @@ export default function ChartsTestPage() {
                 <li><strong>Venn:</strong> Set overlaps and intersections</li>
               </ul>
             </div>
+            <div>
+              <h3 className="font-semibold mb-3 text-base">Business Analytics (5)</h3>
+              <ul className="space-y-2 text-muted-foreground">
+                <li><strong>Histogram:</strong> Statistical distributions</li>
+                <li><strong>Heatmap:</strong> Correlation matrices and patterns</li>
+                <li><strong>Funnel:</strong> Conversion and pipeline tracking</li>
+                <li><strong>Gauge:</strong> KPI and performance metrics</li>
+                <li><strong>Candlestick:</strong> Financial OHLC data</li>
+              </ul>
+            </div>
           </div>
 
           <div className="mt-6 p-4 bg-muted rounded-lg">
             <h3 className="font-semibold mb-2">Key Features:</h3>
             <ul className="grid grid-cols-2 md:grid-cols-3 gap-2 text-sm text-muted-foreground">
-              <li>✅ 13 chart types</li>
-              <li>✅ Interactive pan & zoom</li>
-              <li>✅ Export to PNG/SVG</li>
-              <li>✅ Fullscreen mode</li>
-              <li>✅ Auto legends</li>
-              <li>✅ Smooth animations</li>
-              <li>✅ Custom colors</li>
-              <li>✅ Multiple series</li>
-              <li>✅ Responsive design</li>
+              <li>✓ 18 chart types</li>
+              <li>✓ Interactive pan & zoom</li>
+              <li>✓ Export to PNG/SVG</li>
+              <li>✓ Fullscreen mode</li>
+              <li>✓ Auto legends</li>
+              <li>✓ Smooth animations</li>
+              <li>✓ Custom colors</li>
+              <li>✓ Multiple series</li>
+              <li>✓ Responsive design</li>
+              <li>✓ Copy data functionality</li>
+              <li>✓ Real-time updates</li>
+              <li>✓ amCharts 5 powered</li>
             </ul>
           </div>
         </CardContent>
