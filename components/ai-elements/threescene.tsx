@@ -29,7 +29,7 @@ export interface ThreeSceneObject {
   id?: string;
   object?: any; // THREE.Object3D (for pre-built objects)
   type?: string; // Object type: 'box', 'sphere', 'cylinder', 'cone', 'torus', 'plane'
-  color?: number; // Hex color
+  color?: number | string; // Hex color (0xffffff) or CSS string ("#fff", "red")
   wireframe?: boolean; // Wireframe mode
   position?: { x?: number; y?: number; z?: number };
   rotation?: { x?: number; y?: number; z?: number };
@@ -39,7 +39,7 @@ export interface ThreeSceneObject {
 export interface ThreeSceneLight {
   id?: string;
   type: "ambient" | "directional" | "point" | "spot" | "hemisphere";
-  color?: number;
+  color?: number | string; // Hex color (0xffffff) or CSS string ("#fff", "red")
   intensity?: number;
   position?: { x?: number; y?: number; z?: number };
 }
@@ -58,7 +58,7 @@ export interface ThreeSceneData {
   camera?: ThreeSceneCamera;
   background?: number | string; // Color or 'transparent'
   fog?: {
-    color: number;
+    color: number | string; // Hex color (0xffffff) or CSS string ("#fff", "red")
     near: number;
     far: number;
   };

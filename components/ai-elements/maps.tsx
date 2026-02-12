@@ -284,6 +284,7 @@ export const MapsContent = memo(
         fullscreen,
         mapsRef,
         mapInstanceRef,
+        mapContainerId,
       } = useMapsContext();
 
       const [isMounted, setIsMounted] = useState(false);

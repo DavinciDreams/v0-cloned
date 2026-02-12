@@ -107,12 +107,21 @@ export const Calendar = memo(
     ) => {
       const [isFullscreen, setIsFullscreen] = useState(false);
 
+      // Defensive check: ensure data exists
+      if (!data) {
+        return (
+          <div className="p-8 text-center text-muted-foreground">
+            <p>No calendar data provided</p>
+          </div>
+        );
+      }
+
       // Create events service plugin once and memoize it
       const eventsService = useMemo(() => createEventsServicePlugin(), []);
 
       // Memoize view configuration
       const viewsConfig = useMemo(() => {
-        const views = data.views || [data.defaultView || "month-grid"];
+        const views = data?.views || [data?.defaultView || "month-grid"];
         const configs = views.map(createViewFromType);
         // Ensure at least one view (schedule-x requires non-empty array)
         if (configs.length === 0) {
@@ -124,7 +133,7 @@ export const Calendar = memo(
       // Memoize event transformation
       const scheduleXEvents = useMemo(
         () =>
-          data.events.map((event) => {
+          (data?.events || []).map((event) => {
             // Convert date strings to Temporal objects
             // Schedule-X requires Temporal.PlainDate or Temporal.PlainDateTime
             const parseDateTime = (dateStr: string) => {

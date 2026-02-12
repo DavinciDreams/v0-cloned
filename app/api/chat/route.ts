@@ -192,20 +192,16 @@ Remotion, WYSIWYG, VRM, ToolUI
         "Charts": {
           "data": {
             "type": "candlestick",
-            "series": [{
-              "name": "Bitcoin (BTC/USD)",
-              "data": [
-                { "x": "2024-01-15", "y": [42000, 43500, 41800, 43200] },
-                { "x": "2024-01-16", "y": [43200, 44100, 42800, 43900] },
-                { "x": "2024-01-17", "y": [43900, 44500, 43500, 44200] }
-              ],
-              "color": "#f7931a"
-            }],
+            "data": [
+              { "date": "2024-01-15", "open": 42000, "high": 43500, "low": 41800, "close": 43200, "volume": 1000000 },
+              { "date": "2024-01-16", "open": 43200, "high": 44100, "low": 42800, "close": 43900, "volume": 1200000 },
+              { "date": "2024-01-17", "open": 43900, "high": 44500, "low": 43500, "close": 44200, "volume": 950000 }
+            ],
+            "showVolume": true,
             "title": "Bitcoin Price Chart"
           },
           "options": {
-            "height": 500,
-            "showLegend": true
+            "height": 500
           }
         }
       }
@@ -213,6 +209,9 @@ Remotion, WYSIWYG, VRM, ToolUI
   }
 }
 \`\`\`
+
+**CRITICAL: Candlestick charts use \`data\` (array), NOT \`series\`!**
+Each candlestick point MUST have: date, open, high, low, close (all required), and volume (optional).
 
 **Example - Calendar with Events:**
 \`\`\`json
@@ -223,26 +222,30 @@ Remotion, WYSIWYG, VRM, ToolUI
       "component": {
         "Calendar": {
           "data": {
+            "title": "Team Schedule",
+            "defaultView": "month-grid",
+            "views": ["day", "week", "month-grid"],
             "events": [
               {
                 "id": "1",
                 "title": "Team Meeting",
-                "start": "2024-02-10T10:00:00",
-                "end": "2024-02-10T11:00:00",
-                "color": "#3b82f6"
+                "start": "2026-02-15T10:00:00",
+                "end": "2026-02-15T11:00:00",
+                "description": "Weekly team sync",
+                "location": "Conference Room A"
               },
               {
                 "id": "2",
                 "title": "Project Deadline",
-                "start": "2024-02-15T17:00:00",
-                "allDay": true,
-                "color": "#ef4444"
+                "start": "2026-02-20T17:00:00",
+                "end": "2026-02-20T18:00:00",
+                "description": "Final submission"
               }
-            ],
-            "defaultView": "month"
+            ]
           },
           "options": {
-            "height": 600
+            "height": 600,
+            "isDraggable": true
           }
         }
       }
@@ -293,6 +296,38 @@ Remotion, WYSIWYG, VRM, ToolUI
   }
 }
 \`\`\`
+
+**Example - Word Cloud:**
+\`\`\`json
+{
+  "surfaceUpdate": {
+    "components": [{
+      "id": "tech-concepts",
+      "component": {
+        "Charts": {
+          "data": {
+            "type": "wordCloud",
+            "words": [
+              { "text": "JavaScript", "value": 100 },
+              { "text": "React", "value": 85 },
+              { "text": "TypeScript", "value": 75 },
+              { "text": "Node.js", "value": 60 },
+              { "text": "CSS", "value": 55 },
+              { "text": "HTML", "value": 50 }
+            ],
+            "title": "Popular Technologies"
+          },
+          "options": {
+            "height": 400
+          }
+        }
+      }
+    }]
+  }
+}
+\`\`\`
+
+**CRITICAL: Word cloud type is "wordCloud" (camelCase), NOT "wordcloud"!**
 
 **Example - Maps (simple markers):**
 \`\`\`json
@@ -429,6 +464,83 @@ Remotion, WYSIWYG, VRM, ToolUI
 }
 \`\`\`
 
+**Example - Code Editor (for HTML/JS/CSS/etc.):**
+\`\`\`json
+{
+  "surfaceUpdate": {
+    "components": [{
+      "id": "landing-page-editor",
+      "component": {
+        "CodeEditor": {
+          "data": {
+            "code": "<!DOCTYPE html>\\n<html lang=\\"en\\">\\n<head>\\n  <meta charset=\\"UTF-8\\">\\n  <title>My Landing Page</title>\\n</head>\\n<body>\\n  <h1>Welcome!</h1>\\n</body>\\n</html>",
+            "language": "html",
+            "filename": "landing.html"
+          },
+          "options": {
+            "height": 600,
+            "theme": "light",
+            "lineNumbers": true
+          }
+        }
+      }
+    }]
+  }
+}
+\`\`\`
+
+**Supported CodeEditor languages:** javascript, typescript, python, html, css, json, markdown, bash, and more
+
+**Example - 3D Scene (ThreeScene):**
+\`\`\`json
+{
+  "surfaceUpdate": {
+    "components": [{
+      "id": "3d-spheres",
+      "component": {
+        "ThreeScene": {
+          "data": {
+            "objects": [
+              {
+                "type": "sphere",
+                "color": 16711680,
+                "position": { "x": 0, "y": 0, "z": 0 },
+                "scale": 1.5
+              },
+              {
+                "type": "box",
+                "color": 65535,
+                "position": { "x": 3, "y": 0, "z": 0 },
+                "rotation": { "x": 0.5, "y": 0.5, "z": 0 }
+              }
+            ],
+            "lights": [
+              {
+                "type": "ambient",
+                "color": 16777215,
+                "intensity": 0.5
+              }
+            ],
+            "camera": {
+              "position": { "x": 5, "y": 5, "z": 5 }
+            }
+          },
+          "options": {
+            "height": 600
+          }
+        }
+      }
+    }]
+  }
+}
+\`\`\`
+
+**CRITICAL: ThreeScene colors MUST be numbers (decimal), NOT strings!**
+- ❌ WRONG: "color": "#ff0000" or "color": "red"
+- ✅ CORRECT: "color": 16711680 (decimal for 0xff0000)
+- Common colors: 16777215 (white), 16711680 (red), 65280 (green), 255 (blue), 16776960 (yellow)
+- Valid object types: "box", "sphere", "cylinder", "cone", "torus", "plane"
+
 ---
 
 ### 🔄 Format 3: Mixed (Both in Same Response)
@@ -554,6 +666,40 @@ Example:
 - If a request is unclear, ask for clarification first
 
 **REMINDER: Every JSX snippet MUST start with \`\`\`tsx and end with \`\`\`**
+
+## ⚠️ Common A2UI Errors to Avoid
+
+**1. Charts Component:**
+- ❌ Candlestick: Using \`series\` array → ✅ Use \`data\` array with open/high/low/close
+- ❌ Wrong chart type casing → ✅ Use correct casing: "wordCloud" not "wordcloud", "forceDirected" not "forcedirected"
+- ❌ Missing required fields → ✅ Ensure all required fields are present
+- Example: Candlestick MUST have: date, open, high, low, close (volume optional)
+- Example: Word cloud uses "wordCloud" with words array: \`{ type: "wordCloud", words: [{text, value}] }\`
+
+**2. ThreeScene Component:**
+- ❌ String colors like "#ff0000" or "red" → ✅ Use decimal numbers: 16711680
+- ❌ Invalid object types → ✅ Only: box, sphere, cylinder, cone, torus, plane
+- ❌ String coordinates → ✅ Use numbers for position/rotation/scale
+
+**3. Maps Component:**
+- ❌ Using \`longitude\` and \`latitude\` at root → ✅ Use \`coordinates: { longitude, latitude }\` for markers
+- ❌ Wrong coordinate format → ✅ Markers need \`coordinates\` object with both longitude and latitude
+
+**4. CodeEditor Component:**
+- ❌ Missing \`code\` property → ✅ Always include \`data.code\` (required string)
+- ❌ Wrong language → ✅ Use valid languages: javascript, typescript, python, html, css, json, markdown
+
+**5. Calendar Component:**
+- ❌ Missing \`views\` array → ✅ Always include \`views: ["day", "week", "month-grid"]\`
+- ❌ Invalid view types → ✅ Use: "day", "week", "month-grid", "month-agenda"
+- ❌ Missing event fields → ✅ Events need: id, title, start, end (all required)
+- ❌ Wrong date format → ✅ Use ISO format: "2026-02-15T10:00:00" or "2026-02-15"
+
+**6. General A2UI Rules:**
+- ALL data properties must match the exact schema structure
+- Numbers should be numbers, not strings (especially colors in ThreeScene)
+- Arrays must be arrays, not undefined or single objects
+- Check the catalog examples for exact data structures
 
 ## Error Handling
 
