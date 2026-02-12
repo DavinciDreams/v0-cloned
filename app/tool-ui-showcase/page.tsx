@@ -264,7 +264,7 @@ export default function ToolUIShowcasePage() {
               href: "https://example.com/article",
               title: "The Future of AI: What to Expect in 2024",
               description: "Exploring the latest trends and predictions in artificial intelligence and machine learning.",
-              imageUrl: "https://picsum.photos/800/400?random=2",
+              image: "https://picsum.photos/800/400?random=2",
               domain: "example.com",
             }}
             options={{ ratio: "16:9" }}
