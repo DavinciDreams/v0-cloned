@@ -469,18 +469,19 @@ Each candlestick point MUST have: date, open, high, low, close (all required), a
 {
   "surfaceUpdate": {
     "components": [{
-      "id": "landing-page-editor",
+      "id": "component-designer",
       "component": {
         "CodeEditor": {
           "data": {
-            "code": "<!DOCTYPE html>\\n<html lang=\\"en\\">\\n<head>\\n  <meta charset=\\"UTF-8\\">\\n  <title>My Landing Page</title>\\n</head>\\n<body>\\n  <h1>Welcome!</h1>\\n</body>\\n</html>",
-            "language": "html",
-            "filename": "landing.html"
+            "code": "function HelloWorld() {\\n  return (\\n    <div className=\\"p-8\\">\\n      <h1>Hello World!</h1>\\n      <p>Edit this component</p>\\n    </div>\\n  );\\n}",
+            "language": "javascript",
+            "filename": "component.jsx"
           },
           "options": {
             "height": 600,
-            "theme": "light",
-            "lineNumbers": true
+            "theme": "dark",
+            "lineNumbers": true,
+            "editable": true
           }
         }
       }
@@ -488,6 +489,11 @@ Each candlestick point MUST have: date, open, high, low, close (all required), a
   }
 }
 \`\`\`
+
+**CRITICAL: CodeEditor REQUIRES the \`code\` property!**
+- ✅ CORRECT: \`"data": { "code": "your code here", "language": "javascript" }\`
+- ❌ WRONG: \`"data": { "language": "javascript" }\` (missing code!)
+- ❌ WRONG: \`"data": {}\` (missing code!)
 
 **Supported CodeEditor languages:** javascript, typescript, python, html, css, json, markdown, bash, and more
 
@@ -686,8 +692,10 @@ Example:
 - ❌ Wrong coordinate format → ✅ Markers need \`coordinates\` object with both longitude and latitude
 
 **4. CodeEditor Component:**
-- ❌ Missing \`code\` property → ✅ Always include \`data.code\` (required string)
+- ❌ **CRITICAL**: Missing \`code\` property → ✅ **ALWAYS** include \`data.code\` (REQUIRED string)
+- ❌ Empty data object \`{}\` → ✅ MUST have \`{ "code": "your code here" }\`
 - ❌ Wrong language → ✅ Use valid languages: javascript, typescript, python, html, css, json, markdown
+- **The \`code\` property is MANDATORY - CodeEditor will crash without it!**
 
 **5. Calendar Component:**
 - ❌ Missing \`views\` array → ✅ Always include \`views: ["day", "week", "month-grid"]\`
