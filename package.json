@@ -1,7 +1,21 @@
 {
-  "name": "v0-clone",
+  "name": "generous",
   "version": "0.1.0",
+  "description": "The universal canvas for AI. Streaming generative UI with 114+ components.",
+  "homepage": "https://generous.works",
   "private": true,
+  "keywords": [
+    "generative-ui",
+    "streaming-ui",
+    "ai-interface",
+    "universal-canvas",
+    "react",
+    "nextjs",
+    "vercel-ai-sdk",
+    "a2ui",
+    "open-source",
+    "logos-liber"
+  ],
   "scripts": {
     "dev": "next dev",
     "dev:webpack": "next dev --no-turbopack",
@@ -11,7 +25,8 @@
     "test": "vitest",
     "test:ui": "vitest --ui",
     "test:run": "vitest run",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "test:registry": "vitest run lib/a2ui/__tests__/registry-validation.test.ts"
   },
   "dependencies": {
     "@ag-ui/client": "^0.0.44",
