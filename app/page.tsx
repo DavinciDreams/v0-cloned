@@ -134,73 +134,79 @@ const componentBindings: ComponentRegistry = {
 };
 
 // ============================================================================
-// Navigation Links
+// Navigation Links (organized by use case)
 // ============================================================================
 const navGroups = [
   {
     label: "Pages",
     links: [
       { href: "/a2ui-chat", name: "A2UI Chat" },
-      { href: "/a2ui-demo", name: "A2UI Demo" },
       { href: "/showcase", name: "Showcase" },
       { href: "/canvas", name: "Canvas" },
       { href: "/docs", name: "Docs" },
-      { href: "/code", name: "Code" },
     ],
   },
   {
-    label: "Data",
-    links: [
-      { href: "/datatable-test", name: "DataTable" },
-      { href: "/jsonviewer-test", name: "JSON Viewer" },
-      { href: "/calendar-test", name: "Calendar" },
-      { href: "/charts-test", name: "Charts" },
-      { href: "/charts-new-test", name: "Charts v2" },
-    ],
-  },
-  {
-    label: "Editors",
+    label: "🔧 Development",
     links: [
       { href: "/codeeditor-test", name: "Code Editor" },
+      { href: "/jsonviewer-test", name: "JSON Viewer" },
+      { href: "/mermaid-test", name: "Mermaid" },
+      { href: "/node-editor-test", name: "Node Editor" },
       { href: "/markdown-test", name: "Markdown" },
-      { href: "/wysiwyg-test", name: "WYSIWYG" },
-      { href: "/latex-test", name: "LaTeX" },
     ],
   },
   {
-    label: "Media",
+    label: "🎬 Multimedia",
     links: [
       { href: "/imagegallery-test", name: "Image Gallery" },
-      { href: "/mermaid-test", name: "Mermaid" },
       { href: "/svg-preview-test", name: "SVG Preview" },
       { href: "/remotion-test", name: "Remotion" },
     ],
   },
   {
-    label: "3D & Graphics",
+    label: "🎮 3D & Games",
     links: [
       { href: "/threescene-test", name: "Three.js" },
+      { href: "/phaser-test", name: "Phaser" },
       { href: "/model-viewer-test", name: "Model Viewer" },
       { href: "/vrm-test", name: "VRM" },
-      { href: "/phaser-test", name: "Phaser" },
     ],
   },
   {
-    label: "Maps & Graphs",
+    label: "📊 Productivity",
+    links: [
+      { href: "/wysiwyg-test", name: "WYSIWYG" },
+      { href: "/calendar-test", name: "Calendar" },
+      { href: "/knowledge-graph-test", name: "Knowledge Graph" },
+      { href: "/datatable-test", name: "DataTable" },
+      { href: "/latex-test", name: "LaTeX" },
+    ],
+  },
+  {
+    label: "🗺️ Maps",
     links: [
       { href: "/maps-test", name: "Maps" },
       { href: "/geospatial-test", name: "Geospatial" },
-      { href: "/timeline-test", name: "Timeline" },
-      { href: "/node-editor-test", name: "Node Editor" },
-      { href: "/knowledge-graph-test", name: "Knowledge Graph" },
     ],
   },
   {
-    label: "Other",
+    label: "📈 Charts",
     links: [
-      { href: "/toolui-test", name: "Tool UI" },
-      { href: "/toggle-group-test", name: "Toggle Group" },
-      { href: "/jsx-diagnostic", name: "JSX Diagnostic" },
+      { href: "/charts-test", name: "Charts" },
+      { href: "/timeline-test", name: "Timeline" },
+    ],
+  },
+  {
+    label: "📱 Social",
+    links: [
+      { href: "/toolui-test", name: "Social Posts" },
+    ],
+  },
+  {
+    label: "📝 Forms",
+    links: [
+      { href: "/forms-showcase", name: "Forms Showcase" },
     ],
   },
 ];
