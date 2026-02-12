@@ -142,11 +142,10 @@ export function getComponent(type: string) {
 export const componentCategories = {
   // Use case categories
   development: [
-    'CodeEditor', 'JSONViewer', 'Mermaid', 'NodeEditor', 'SVGPreview', 'Markdown'
+    'CodeEditor', 'JSONViewer', 'Mermaid', 'NodeEditor', 'Markdown'
   ],
   multimedia: [
-    'ImageGallery', 'Video', 'ItemCarousel', 'ModelViewer',
-    'VRM', 'Remotion'
+    'ImageGallery', 'Video', 'ItemCarousel', 'SVGPreview', 'Remotion'
   ],
   '3d-games': [
     'ThreeScene', 'Phaser', 'ModelViewer', 'VRM'
