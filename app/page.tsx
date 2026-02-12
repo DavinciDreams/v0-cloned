@@ -48,6 +48,20 @@ import { ButtonGroup } from "@/components/ui/button-group";
 import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupTextarea } from "@/components/ui/input-group";
 
 // ============================================================================
+// AI Elements Components for Bindings
+// ============================================================================
+import {
+  CodeEditor,
+  CodeEditorHeader,
+  CodeEditorTitle,
+  CodeEditorActions,
+  CodeEditorCopyButton,
+  CodeEditorDownloadButton,
+  CodeEditorFullscreenButton,
+  CodeEditorContent,
+} from "@/components/ai-elements/codeeditor";
+
+// ============================================================================
 // Type Definitions
 // ============================================================================
 
@@ -131,6 +145,15 @@ const componentBindings: ComponentRegistry = {
   InputGroupAddon,
   InputGroupButton,
   InputGroupTextarea,
+  // AI Elements Components
+  CodeEditor,
+  CodeEditorHeader,
+  CodeEditorTitle,
+  CodeEditorActions,
+  CodeEditorCopyButton,
+  CodeEditorDownloadButton,
+  CodeEditorFullscreenButton,
+  CodeEditorContent,
 };
 
 // ============================================================================
@@ -270,6 +293,7 @@ export default function Page() {
       });
 
       // Call streaming API
+      console.log("Sending chat request with", apiMessages.length, "messages");
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: {
@@ -281,8 +305,11 @@ export default function Page() {
         }),
       });
 
+      console.log("Response status:", response.status, response.statusText);
+
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({ error: "Unknown error" }));
+        console.error("API error response:", errorData);
         throw new Error(errorData.error || "Failed to get response");
       }
 
@@ -290,20 +317,33 @@ export default function Page() {
       const reader = response.body?.getReader();
       const decoder = new TextDecoder();
       let fullContent = "";
+      let chunkCount = 0;
+
+      console.log("Starting to read stream...");
 
       if (reader) {
         while (true) {
           const { done, value } = await reader.read();
-          if (done) break;
+          if (done) {
+            console.log("Stream complete. Total chunks:", chunkCount, "Total content length:", fullContent.length);
+            break;
+          }
 
           const chunk = decoder.decode(value, { stream: true });
           fullContent += chunk;
+          chunkCount++;
+
+          if (chunkCount % 10 === 0) {
+            console.log("Received", chunkCount, "chunks, content length:", fullContent.length);
+          }
 
           // Update message with streaming content
           updateMessage(assistantMessageId, {
             content: fullContent,
           });
         }
+      } else {
+        console.error("No reader available from response.body");
       }
 
     } catch (err) {
