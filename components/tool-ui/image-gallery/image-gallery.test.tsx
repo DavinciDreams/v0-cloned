@@ -204,28 +204,22 @@ describe('ImageGallery', () => {
       expect(image).toBeInTheDocument();
     });
 
-    it('handles click on non-existent image gracefully', async () => {
+    it('does not call onImageClick for non-existent image id', async () => {
       const user = userEvent.setup();
       const onImageClick = vi.fn();
 
-      // Mock gallery grid with invalid image ID
-      vi.doMock('./gallery-grid', () => ({
-        GalleryGrid: ({ onImageClick }: any) => (
-          <button
-            data-testid="invalid-image"
-            onClick={() => onImageClick?.('invalid-id')}
-          >
-            Invalid
-          </button>
-        ),
-      }));
+      // The mock gallery-grid fires onImageClick with the id 'img-1' and 'img-2'
+      // Render with images that don't contain those ids to test the guard
+      const noMatchData = {
+        ...mockGalleryData,
+        images: [{ id: 'other-id', src: 'https://example.com/other.jpg', alt: 'Other', width: 800, height: 600 }],
+      };
+      render(<ImageGallery {...noMatchData} onImageClick={onImageClick} />);
 
-      render(<ImageGallery {...mockGalleryData} onImageClick={onImageClick} />);
+      // Click image-1 which fires onImageClick('img-1'), but 'img-1' is not in images
+      const image = screen.getByTestId('image-1');
+      await user.click(image);
 
-      const invalidImage = screen.getByTestId('invalid-image');
-      await user.click(invalidImage);
-
-      // Should not call onImageClick for invalid image
       expect(onImageClick).not.toHaveBeenCalled();
     });
   });
@@ -298,10 +292,10 @@ describe('ImageGallery', () => {
   });
 
   describe('Container Structure', () => {
-    it('applies container query classes', () => {
+    it('applies container query classes on inner div', () => {
       const { container } = render(<ImageGallery {...mockGalleryData} />);
-      const article = container.querySelector('article');
-      expect(article).toHaveClass('@container');
+      const innerDiv = container.querySelector('article > div');
+      expect(innerDiv).toHaveClass('@container');
     });
 
     it('applies min and max width constraints', () => {

@@ -15,6 +15,19 @@ import {
 } from './timeline';
 import { useRef, useEffect } from 'react';
 
+// Mock clipboard at module level
+const clipboardWriteTextMock = vi.fn(() => Promise.resolve());
+const clipboardReadTextMock = vi.fn(() => Promise.resolve(''));
+
+Object.defineProperty(navigator, 'clipboard', {
+  value: {
+    writeText: clipboardWriteTextMock,
+    readText: clipboardReadTextMock,
+  },
+  writable: false,
+  configurable: true,
+});
+
 // Mock TimelineJS3 library
 vi.mock('@knight-lab/timelinejs', () => ({
   Timeline: class MockTimeline {
@@ -74,18 +87,14 @@ const mockTimelineData: TimelineData = {
 
 describe('Timeline', () => {
   beforeEach(() => {
-    // Mock clipboard API
-    Object.assign(navigator, {
-      clipboard: {
-        writeText: vi.fn(() => Promise.resolve()),
-      },
-    });
+    // Clear clipboard mock calls before each test
+    vi.clearAllMocks();
   });
 
   describe('Timeline Container', () => {
     it('renders timeline container', () => {
-      render(<Timeline data={mockTimelineData} />);
-      expect(screen.getByRole('generic')).toBeInTheDocument();
+      const { container } = render(<Timeline data={mockTimelineData} />);
+      expect(container.firstChild).toBeInTheDocument();
     });
 
     it('applies custom className', () => {
@@ -219,9 +228,11 @@ describe('Timeline', () => {
       const button = screen.getByRole('button');
       await user.click(button);
 
-      expect(navigator.clipboard.writeText).toHaveBeenCalledWith(
-        JSON.stringify(mockTimelineData, null, 2)
-      );
+      await waitFor(() => {
+        expect(clipboardWriteTextMock).toHaveBeenCalledWith(
+          JSON.stringify(mockTimelineData, null, 2)
+        );
+      });
     });
 
     it('shows check icon after successful copy', async () => {

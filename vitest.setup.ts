@@ -5,6 +5,8 @@ import { cleanup } from '@testing-library/react';
 // Cleanup after each test
 afterEach(() => {
   cleanup();
+  // Clear mock call history but keep spies intact
+  vi.clearAllMocks();
 });
 
 // Extend Vitest's expect with jest-dom matchers
@@ -22,12 +24,25 @@ global.ResizeObserver = class ResizeObserver {
   disconnect() {}
 }
 
-// Mock Clipboard API (readonly in happy-dom, needs defineProperty)
-Object.defineProperty(navigator, 'clipboard', {
-  value: {
+// Mock Clipboard API for testing
+// We need a persistent mock that survives across tests
+if (!('clipboard' in navigator) || !(navigator.clipboard?.writeText && typeof (navigator.clipboard.writeText as any).mockImplementation === 'function')) {
+  const clipboardMock = {
     writeText: vi.fn(() => Promise.resolve()),
     readText: vi.fn(() => Promise.resolve('')),
-  },
-  writable: true,
-  configurable: true,
-});
+  };
+
+  // Try to delete any existing clipboard
+  try {
+    delete (navigator as any).clipboard;
+  } catch {
+    // Ignore if non-configurable
+  }
+
+  // Define mock clipboard
+  Object.defineProperty(navigator, 'clipboard', {
+    value: clipboardMock,
+    writable: false,
+    configurable: true,
+  });
+}
