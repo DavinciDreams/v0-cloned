@@ -1281,6 +1281,564 @@ const imageGalleryExamples: ComponentExample[] = [
 ];
 
 /**
+ * ApprovalCard Examples
+ */
+const approvalCardExamples: ComponentExample[] = [
+  {
+    description: 'Approval request for destructive action',
+    spec: {
+      id: 'approvalcard-1',
+      component: {
+        ApprovalCard: {
+          id: 'approval-1',
+          title: 'Delete Database Table',
+          description: 'This action will permanently delete the "users_archive" table and all its data. This cannot be undone.',
+          variant: 'destructive',
+          metadata: [
+            { key: 'Table', value: 'users_archive' },
+            { key: 'Records', value: '1,247' },
+            { key: 'Size', value: '45.3 MB' }
+          ],
+          confirmLabel: 'Delete Table',
+          cancelLabel: 'Cancel'
+        }
+      }
+    }
+  },
+  {
+    description: 'Approval request with pending choice',
+    spec: {
+      id: 'approvalcard-2',
+      component: {
+        ApprovalCard: {
+          id: 'approval-2',
+          title: 'Deploy to Production',
+          description: 'Deploy version 2.5.0 to production environment. This will update all services.',
+          icon: 'rocket',
+          metadata: [
+            { key: 'Version', value: 'v2.5.0' },
+            { key: 'Environment', value: 'production' },
+            { key: 'Services', value: '8 services' }
+          ],
+          choice: 'approved'
+        }
+      }
+    }
+  }
+];
+
+/**
+ * WeatherWidget Examples
+ */
+const weatherWidgetExamples: ComponentExample[] = [
+  {
+    description: 'Weather widget with current conditions and forecast',
+    spec: {
+      id: 'weatherwidget-1',
+      component: {
+        WeatherWidget: {
+          id: 'weather-1',
+          location: 'San Francisco, CA',
+          current: {
+            temp: 68,
+            tempMin: 62,
+            tempMax: 72,
+            condition: 'partly-cloudy',
+            humidity: 65,
+            windSpeed: 12
+          },
+          forecast: [
+            { day: 'Mon', tempMin: 60, tempMax: 70, condition: 'clear' },
+            { day: 'Tue', tempMin: 62, tempMax: 72, condition: 'partly-cloudy' },
+            { day: 'Wed', tempMin: 58, tempMax: 68, condition: 'rain' }
+          ],
+          unit: 'fahrenheit',
+          updatedAt: '2026-02-11T10:00:00Z'
+        }
+      }
+    }
+  }
+];
+
+/**
+ * StatsDisplay Examples
+ */
+const statsDisplayExamples: ComponentExample[] = [
+  {
+    description: 'Dashboard statistics with trends and sparklines',
+    spec: {
+      id: 'statsdisplay-1',
+      component: {
+        StatsDisplay: {
+          id: 'stats-1',
+          title: 'Business Metrics',
+          description: 'Key performance indicators for Q1 2026',
+          stats: [
+            {
+              key: 'revenue',
+              label: 'Total Revenue',
+              value: 284500,
+              format: { kind: 'currency', currency: 'USD', decimals: 0 },
+              diff: { value: 12.5, decimals: 1, upIsPositive: true, label: 'vs last quarter' },
+              sparkline: { data: [200000, 220000, 245000, 268000, 284500], color: '#10b981' }
+            },
+            {
+              key: 'users',
+              label: 'Active Users',
+              value: 8427,
+              format: { kind: 'number', compact: true },
+              diff: { value: 8.2, decimals: 1, upIsPositive: true }
+            },
+            {
+              key: 'conversion',
+              label: 'Conversion Rate',
+              value: 0.0342,
+              format: { kind: 'percent', decimals: 2, basis: 'fraction' },
+              diff: { value: -0.8, decimals: 1, upIsPositive: true, label: 'vs last month' }
+            }
+          ]
+        }
+      }
+    }
+  }
+];
+
+/**
+ * ProgressTracker Examples
+ */
+const progressTrackerExamples: ComponentExample[] = [
+  {
+    description: 'Multi-step deployment progress',
+    spec: {
+      id: 'progresstracker-1',
+      component: {
+        ProgressTracker: {
+          id: 'progress-1',
+          steps: [
+            { id: 'build', label: 'Build Application', description: 'Compiling source code', status: 'completed' },
+            { id: 'test', label: 'Run Tests', description: 'Running unit and integration tests', status: 'completed' },
+            { id: 'deploy', label: 'Deploy to Production', description: 'Deploying to servers', status: 'in-progress' },
+            { id: 'verify', label: 'Verify Deployment', status: 'pending' }
+          ],
+          elapsedTime: 127
+        }
+      }
+    }
+  }
+];
+
+/**
+ * OptionList Examples
+ */
+const optionListExamples: ComponentExample[] = [
+  {
+    description: 'Single selection option list',
+    spec: {
+      id: 'optionlist-1',
+      component: {
+        OptionList: {
+          id: 'optionlist-1',
+          options: [
+            { id: 'staging', label: 'Staging', description: 'Deploy to staging environment for testing' },
+            { id: 'production', label: 'Production', description: 'Deploy directly to production' },
+            { id: 'canary', label: 'Canary', description: 'Gradual rollout to 10% of users first', disabled: false }
+          ],
+          selectionMode: 'single',
+          defaultValue: 'staging'
+        }
+      }
+    }
+  },
+  {
+    description: 'Multi-select option list with choice',
+    spec: {
+      id: 'optionlist-2',
+      component: {
+        OptionList: {
+          id: 'optionlist-2',
+          options: [
+            { id: 'email', label: 'Email Notifications', description: 'Receive updates via email' },
+            { id: 'sms', label: 'SMS Alerts', description: 'Get text messages for urgent issues' },
+            { id: 'slack', label: 'Slack Integration', description: 'Post updates to Slack channel' }
+          ],
+          selectionMode: 'multi',
+          choice: ['email', 'slack']
+        }
+      }
+    }
+  }
+];
+
+/**
+ * InstagramPost Examples
+ */
+const instagramPostExamples: ComponentExample[] = [
+  {
+    description: 'Instagram post with image and engagement stats',
+    spec: {
+      id: 'instagrampost-1',
+      component: {
+        InstagramPost: {
+          id: 'ig-post-1',
+          author: {
+            name: 'Sarah Chen',
+            handle: '@sarahcodes',
+            avatarUrl: 'https://i.pravatar.cc/150?img=1',
+            verified: true
+          },
+          text: 'Beautiful sunset at the Golden Gate Bridge 🌉 #sanfrancisco #sunset',
+          media: [
+            { type: 'image', url: 'https://images.unsplash.com/photo-1537402265843-5c35ad24413b', alt: 'Golden Gate Bridge sunset' }
+          ],
+          stats: { likes: 1247, isLiked: false },
+          createdAt: '2026-02-10T18:30:00Z'
+        }
+      }
+    }
+  }
+];
+
+/**
+ * LinkedInPost Examples
+ */
+const linkedInPostExamples: ComponentExample[] = [
+  {
+    description: 'LinkedIn professional post with link preview',
+    spec: {
+      id: 'linkedinpost-1',
+      component: {
+        LinkedInPost: {
+          id: 'li-post-1',
+          author: {
+            name: 'Alex Johnson',
+            avatarUrl: 'https://i.pravatar.cc/150?img=2',
+            headline: 'Senior Software Engineer at TechCorp'
+          },
+          text: 'Excited to share our new open-source project! Check out the article below to learn more about how we built this.',
+          linkPreview: {
+            url: 'https://techblog.example.com/article',
+            title: 'Building Scalable Microservices',
+            description: 'A deep dive into our microservices architecture',
+            imageUrl: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31',
+            domain: 'techblog.example.com'
+          },
+          stats: { likes: 342, isLiked: true },
+          createdAt: '2026-02-11T09:15:00Z'
+        }
+      }
+    }
+  }
+];
+
+/**
+ * XPost Examples
+ */
+const xPostExamples: ComponentExample[] = [
+  {
+    description: 'X/Twitter post with quoted post',
+    spec: {
+      id: 'xpost-1',
+      component: {
+        XPost: {
+          id: 'x-post-1',
+          author: {
+            name: 'Jordan Lee',
+            handle: '@jordantech',
+            avatarUrl: 'https://i.pravatar.cc/150?img=3',
+            verified: true
+          },
+          text: 'This is a game changer for web development!',
+          quotedPost: {
+            id: 'x-post-2',
+            author: {
+              name: 'Tech News',
+              handle: '@technews',
+              avatarUrl: 'https://i.pravatar.cc/150?img=4',
+              verified: true
+            },
+            text: 'New framework released with 10x performance improvements',
+            linkPreview: {
+              url: 'https://framework.dev',
+              title: 'Framework v2.0 Released',
+              domain: 'framework.dev'
+            },
+            createdAt: '2026-02-11T08:00:00Z'
+          },
+          stats: { likes: 523, isLiked: false, isReposted: true },
+          createdAt: '2026-02-11T10:30:00Z'
+        }
+      }
+    }
+  }
+];
+
+/**
+ * LinkPreview Examples
+ */
+const linkPreviewExamples: ComponentExample[] = [
+  {
+    description: 'Rich link preview with image and metadata',
+    spec: {
+      id: 'linkpreview-1',
+      component: {
+        LinkPreview: {
+          id: 'link-1',
+          href: 'https://blog.example.com/article',
+          title: 'The Future of Web Development',
+          description: 'Exploring emerging trends and technologies shaping the web in 2026',
+          image: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085',
+          domain: 'blog.example.com',
+          favicon: 'https://blog.example.com/favicon.ico',
+          ratio: '16:9'
+        }
+      }
+    }
+  }
+];
+
+/**
+ * Video Examples
+ */
+const videoExamples: ComponentExample[] = [
+  {
+    description: 'Video player with poster and metadata',
+    spec: {
+      id: 'video-1',
+      component: {
+        Video: {
+          id: 'video-1',
+          assetId: 'asset-12345',
+          src: 'https://example.com/videos/demo.mp4',
+          poster: 'https://images.unsplash.com/photo-1536240478700-b869070f9279',
+          title: 'Product Demo Video',
+          description: 'Learn how to use our new features in 5 minutes',
+          href: 'https://example.com/docs',
+          domain: 'example.com',
+          durationMs: 300000,
+          ratio: '16:9',
+          source: { label: 'YouTube', url: 'https://youtube.com/watch?v=demo' }
+        }
+      }
+    }
+  }
+];
+
+/**
+ * MessageDraft Examples
+ */
+const messageDraftExamples: ComponentExample[] = [
+  {
+    description: 'Email draft with recipients',
+    spec: {
+      id: 'messagedraft-1',
+      component: {
+        MessageDraft: {
+          id: 'draft-1',
+          channel: 'email',
+          subject: 'Q1 Planning Meeting',
+          from: 'sarah@company.com',
+          to: ['team@company.com', 'john@company.com'],
+          cc: ['manager@company.com'],
+          body: 'Hi team,\n\nLet\'s schedule our Q1 planning meeting for next week. Please review the attached agenda.\n\nBest,\nSarah'
+        }
+      }
+    }
+  },
+  {
+    description: 'Slack message draft',
+    spec: {
+      id: 'messagedraft-2',
+      component: {
+        MessageDraft: {
+          id: 'draft-2',
+          channel: 'slack',
+          target: { type: 'channel', name: '#engineering', memberCount: 47 },
+          body: 'Hey team! The deployment to staging is complete. Please test and report any issues. 🚀',
+          outcome: 'sent'
+        }
+      }
+    }
+  }
+];
+
+/**
+ * ItemCarousel Examples
+ */
+const itemCarouselExamples: ComponentExample[] = [
+  {
+    description: 'Product carousel with images',
+    spec: {
+      id: 'itemcarousel-1',
+      component: {
+        ItemCarousel: {
+          id: 'carousel-1',
+          title: 'Featured Products',
+          description: 'Browse our top selling items',
+          items: [
+            { id: 'prod-1', name: 'Wireless Headphones', subtitle: '$199.99', image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e', color: '#000000' },
+            { id: 'prod-2', name: 'Smart Watch', subtitle: '$299.99', image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30', color: '#1f1f1f' },
+            { id: 'prod-3', name: 'Laptop Stand', subtitle: '$49.99', image: 'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46', color: '#4a4a4a' }
+          ]
+        }
+      }
+    }
+  }
+];
+
+/**
+ * OrderSummary Examples
+ */
+const orderSummaryExamples: ComponentExample[] = [
+  {
+    description: 'E-commerce order summary with pricing breakdown',
+    spec: {
+      id: 'ordersummary-1',
+      component: {
+        OrderSummary: {
+          id: 'order-1',
+          title: 'Order Summary',
+          items: [
+            { id: 'item-1', name: 'Wireless Headphones', description: 'Noise-cancelling, Black', quantity: 1, unitPrice: 199.99, imageUrl: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e' },
+            { id: 'item-2', name: 'USB-C Cable', description: '2m, White', quantity: 2, unitPrice: 19.99 }
+          ],
+          pricing: {
+            subtotal: 239.97,
+            tax: 21.60,
+            taxLabel: 'Sales Tax (9%)',
+            shipping: 9.99,
+            discount: 24.00,
+            discountLabel: 'Coupon: SAVE10',
+            total: 247.56,
+            currency: 'USD'
+          }
+        }
+      }
+    }
+  }
+];
+
+/**
+ * ParameterSlider Examples
+ */
+const parameterSliderExamples: ComponentExample[] = [
+  {
+    description: 'Interactive parameter controls for image generation',
+    spec: {
+      id: 'parameterslider-1',
+      component: {
+        ParameterSlider: {
+          id: 'params-1',
+          sliders: [
+            { id: 'temperature', label: 'Temperature', min: 0, max: 1, step: 0.1, value: 0.7, precision: 1 },
+            { id: 'steps', label: 'Inference Steps', min: 10, max: 100, step: 5, value: 50, unit: 'steps' },
+            { id: 'guidance', label: 'Guidance Scale', min: 1, max: 20, step: 0.5, value: 7.5, precision: 1 }
+          ]
+        }
+      }
+    }
+  }
+];
+
+/**
+ * PreferencesPanel Examples
+ */
+const preferencesPanelExamples: ComponentExample[] = [
+  {
+    description: 'User preferences with switches, toggles, and select',
+    spec: {
+      id: 'preferencespanel-1',
+      component: {
+        PreferencesPanel: {
+          id: 'prefs-1',
+          title: 'Notification Settings',
+          sections: [
+            {
+              heading: 'Communication',
+              items: [
+                { id: 'email-notifs', type: 'switch', label: 'Email Notifications', description: 'Receive email updates', defaultChecked: true },
+                { id: 'push-notifs', type: 'switch', label: 'Push Notifications', description: 'Get push notifications on mobile', defaultChecked: false }
+              ]
+            },
+            {
+              heading: 'Display',
+              items: [
+                { id: 'theme', type: 'toggle', label: 'Theme', options: [{ value: 'light', label: 'Light' }, { value: 'dark', label: 'Dark' }], defaultValue: 'light' },
+                { id: 'language', type: 'select', label: 'Language', selectOptions: [
+                  { value: 'en', label: 'English' },
+                  { value: 'es', label: 'Spanish' },
+                  { value: 'fr', label: 'French' },
+                  { value: 'de', label: 'German' },
+                  { value: 'ja', label: 'Japanese' }
+                ], defaultSelected: 'en' }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  }
+];
+
+/**
+ * QuestionFlow Examples
+ */
+const questionFlowExamples: ComponentExample[] = [
+  {
+    description: 'Progressive question flow (one step at a time)',
+    spec: {
+      id: 'questionflow-1',
+      component: {
+        QuestionFlow: {
+          id: 'qflow-1',
+          step: 1,
+          title: 'Choose your deployment target',
+          description: 'Where would you like to deploy this application?',
+          options: [
+            { id: 'aws', label: 'Amazon Web Services', description: 'Deploy to AWS using ECS' },
+            { id: 'gcp', label: 'Google Cloud Platform', description: 'Deploy to GCP using Cloud Run' },
+            { id: 'azure', label: 'Microsoft Azure', description: 'Deploy to Azure using Container Instances' }
+          ],
+          selectionMode: 'single'
+        }
+      }
+    }
+  },
+  {
+    description: 'Upfront question flow (all steps visible)',
+    spec: {
+      id: 'questionflow-2',
+      component: {
+        QuestionFlow: {
+          id: 'qflow-2',
+          steps: [
+            {
+              id: 'step1',
+              title: 'Choose deployment target',
+              options: [
+                { id: 'aws', label: 'AWS' },
+                { id: 'gcp', label: 'GCP' },
+                { id: 'azure', label: 'Azure' }
+              ],
+              selectionMode: 'single'
+            },
+            {
+              id: 'step2',
+              title: 'Select region',
+              options: [
+                { id: 'us-east', label: 'US East' },
+                { id: 'us-west', label: 'US West' },
+                { id: 'eu-west', label: 'EU West' }
+              ],
+              selectionMode: 'single'
+            }
+          ]
+        }
+      }
+    }
+  }
+];
+
+/**
  * Specialized Component Catalog
  *
  * Advanced data visualization and interactive components
@@ -1689,6 +2247,330 @@ export const specializedCatalog: ComponentCatalog = {
     Uses react-photo-album for grid layouts and yet-another-react-lightbox for image viewing.`,
     props: ['data', 'options', 'onImageClick'],
     examples: imageGalleryExamples
+  },
+
+  ApprovalCard: {
+    type: 'ApprovalCard',
+    description: `Approval card for user decision-making with confirm/cancel actions. Request user approval
+    for sensitive or destructive operations. Supports:
+    - Title and description text
+    - Variant modes: default or destructive (red styling for dangerous actions)
+    - Metadata key-value pairs for context
+    - Custom confirm and cancel button labels
+    - Choice tracking (approved/denied status)
+    - Icon display
+    - Callback handlers for confirm and cancel actions
+    - Visual status indicators
+    Note: Perfect for confirming deletions, deployments, purchases, or any action requiring explicit user consent.
+    Use destructive variant for dangerous operations like data deletion.`,
+    props: ['id', 'role', 'title', 'description', 'icon', 'metadata', 'variant', 'confirmLabel', 'cancelLabel', 'choice'],
+    examples: approvalCardExamples
+  },
+
+  WeatherWidget: {
+    type: 'WeatherWidget',
+    description: `Interactive weather widget with current conditions and forecast. Display weather data
+    with visual effects and animations. Supports:
+    - Current weather: temperature, conditions (clear, rain, snow, etc.), min/max temps
+    - Extended data: humidity, wind speed/direction, visibility, precipitation level
+    - Multi-day forecast (up to 7 days)
+    - Weather condition types: clear, partly-cloudy, cloudy, overcast, fog, drizzle, rain, heavy-rain,
+      thunderstorm, snow, sleet, hail, windy
+    - Temperature units: celsius or fahrenheit
+    - Visual weather effects (optional): rain, snow, clouds animations
+    - Effect quality settings: low, medium, high, auto
+    - Reduced motion support for accessibility
+    - Last update timestamp
+    - Locale support for internationalization
+    Note: Perfect for weather apps, dashboards, or any application showing location-based weather data.
+    Visual effects create immersive experience but can be disabled for performance.`,
+    props: ['id', 'role', 'location', 'current', 'forecast', 'unit', 'updatedAt', 'locale', 'effects'],
+    examples: weatherWidgetExamples
+  },
+
+  StatsDisplay: {
+    type: 'StatsDisplay',
+    description: `Statistics dashboard component for displaying metrics with trends and sparklines. Show key
+    performance indicators with rich formatting and visualizations. Supports:
+    - Multiple stat items with labels and values
+    - Format types: text, number (with compact notation), currency (with currency codes), percent
+    - Difference/trend indicators: positive/negative changes with customizable "up is positive" logic
+    - Sparkline mini-charts: show trends with line graphs, custom colors
+    - Number formatting: decimal places, compact notation (1.2K, 3.4M)
+    - Currency formatting: multi-currency support with symbols
+    - Percentage formatting: fraction (0-1) or unit (0-100) basis
+    - Title and description text
+    - Locale support for number/currency formatting
+    - Visual trend indicators with colors (green for positive, red for negative)
+    Note: Perfect for dashboards, analytics displays, KPI tracking, business metrics, and data visualization.
+    Sparklines provide quick visual context for trends.`,
+    props: ['id', 'role', 'title', 'description', 'stats', 'locale'],
+    examples: statsDisplayExamples
+  },
+
+  ProgressTracker: {
+    type: 'ProgressTracker',
+    description: `Multi-step progress tracker for workflows and processes. Display step-by-step progress
+    with status indicators. Supports:
+    - Multiple sequential steps with unique IDs
+    - Step status: pending, in-progress, completed, failed
+    - Step labels and optional descriptions
+    - Elapsed time tracking
+    - Visual progress indicators with icons and colors
+    - Receipt mode: show workflow outcome after completion
+    - Response actions: buttons for user interactions
+    - Timeline-style visual layout
+    - Status-specific styling (gray=pending, blue=in-progress, green=completed, red=failed)
+    Note: Perfect for deployment workflows, onboarding processes, checkout flows, installation wizards,
+    and any multi-step operation requiring progress visualization. Receipt mode shows final results.`,
+    props: ['id', 'role', 'steps', 'elapsedTime', 'choice', 'responseActions'],
+    examples: progressTrackerExamples
+  },
+
+  OptionList: {
+    type: 'OptionList',
+    description: `Selectable option list with single or multi-select modes. Present choices to users with
+    rich descriptions and interactive selection. Supports:
+    - Single selection or multi-selection modes
+    - Option labels and descriptions
+    - Icon support for visual identification
+    - Disabled state for individual options
+    - Default value or controlled value
+    - Choice/receipt mode: show final selection after confirmation
+    - Min/max selection constraints for multi-select
+    - Response actions: custom action buttons
+    - Search and filtering capabilities
+    - Keyboard navigation
+    - onChange and onConfirm callbacks
+    Note: Perfect for configuration wizards, deployment target selection, feature toggles, multi-option
+    surveys, and any scenario requiring user choice from multiple options. Receipt mode preserves user decisions.`,
+    props: ['id', 'role', 'options', 'selectionMode', 'defaultValue', 'choice', 'responseActions', 'minSelections', 'maxSelections'],
+    examples: optionListExamples
+  },
+
+  InstagramPost: {
+    type: 'InstagramPost',
+    description: `Instagram-style social media post component. Display posts with images, captions,
+    and engagement metrics in authentic Instagram styling. Supports:
+    - Author information: name, handle, avatar, verified badge
+    - Post text/caption
+    - Media attachments: images or videos (array for carousel)
+    - Engagement statistics: like count, liked status
+    - Timestamp with relative time display
+    - Instagram-authentic UI: profile pictures, three-dot menu, engagement buttons
+    - Image galleries for multiple photos
+    - Responsive design
+    Note: Perfect for social media mockups, content previews, influencer dashboards, social listening tools,
+    or displaying Instagram-style content in applications. Provides authentic Instagram look and feel.`,
+    props: ['id', 'author', 'text', 'media', 'stats', 'createdAt'],
+    examples: instagramPostExamples
+  },
+
+  LinkedInPost: {
+    type: 'LinkedInPost',
+    description: `LinkedIn-style professional social media post. Display professional posts with rich media
+    and link previews in authentic LinkedIn styling. Supports:
+    - Author information: name, avatar, professional headline
+    - Post text content
+    - Single media attachment: image or video
+    - Link preview cards: URL, title, description, image, domain
+    - Engagement statistics: like count, liked status
+    - Timestamp with relative time display
+    - LinkedIn-authentic UI: professional styling, engagement buttons
+    - Responsive design
+    Note: Perfect for professional network mockups, content management systems, social media monitoring,
+    LinkedIn integrations, or displaying professional posts in applications. Authentic LinkedIn design.`,
+    props: ['id', 'author', 'text', 'media', 'linkPreview', 'stats', 'createdAt'],
+    examples: linkedInPostExamples
+  },
+
+  XPost: {
+    type: 'XPost',
+    description: `X (formerly Twitter) post component with full feature support. Display tweets/posts with
+    media, link previews, and quoted posts in authentic X styling. Supports:
+    - Author information: name, handle, avatar, verified badge
+    - Post text content
+    - Single media attachment: image or video with aspect ratio (1:1, 4:3, 16:9, 9:16)
+    - Link preview cards
+    - Quoted posts: embed another post within the main post (recursive structure)
+    - Engagement statistics: likes, reposts, bookmarks with interaction states
+    - Timestamp with relative time display
+    - X-authentic UI: styling, three-dot menu, engagement buttons
+    - Responsive design
+    Note: Perfect for Twitter/X integrations, social media dashboards, content moderation tools,
+    social listening platforms, or displaying X-style content. Supports complex nested quote tweets.`,
+    props: ['id', 'author', 'text', 'media', 'linkPreview', 'quotedPost', 'stats', 'createdAt'],
+    examples: xPostExamples
+  },
+
+  LinkPreview: {
+    type: 'LinkPreview',
+    description: `Rich link preview card with metadata and images. Display external links with Open Graph
+    style preview cards. Supports:
+    - Target URL (href)
+    - Title and description text
+    - Preview image with aspect ratio control (16:9, 4:3, 1:1, etc.)
+    - Image fit modes: cover, contain, fill
+    - Domain name display
+    - Favicon icon
+    - Timestamp metadata
+    - Locale support
+    - Clickable card linking to URL
+    - Responsive design
+    - Receipt mode for workflow tracking
+    Note: Perfect for chat applications, social media posts, content management systems, bookmarking tools,
+    or anywhere external links need rich visual previews. Similar to Open Graph protocol displays.`,
+    props: ['id', 'role', 'receipt', 'href', 'title', 'description', 'image', 'domain', 'favicon', 'ratio', 'fit', 'createdAt', 'locale'],
+    examples: linkPreviewExamples
+  },
+
+  Video: {
+    type: 'Video',
+    description: `Video player component with controls and metadata. Display and play video content with
+    rich preview information. Supports:
+    - Video source URL (MP4, WebM, etc.)
+    - Poster image for video preview
+    - Title and description
+    - Duration display in milliseconds
+    - Aspect ratio control (16:9, 4:3, 1:1, 9:16)
+    - Video fit modes: cover, contain, fill
+    - External link (href) to full video page
+    - Domain and source information
+    - Timestamp metadata
+    - Locale support
+    - Asset ID tracking
+    - Native video controls
+    - Receipt mode for workflow tracking
+    Note: Perfect for video platforms, content management systems, social media, educational apps,
+    or any application displaying video content with rich metadata.`,
+    props: ['id', 'role', 'receipt', 'assetId', 'src', 'poster', 'title', 'description', 'href', 'domain', 'durationMs', 'ratio', 'fit', 'createdAt', 'locale', 'source'],
+    examples: videoExamples
+  },
+
+  MessageDraft: {
+    type: 'MessageDraft',
+    description: `Email or Slack message draft composer. Draft and send messages across different communication
+    channels with channel-specific features. Supports:
+    - Two channel types: email and slack
+    - Email channel: subject, from, to, cc, bcc recipients
+    - Slack channel: target (channel or DM), member count
+    - Message body text
+    - Outcome tracking: sent or cancelled status
+    - Undo grace period with countdown timer
+    - Send confirmation
+    - Cancel/discard actions
+    - Email address validation
+    - Slack channel/DM targeting
+    - Visual differentiation by channel type
+    Note: Perfect for communication tools, chatbots, automation platforms, notification systems,
+    or any application that drafts and sends messages. Supports both async email and real-time Slack.`,
+    props: ['id', 'role', 'channel', 'body', 'outcome', 'subject', 'from', 'to', 'cc', 'bcc', 'target'],
+    examples: messageDraftExamples
+  },
+
+  ItemCarousel: {
+    type: 'ItemCarousel',
+    description: `Horizontal scrollable carousel for displaying items. Show collections of items (products,
+    services, media) in a scrollable carousel layout. Supports:
+    - Multiple items with unique IDs
+    - Item names and subtitles
+    - Item images (optional)
+    - Color theming per item
+    - Custom actions per item (buttons/links)
+    - Title and description for carousel
+    - Horizontal scroll with navigation arrows
+    - Touch/swipe support for mobile
+    - Click handlers for item selection
+    - Action button callbacks
+    - Responsive grid layout
+    Note: Perfect for e-commerce product displays, media galleries, feature showcases, recommendation feeds,
+    or any scenario requiring horizontal browsing of items. Great for mobile-first experiences.`,
+    props: ['id', 'title', 'description', 'items', 'className'],
+    examples: itemCarouselExamples
+  },
+
+  OrderSummary: {
+    type: 'OrderSummary',
+    description: `E-commerce order summary with itemized pricing. Display order details with items, quantities,
+    and complete pricing breakdown. Supports:
+    - Order items: name, description, image, quantity, unit price
+    - Pricing breakdown: subtotal, tax, shipping, discounts, total
+    - Custom labels: tax label, discount label
+    - Currency support with symbols
+    - Item images (optional)
+    - Order confirmation choice tracking
+    - Confirmed order ID and timestamp
+    - Response actions: confirm, cancel, edit buttons
+    - Professional e-commerce styling
+    - Receipt mode: show final confirmed order
+    Note: Perfect for checkout flows, order confirmations, purchase summaries, shopping carts, invoices,
+    or any e-commerce transaction display. Shows complete cost breakdown for transparency.`,
+    props: ['id', 'role', 'title', 'items', 'pricing', 'choice', 'responseActions'],
+    examples: orderSummaryExamples
+  },
+
+  ParameterSlider: {
+    type: 'ParameterSlider',
+    description: `Interactive multi-slider parameter control panel. Adjust multiple numeric parameters with
+    sliders and real-time value display. Supports:
+    - Multiple sliders with unique IDs
+    - Min, max, and step values per slider
+    - Current value display
+    - Unit labels (%, px, steps, etc.)
+    - Precision control for decimal places
+    - Custom styling per slider: track, fill, handle
+    - Value change callbacks
+    - Response actions: apply, reset, save buttons
+    - Real-time value updates
+    - Keyboard support for fine adjustments
+    Note: Perfect for AI model parameters (temperature, steps), image editing controls, audio/video settings,
+    game configuration, visualization tuning, or any scenario requiring multiple numeric inputs.
+    Great for parameter exploration and fine-tuning.`,
+    props: ['id', 'role', 'sliders', 'responseActions'],
+    examples: parameterSliderExamples
+  },
+
+  PreferencesPanel: {
+    type: 'PreferencesPanel',
+    description: `Comprehensive settings and preferences management panel. Organize user preferences with
+    multiple control types in logical sections. Supports:
+    - Multiple sections with optional headings
+    - Three control types: switch (boolean), toggle (2 options), select (5+ options)
+    - Switch items: simple on/off preferences
+    - Toggle items: binary choice between two labeled options
+    - Select items: dropdown for 5+ choices
+    - Labels and descriptions per item
+    - Default values per control type
+    - Grouped sections for organization
+    - Save and cancel actions
+    - Receipt mode: show confirmed preferences
+    - Response actions: custom action buttons
+    - Value change tracking
+    Note: Perfect for user settings, application configuration, notification preferences, privacy controls,
+    display options, or any complex preference management interface. Organizes many settings cleanly.`,
+    props: ['id', 'role', 'receipt', 'title', 'sections', 'responseActions'],
+    examples: preferencesPanelExamples
+  },
+
+  QuestionFlow: {
+    type: 'QuestionFlow',
+    description: `Multi-step question flow for guided decision making. Present questions progressively or
+    all at once for complex user input collection. Supports:
+    - Two flow modes: progressive (one step at a time) and upfront (all steps visible)
+    - Progressive mode: shows single question, advances on selection, shows step number
+    - Upfront mode: displays all questions at once, allows any-order completion
+    - Single or multi-select per question
+    - Options with labels, descriptions, icons, and disabled states
+    - Step labels and descriptions
+    - Back navigation in progressive mode
+    - Receipt mode: shows summary of all answers after completion
+    - Summary formatting: question label -> answer(s)
+    - Completion callbacks with all answers
+    - Step change tracking
+    Note: Perfect for onboarding flows, configuration wizards, surveys, multi-step forms, decision trees,
+    or any scenario requiring structured question-answer collection. Progressive mode reduces cognitive load.`,
+    props: ['id', 'role', 'step', 'title', 'description', 'options', 'steps', 'choice', 'selectionMode'],
+    examples: questionFlowExamples
   }
 };
 
