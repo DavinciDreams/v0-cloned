@@ -313,7 +313,7 @@ export const MapsContent = memo(
             const zoom = data.zoom || 9;
 
             // Create Leaflet map
-            const map = L.map('leaflet-map-container', {
+            const map = L.map(mapContainerId, {
               center: [center.latitude, center.longitude],
               zoom: zoom,
               zoomControl: options?.showControls !== false,
@@ -437,7 +437,7 @@ export const MapsContent = memo(
           {...props}
         >
           <div
-            id="leaflet-map-container"
+            id={mapContainerId}
             style={{
               width: typeof width === "number" ? `${width}px` : width,
               height: typeof height === "number" ? `${height}px` : height,
