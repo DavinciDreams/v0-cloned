@@ -135,17 +135,23 @@ export const Calendar = memo(
         () =>
           (data?.events || []).map((event) => {
             // Convert date strings to Temporal objects
-            // Schedule-X requires Temporal.PlainDate or Temporal.PlainDateTime
-            const parseDateTime = (dateStr: string) => {
+            // Schedule-X requires Temporal.ZonedDateTime or Temporal.PlainDate
+            const parseDateTime = (dateStr: string | undefined) => {
+              if (!dateStr) {
+                console.error("Calendar: event date is undefined or null, using fallback");
+                return Temporal.Now.plainDateISO();
+              }
+              
               try {
                 // Check if it's a date-only string (YYYY-MM-DD)
                 if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
                   return Temporal.PlainDate.from(dateStr);
                 }
-                // Otherwise treat as date-time
-                return Temporal.PlainDateTime.from(dateStr);
+                // Otherwise treat as date-time - convert to ZonedDateTime with UTC timezone
+                const plainDateTime = Temporal.PlainDateTime.from(dateStr);
+                return plainDateTime.toZonedDateTime('UTC');
               } catch (error) {
-                console.error("Failed to parse date:", dateStr, error);
+                console.error("Calendar: failed to parse date:", dateStr, error);
                 // Fallback to today
                 return Temporal.Now.plainDateISO();
               }
