@@ -449,7 +449,7 @@ export function OptionList({
   const focusOptionAt = useCallback((index: number) => {
     const el = optionRefs.current[index];
     if (el) el.focus();
-    setActiveIndex(index);
+    setActiveIndexRaw(index);
   }, []);
 
   const findFirstEnabledIndex = useCallback(() => {
@@ -614,7 +614,7 @@ export function OptionList({
                     isFirst={index === 0}
                     isLast={index === optionStates.length - 1}
                     tabIndex={index === activeIndex ? 0 : -1}
-                    onFocus={() => setActiveIndex(index)}
+                    onFocus={() => setActiveIndexRaw(index)}
                     buttonRef={(el) => {
                       optionRefs.current[index] = el;
                     }}
