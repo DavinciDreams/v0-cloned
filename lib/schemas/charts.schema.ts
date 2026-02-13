@@ -324,3 +324,55 @@ export type HeatmapChartData = ChartsData & { type?: 'heatmap'; data: HeatmapDat
 export type FunnelChartData = ChartsData & { type?: 'funnel'; stages: FunnelStage[] };
 export type GaugeChartData = ChartsData & { type?: 'gauge'; value: number };
 export type CandlestickChartData = ChartsData & { type?: 'candlestick'; data: CandlestickDataPoint[] };
+
+/**
+ * Type guard functions for narrowing ChartsData types
+ * These functions properly narrow the type and avoid TypeScript errors
+ */
+export function hasSeries(data: ChartsData): data is ChartsData & { series: Series[] } {
+  return 'series' in data && data.series !== undefined;
+}
+
+export function hasSankeyData(data: ChartsData): data is ChartsData & { sankeyNodes: SankeyNode[]; sankeyLinks: SankeyLink[] } {
+  return 'sankeyNodes' in data && 'sankeyLinks' in data && data.sankeyNodes !== undefined && data.sankeyLinks !== undefined;
+}
+
+export function hasChordData(data: ChartsData): data is ChartsData & { chordNodes: string[]; chordLinks: ChordLink[] } {
+  return 'chordNodes' in data && 'chordLinks' in data && data.chordNodes !== undefined && data.chordLinks !== undefined;
+}
+
+export function hasTreeMapData(data: ChartsData): data is ChartsData & { treeMapData: TreeMapNode[] } {
+  return 'treeMapData' in data && data.treeMapData !== undefined;
+}
+
+export function hasGraphData(data: ChartsData): data is ChartsData & { graphNodes: GraphNode[]; graphLinks: GraphLink[] } {
+  return 'graphNodes' in data && 'graphLinks' in data && data.graphNodes !== undefined && data.graphLinks !== undefined;
+}
+
+export function hasHierarchyData(data: ChartsData): data is ChartsData & { hierarchyData: TreeMapNode } {
+  return 'hierarchyData' in data && data.hierarchyData !== undefined;
+}
+
+export function hasWordCloudData(data: ChartsData): data is ChartsData & { words: WordCloudWord[] } {
+  return 'words' in data && data.words !== undefined;
+}
+
+export function hasVennData(data: ChartsData): data is ChartsData & { vennSets: VennSet[]; vennIntersections: VennIntersection[] } {
+  return 'vennSets' in data && 'vennIntersections' in data && data.vennSets !== undefined && data.vennIntersections !== undefined;
+}
+
+export function hasHeatmapData(data: ChartsData): data is ChartsData & { data: HeatmapDataPoint[] } {
+  return 'data' in data && data.data !== undefined;
+}
+
+export function hasFunnelData(data: ChartsData): data is ChartsData & { stages: FunnelStage[] } {
+  return 'stages' in data && data.stages !== undefined;
+}
+
+export function hasGaugeData(data: ChartsData): data is ChartsData & { value: number } {
+  return 'value' in data && data.value !== undefined;
+}
+
+export function hasCandlestickData(data: ChartsData): data is ChartsData & { data: CandlestickDataPoint[] } {
+  return 'data' in data && data.data !== undefined;
+}

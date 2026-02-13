@@ -359,7 +359,7 @@ export function OptionList({
 
       if (value === undefined) {
         if (!areSetsEqual(uncontrolledSelected, normalizedNext)) {
-          setUncontrolledSelected(normalizedNext);
+          setUncontrolledSelectedRaw(normalizedNext);
         }
       }
 
