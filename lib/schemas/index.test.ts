@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { getSchema, validateProps, schemaRegistry } from './index';
-import { TimelinePropsSchema } from './timeline.schema';
+import { TimelinePropsSchema, type TimelineProps } from './timeline.schema';
 import { MapsPropsSchema } from './maps.schema';
 
 describe('schemaRegistry', () => {
@@ -37,7 +37,7 @@ describe('schemaRegistry', () => {
   });
 
   it('should have valid Zod schemas for each component', () => {
-    Object.entries(schemaRegistry).forEach(([componentType, schema]) => {
+    Object.entries(schemaRegistry).forEach(([_componentType, schema]) => {
       expect(schema).toBeDefined();
       expect(typeof schema.parse).toBe('function');
       expect(typeof schema.safeParse).toBe('function');
@@ -84,7 +84,7 @@ describe('validateProps - success cases', () => {
       }
     };
 
-    const result = validateProps('Timeline', validProps);
+    const result = validateProps<TimelineProps>('Timeline', validProps);
 
     expect(result.success).toBe(true);
     if (result.success) {

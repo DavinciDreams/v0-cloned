@@ -5,7 +5,7 @@
  * Run with: npx tsx scripts/validate-a2ui-registry.ts
  */
 
-import { printValidationReport, validateRegistry, getComponentInfo } from '../lib/a2ui/validate-registry';
+import { printValidationReport } from '../lib/a2ui/validate-registry';
 
 console.log('🔍 A2UI Component Registry Validation\n');
 

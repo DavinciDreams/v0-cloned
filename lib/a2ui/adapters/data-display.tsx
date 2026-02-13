@@ -23,7 +23,7 @@ export const ListAdapter = createAdapter('ul', {
         direction === 'horizontal' ? 'flex flex-row space-x-2' : 'flex flex-col space-y-2'
       ),
       children: items.length > 0 ? (
-        items.map((item: any, index: number) => {
+        items.map((item: unknown, index: number) => {
           const content = extractValue(item.content) ?? extractValue(item.text) ?? extractValue(item);
           return (
             <li key={index} className="text-sm">

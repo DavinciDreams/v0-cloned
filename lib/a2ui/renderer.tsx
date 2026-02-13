@@ -164,7 +164,6 @@ import { validateProps } from '@/lib/schemas';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertCircle } from 'lucide-react';
 import { a2uiComponents } from './components';
-import { extractValue } from './adapter';
 import type { A2UIMessage, A2UIComponent } from './types';
 import type { TimelineProps } from '@/lib/schemas/timeline.schema';
 import type { MapsProps } from '@/lib/schemas/maps.schema';
@@ -178,7 +177,7 @@ import type { PhaserProps } from '@/lib/schemas/phaser.schema';
 import type { MermaidProps } from '@/lib/schemas/mermaid.schema';
 import type { RemotionProps } from '@/lib/schemas/remotion.schema';
 import type { GeospatialProps } from '@/lib/schemas/geospatial.schema';
-import type { ToolUIProps, ToolUIData } from '@/lib/schemas/toolui.schema';
+import type { ToolUIProps } from '@/lib/schemas/toolui.schema';
 import type { ChartsProps } from '@/lib/schemas/charts.schema';
 import type { WYSIWYGProps } from '@/lib/schemas/wysiwyg.schema';
 import type { VRMProps } from '@/lib/schemas/vrm.schema';
@@ -245,7 +244,7 @@ export function UnknownComponent({ type, id }: { type: string; id: string }) {
       <AlertCircle className="h-4 w-4" />
       <AlertTitle>Unknown Component</AlertTitle>
       <AlertDescription>
-        <p>Component type "{type}" is not registered in the catalog.</p>
+        <p>Component type &quot;{type}&quot; is not registered in the catalog.</p>
         <p className="text-xs text-muted-foreground mt-2">Component ID: {id}</p>
       </AlertDescription>
     </Alert>
@@ -259,7 +258,7 @@ export function UnknownComponent({ type, id }: { type: string; id: string }) {
 export function renderA2UIComponent(
   component: A2UIComponent,
   componentsMap?: Map<string, A2UIComponent>,
-  onAction?: (action: any) => void
+  onAction?: (action: unknown) => void
 ): React.ReactNode {
   const componentId = component.id;
 
@@ -382,7 +381,7 @@ export function renderA2UIComponent(
         const nodeEditorProps = validation.data as NodeEditorProps;
         return (
           <div key={componentId} data-a2ui-id={componentId} data-a2ui-type={componentType}>
-            <NodeEditor {...(nodeEditorProps as any)}>
+            <NodeEditor {...nodeEditorProps}>
               <NodeEditorHeader>
                 <NodeEditorTitle />
                 <NodeEditorActions>
@@ -711,7 +710,7 @@ export function A2UIRenderer({ message, className }: A2UIRendererProps) {
         <AlertCircle className="h-4 w-4" />
         <AlertTitle>A2UI Rendering Error</AlertTitle>
         <AlertDescription>
-          Message is missing 'surfaceUpdate' property
+          Message is missing &apos;surfaceUpdate&apos; property
         </AlertDescription>
       </Alert>
     );
@@ -724,7 +723,7 @@ export function A2UIRenderer({ message, className }: A2UIRendererProps) {
         <AlertCircle className="h-4 w-4" />
         <AlertTitle>A2UI Rendering Error</AlertTitle>
         <AlertDescription>
-          surfaceUpdate is missing 'components' array
+          surfaceUpdate is missing &apos;components&apos; array
         </AlertDescription>
       </Alert>
     );
@@ -754,7 +753,7 @@ export function A2UIRenderer({ message, className }: A2UIRendererProps) {
   });
 
   // Action handler
-  const handleAction = (action: any) => {
+  const handleAction = (action: unknown) => {
     console.log('[A2UI] Action:', action);
     // TODO: Implement action handling (e.g., send to AI, update state, etc.)
   };
@@ -797,7 +796,7 @@ export function SimpleA2UIRenderer({ components, className }: SimpleA2UIRenderer
   });
 
   // Action handler
-  const handleAction = (action: any) => {
+  const handleAction = (action: unknown) => {
     console.log('[A2UI] Action:', action);
     // TODO: Implement action handling (e.g., send to AI, update state, etc.)
   };

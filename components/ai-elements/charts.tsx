@@ -360,15 +360,18 @@ export const ChartsContent = memo(
                   })
                 );
 
-                if ('yAxis' in data && data.yAxis?.title) {
-                  yAxis.children.unshift(
-                    am5.Label.new(root, {
-                      text: data.yAxis.title,
-                      rotation: -90,
-                      y: am5.p50,
-                      centerX: am5.p50,
-                    })
-                  );
+                if ('yAxis' in data) {
+                  const yAxisConfig = (data as { yAxis?: AxisConfig }).yAxis;
+                  if (yAxisConfig?.title) {
+                    yAxis.children.unshift(
+                      am5.Label.new(root, {
+                        text: yAxisConfig.title,
+                        rotation: -90,
+                        y: am5.p50,
+                        centerX: am5.p50,
+                      })
+                    );
+                  }
                 }
 
                 // Add series

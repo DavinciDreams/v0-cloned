@@ -51,7 +51,7 @@ export const AccordionAdapter = createAdapter('div', {
     return {
       children: (
         <Accordion type={type} collapsible={collapsible} className="w-full">
-          {items.map((item: any, index: number) => {
+          {items.map((item: unknown, index: number) => {
             const value = extractValue(item.value) ?? `item-${index}`;
             const title = extractValue(item.title) ?? extractValue(item.trigger);
             const content = extractValue(item.content);
@@ -219,7 +219,7 @@ export const DropdownMenuAdapter = createAdapter('div', {
             {trigger || <button className="px-4 py-2 rounded-md border">Menu</button>}
           </DropdownMenuTrigger>
           <DropdownMenuContent>
-            {items.map((item: any, index: number) => {
+            {items.map((item: unknown, index: number) => {
               const label = extractValue(item.label) ?? extractValue(item.text);
               const action = item.action;
 

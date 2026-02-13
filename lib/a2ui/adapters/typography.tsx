@@ -92,7 +92,7 @@ export const H6Adapter = createAdapter('h6', {
 export const BadgeAdapter = createAdapter(Badge, {
   mapProps: (a2ui, ctx) => {
     const variant = extractValue(a2ui.variant) ?? 'default';
-    const variantMap: Record<string, any> = {
+    const variantMap: Record<string, string> = {
       filled: 'default',
       outline: 'outline',
       secondary: 'secondary',
@@ -100,7 +100,7 @@ export const BadgeAdapter = createAdapter(Badge, {
     };
 
     return {
-      variant: variantMap[variant] ?? 'default',
+      variant: typeof variant === 'string' ? (variantMap[variant] ?? 'default') : 'default',
       children: extractValue(a2ui.text) ?? ctx.children,
     };
   },

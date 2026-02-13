@@ -7,7 +7,7 @@ import { createPassthroughAdapter, createAdapter } from '../adapter';
 import { cn } from '@/lib/utils';
 
 // Row - horizontal flex layout
-export const RowAdapter = createAdapter('div' as any, {
+export const RowAdapter = createAdapter('div', {
   mapProps: (a2ui, ctx) => {
     const distribution = a2ui.distribution ?? 'start';
     const alignment = a2ui.alignment ?? 'center';
@@ -41,7 +41,7 @@ export const RowAdapter = createAdapter('div' as any, {
 });
 
 // Column - vertical flex layout
-export const ColumnAdapter = createAdapter('div' as any, {
+export const ColumnAdapter = createAdapter('div', {
   mapProps: (a2ui, ctx) => {
     const distribution = a2ui.distribution ?? 'start';
     const alignment = a2ui.alignment ?? 'stretch';
@@ -80,7 +80,7 @@ export const VStackAdapter = ColumnAdapter;
 export const StackAdapter = ColumnAdapter;
 
 // Flex - generic flex container
-export const FlexAdapter = createAdapter('div' as any, {
+export const FlexAdapter = createAdapter('div', {
   mapProps: (a2ui, ctx) => {
     const direction = a2ui.direction ?? 'row';
     const wrap = a2ui.wrap ?? false;
@@ -100,7 +100,7 @@ export const FlexAdapter = createAdapter('div' as any, {
 });
 
 // Grid
-export const GridAdapter = createAdapter('div' as any, {
+export const GridAdapter = createAdapter('div', {
   mapProps: (a2ui, ctx) => {
     const columns = a2ui.columns ?? 'auto-fit';
     const gap = a2ui.gap ?? '4';

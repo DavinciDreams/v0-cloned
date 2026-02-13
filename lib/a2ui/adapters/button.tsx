@@ -10,18 +10,19 @@ export const ButtonAdapter = createAdapter(Button, {
   mapProps: (a2ui, ctx) => {
     // Extract variant with mapping
     const variantRaw = extractValue(a2ui.variant);
-    const variantMap: Record<string, any> = {
+    const variantMap: Record<string, string> = {
       filled: 'default',
       outline: 'outline',
       subtle: 'ghost',
       default: 'default',
     };
-    const variant = variantMap[variantRaw] ?? 'default';
+    const variant = typeof variantRaw === 'string' ? (variantMap[variantRaw] ?? 'default') : 'default';
 
     // Extract other properties
     const fullWidth = extractValue(a2ui.fullWidth) ?? false;
     const compact = extractValue(a2ui.compact) ?? false;
-    const disabled = extractValue(a2ui.disabled) ?? false;
+    const disabledRaw = extractValue(a2ui.disabled);
+    const disabled = typeof disabledRaw === 'boolean' ? disabledRaw : false;
 
     return {
       variant,

@@ -41,7 +41,7 @@ export const SelectAdapter = createAdapter('div', {
             <SelectValue placeholder={placeholder} />
           </SelectTrigger>
           <SelectContent>
-            {options.map((option: any, index: number) => {
+            {options.map((option: unknown, index: number) => {
               const value = extractValue(option.value) ?? extractValue(option);
               const label = extractValue(option.label) ?? extractValue(option.text) ?? value;
 
@@ -68,7 +68,7 @@ export const RadioGroupAdapter = createAdapter('div', {
 
     return {
       className: 'space-y-2',
-      children: options.map((option: any, index: number) => {
+      children: options.map((option: unknown, index: number) => {
         const value = extractValue(option.value) ?? extractValue(option);
         const label = extractValue(option.label) ?? extractValue(option.text) ?? value;
         const checked = value === defaultValue;
@@ -115,7 +115,7 @@ export const MultiSelectAdapter = createAdapter('div', {
 
     return {
       className: 'space-y-2',
-      children: options.map((option: any, index: number) => {
+      children: options.map((option: unknown, index: number) => {
         const value = extractValue(option.value) ?? extractValue(option);
         const label = extractValue(option.label) ?? extractValue(option.text) ?? value;
         const checked = selectedValues.has(value);

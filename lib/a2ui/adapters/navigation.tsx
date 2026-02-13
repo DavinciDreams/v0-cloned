@@ -19,7 +19,7 @@ export const TabsAdapter = createAdapter('div', {
       children: (
         <Tabs defaultValue={defaultValue} className="w-full">
           <TabsList>
-            {tabItems.map((item: any, index: number) => {
+            {tabItems.map((item: unknown, index: number) => {
               const title = extractValue(item.title) ?? extractValue(item.label) ?? `Tab ${index + 1}`;
               const value = extractValue(item.value) ?? `tab-${index}`;
 
@@ -70,7 +70,7 @@ export const BreadcrumbAdapter = createAdapter('nav', {
       className: 'flex',
       children: (
         <ol className="flex items-center space-x-2">
-          {items.map((item: any, index: number) => {
+          {items.map((item: unknown, index: number) => {
             const label = extractValue(item.label) ?? extractValue(item.text);
             const href = extractValue(item.href) ?? extractValue(item.url);
             const isLast = index === items.length - 1;
