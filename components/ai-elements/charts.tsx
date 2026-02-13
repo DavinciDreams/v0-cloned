@@ -149,7 +149,7 @@ export const ChartsTitle = forwardRef<
   return (
     <div ref={ref} className={cn("flex items-center gap-2", className)} {...props}>
       <span className="font-mono">
-        {children || data.title || `${data.type.toUpperCase()} Chart`}
+        {children || data.title || `${data.type?.toUpperCase() || 'Unknown'} Chart`}
       </span>
     </div>
   );
