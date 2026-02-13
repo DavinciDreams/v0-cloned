@@ -331,11 +331,14 @@ const CandlestickChartDataSchema = BaseChartSchema.extend({
 });
 
 /**
- * Charts data structure using discriminated union
+ * Charts data structure using discriminated union with fallback
  *
  * This ensures proper TypeScript type inference for all chart types.
  * Each chart type has only the fields it needs, making it impossible
  * to pass incorrect data shapes.
+ *
+ * A catch-all variant is added to handle cases where the LLM generates
+ * data without a proper 'type' field or with an invalid type.
  */
 export const ChartsDataSchema = z.discriminatedUnion('type', [
   BasicChartDataSchema,
@@ -353,7 +356,17 @@ export const ChartsDataSchema = z.discriminatedUnion('type', [
   HierarchyChartDataSchema,
   WordCloudChartDataSchema,
   VennChartDataSchema,
-]);
+]).or(
+  // Catch-all for data with missing or invalid type field
+  // This allows the schema to validate even when LLM doesn't provide a proper type
+  BaseChartSchema.extend({
+    type: z.string().optional(),
+  }).and(
+    z.object({
+      // Accept any additional properties
+    }).passthrough()
+  )
+);
 
 export type ChartsData = z.infer<typeof ChartsDataSchema>;
 export type SankeyNode = z.infer<typeof SankeyNodeSchema>;

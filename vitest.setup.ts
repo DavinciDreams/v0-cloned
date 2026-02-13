@@ -1,6 +1,11 @@
 import '@testing-library/jest-dom';
-import { expect, afterEach, vi } from 'vitest';
+import { vi } from 'vitest';
 import { cleanup } from '@testing-library/react';
+
+// Type declaration for global afterEach (available in Vitest test environment)
+declare global {
+  const afterEach: (fn: () => void) => void;
+}
 
 // Cleanup after each test
 afterEach(() => {
@@ -11,8 +16,11 @@ afterEach(() => {
 
 // Extend Vitest's expect with jest-dom matchers
 declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Vi {
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     interface Assertion extends jest.Matchers<void, any> {}
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     interface AsymmetricMatchersContaining extends jest.Matchers<void, any> {}
   }
 }
