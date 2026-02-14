@@ -25,6 +25,13 @@ Built with Next.js 16, React 19, and the Vercel AI SDK. **114+ composable compon
   - [UI Components](#ui-components)
   - [AI Elements](#ai-elements)
   - [Tool UI Components](#tool-ui-components)
+- [Generations Management](#generations-management)
+  - [Saving & Loading](#saving--loading)
+  - [Version Control](#version-control)
+  - [Templates](#templates)
+  - [Sharing](#sharing)
+  - [Analytics](#analytics)
+  - [AI Optimization](#ai-optimization)
 - [Architecture](#architecture)
 - [Pages & Routes](#pages--routes)
 - [API](#api)
@@ -46,6 +53,12 @@ Generous was born from a hackathon project built on a simple belief: AI shouldn'
 - **Natural Language UI Generation** - Describe what you want and get live, rendered components
 - **Streaming Responses** - Real-time streaming with the Vercel AI SDK
 - **114+ Components** - Comprehensive library across UI primitives, AI elements, and tool visualizations
+- **Generations Management** - Save, load, version, share, and export your AI-generated components with full history tracking
+- **Component Versioning** - Track changes, compare versions, and restore previous states
+- **Template System** - Create and reuse component templates with categories and tags
+- **Sharing & Collaboration** - Share generations with read-only or editable access, with expiration options
+- **Analytics & Insights** - Track component usage, views, and interactions with detailed analytics
+- **AI-Assisted Optimization** - Get intelligent suggestions for layout improvements and component recommendations
 - **Compound Component Pattern** - All complex components use composable sub-components (Header, Content, Actions, etc.)
 - **Dual Rendering** - Supports both JSX (simple components) and A2UI JSON (complex data-driven components)
 - **Type-Safe** - 100% TypeScript with Zod schema validation for data-driven components
@@ -532,6 +545,84 @@ These components render structured data returned from AI tool calls. Each includ
 
 ---
 
+## Generations Management
+
+The Generations Management system provides comprehensive tools for saving, organizing, versioning, sharing, and analyzing your AI-generated components.
+
+### Saving & Loading
+
+Save your generated components to persist them across sessions:
+
+- **Save Dialog** - Name and describe your generations before saving
+- **Saved List** - Browse all your saved generations with search and pagination
+- **Load Generation** - Restore any saved generation to continue working on it
+- **Export** - Export generations as JSON files for backup or sharing
+
+### Version Control
+
+Track changes to your generations over time:
+
+- **Automatic Versioning** - Every save creates a new version automatically
+- **Version History** - View all versions with timestamps and change reasons
+- **Version Comparison** - Compare any two versions to see what changed
+- **Restore Version** - Roll back to any previous version with one click
+- **Delete Version** - Remove unwanted versions from history
+
+### Templates
+
+Create reusable templates from your generations:
+
+- **System Templates** - Pre-built templates for common use cases (Basic Chat, Dashboard, Form, Table, Chart)
+- **Custom Templates** - Save any generation as a template
+- **Template Categories** - Organize templates by category (dashboards, forms, charts, etc.)
+- **Template Tags** - Add tags for easy discovery
+- **Public/Private** - Share templates with the community or keep them private
+- **Template Usage Tracking** - See how many times your templates are used
+
+### Sharing
+
+Share your generations with others:
+
+- **Share Links** - Generate unique shareable links for any generation
+- **Access Control** - Choose between read-only or editable access
+- **Expiration Dates** - Set optional expiration dates for share links
+- **View Tracking** - Track how many times your shared generations are viewed
+- **Share Management** - View and manage all your active shares
+
+### Analytics
+
+Gain insights into your component usage:
+
+- **Event Tracking** - Track views, interactions, creations, updates, and deletions
+- **Component Statistics** - See which components are used most frequently
+- **Daily Activity** - View activity charts showing usage over time
+- **Generation Analytics** - Per-generation analytics for detailed insights
+- **Summary Dashboard** - High-level overview of all your analytics
+
+### AI Optimization
+
+Get intelligent suggestions to improve your generations:
+
+- **Layout Suggestions** - AI analyzes your layouts and suggests improvements
+- **Component Recommendations** - Get recommendations for additional components
+- **Confidence Scores** - Each suggestion includes a confidence score
+- **Apply/Dismiss** - Easily apply or dismiss suggestions
+- **Context-Aware** - Suggestions are based on your specific use case
+
+### Storage
+
+The Generations Management system uses Neon DB (PostgreSQL) for reliable, scalable storage:
+
+- **PostgreSQL Database** - Full ACID compliance and data integrity
+- **JSONB Columns** - Efficient storage of complex component data
+- **Full-Text Search** - Fast search across generation names and descriptions
+- **Automatic Indexing** - Optimized queries for common access patterns
+- **Migration Support** - Database migrations for schema updates
+
+For detailed setup instructions, see [`lib/generations/README.md`](lib/generations/README.md).
+
+---
+
 ## Architecture
 
 ### Rendering Pipeline
@@ -645,6 +736,394 @@ Main AI chat endpoint with streaming support.
 **Response:** Server-sent event stream of generated text containing JSX and/or A2UI JSON.
 
 The system prompt automatically includes the full component catalog so the AI knows what components are available and how to use them.
+
+### Generations Management API
+
+#### `POST /api/generations`
+
+Save a new generation.
+
+**Request Body:**
+```json
+{
+  "name": "My Dashboard",
+  "description": "A sales dashboard with charts",
+  "messages": [],
+  "ui_components": {},
+  "component_layouts": {}
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "generation": {
+    "id": "uuid",
+    "user_id": "user-id",
+    "name": "My Dashboard",
+    "description": "A sales dashboard with charts",
+    "created_at": "2024-01-01T00:00:00.000Z",
+    "updated_at": "2024-01-01T00:00:00.000Z",
+    "version": 1
+  }
+}
+```
+
+#### `GET /api/generations`
+
+List generations for the authenticated user.
+
+**Query Parameters:**
+- `limit` (optional, default: 20) - Number of generations to return
+- `offset` (optional, default: 0) - Number of generations to skip
+- `search` (optional) - Search term for name and description
+
+**Response:**
+```json
+{
+  "success": true,
+  "generations": [],
+  "total": 0,
+  "limit": 20,
+  "offset": 0
+}
+```
+
+#### `GET /api/generations/[id]`
+
+Load a specific generation by ID.
+
+**Response:**
+```json
+{
+  "success": true,
+  "generation": {
+    "id": "uuid",
+    "user_id": "user-id",
+    "name": "My Dashboard",
+    "description": "A sales dashboard with charts",
+    "messages": [],
+    "ui_components": {},
+    "component_layouts": {},
+    "created_at": "2024-01-01T00:00:00.000Z",
+    "updated_at": "2024-01-01T00:00:00.000Z",
+    "version": 1
+  }
+}
+```
+
+#### `PUT /api/generations/[id]`
+
+Update an existing generation.
+
+**Request Body:**
+```json
+{
+  "name": "Updated Name",
+  "description": "Updated description"
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "generation": { /* updated generation object */ }
+}
+```
+
+#### `DELETE /api/generations/[id]`
+
+Delete a generation by ID.
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Generation deleted successfully"
+}
+```
+
+#### `GET /api/generations/[id]/versions`
+
+List all versions for a generation.
+
+**Response:**
+```json
+{
+  "success": true,
+  "versions": [
+    {
+      "id": "version-id",
+      "generation_id": "generation-id",
+      "version_number": 1,
+      "messages": [],
+      "ui_components": {},
+      "component_layouts": {},
+      "change_reason": "Initial version",
+      "created_at": "2024-01-01T00:00:00.000Z"
+    }
+  ],
+  "total": 1
+}
+```
+
+#### `GET /api/generations/[id]/versions/[versionId]`
+
+Get a specific version.
+
+**Response:**
+```json
+{
+  "success": true,
+  "version": { /* version object */ }
+}
+```
+
+#### `POST /api/generations/[id]/versions/[versionId]?action=restore`
+
+Restore a specific version.
+
+**Response:**
+```json
+{
+  "success": true,
+  "version": { /* restored version object */ }
+}
+```
+
+#### `DELETE /api/generations/[id]/versions/[versionId]`
+
+Delete a specific version.
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Version deleted successfully"
+}
+```
+
+#### `POST /api/templates`
+
+Create a new template.
+
+**Request Body:**
+```json
+{
+  "name": "Dashboard Template",
+  "description": "A dashboard template",
+  "category": "dashboards",
+  "tags": ["dashboard", "charts"],
+  "is_public": true,
+  "messages": [],
+  "ui_components": {},
+  "component_layouts": {}
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "template": { /* template object */ }
+}
+```
+
+#### `GET /api/templates`
+
+List templates with filters.
+
+**Query Parameters:**
+- `category` (optional) - Filter by category
+- `tag` (optional) - Filter by tag
+- `is_public` (optional) - Filter by public/private
+- `limit` (optional, default: 20) - Number of templates to return
+- `offset` (optional, default: 0) - Number of templates to skip
+
+**Response:**
+```json
+{
+  "success": true,
+  "templates": [],
+  "total": 0,
+  "limit": 20,
+  "offset": 0
+}
+```
+
+#### `POST /api/generations/[id]/shares`
+
+Create a share link for a generation.
+
+**Request Body:**
+```json
+{
+  "is_editable": false,
+  "expires_at": "2024-12-31T23:59:59.000Z"
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "share": {
+    "id": "share-id",
+    "generation_id": "generation-id",
+    "share_token": "unique-token",
+    "is_editable": false,
+    "expires_at": "2024-12-31T23:59:59.000Z",
+    "view_count": 0,
+    "created_at": "2024-01-01T00:00:00.000Z"
+  }
+}
+```
+
+#### `GET /api/generations/[id]/shares`
+
+List all shares for a generation.
+
+**Response:**
+```json
+{
+  "success": true,
+  "shares": [],
+  "total": 0
+}
+```
+
+#### `GET /api/shares/[shareToken]`
+
+Get a shared generation by token.
+
+**Response:**
+```json
+{
+  "success": true,
+  "generation": { /* generation object */ },
+  "share": { /* share object */ }
+}
+```
+
+#### `GET /api/analytics`
+
+Get analytics events with filters.
+
+**Query Parameters:**
+- `generation_id` (optional) - Filter by generation ID
+- `event_type` (optional) - Filter by event type
+- `component_type` (optional) - Filter by component type
+- `start_date` (optional) - Start date for filtering
+- `end_date` (optional) - End date for filtering
+- `limit` (optional, default: 100) - Number of events to return
+- `offset` (optional, default: 0) - Number of events to skip
+
+**Response:**
+```json
+{
+  "success": true,
+  "events": [],
+  "total": 0,
+  "limit": 100,
+  "offset": 0
+}
+```
+
+#### `GET /api/analytics/summary`
+
+Get analytics summary.
+
+**Response:**
+```json
+{
+  "success": true,
+  "summary": {
+    "total_generations": 100,
+    "total_views": 1000,
+    "total_interactions": 5000,
+    "most_used_components": [
+      { "component_type": "Charts", "count": 50 },
+      { "component_type": "DataTable", "count": 30 }
+    ]
+  }
+}
+```
+
+#### `GET /api/analytics/components`
+
+Get component usage statistics.
+
+**Response:**
+```json
+{
+  "success": true,
+  "stats": [
+    {
+      "component_type": "Charts",
+      "view_count": 100,
+      "interaction_count": 500,
+      "creation_count": 20
+    }
+  ]
+}
+```
+
+#### `POST /api/ai/suggestions`
+
+Generate AI layout suggestions.
+
+**Request Body:**
+```json
+{
+  "ui_components": {},
+  "component_layouts": {}
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "suggestions": [
+    {
+      "id": "suggestion-id",
+      "type": "layout",
+      "description": "Improve layout by moving charts to top",
+      "confidence": 0.85,
+      "changes": { /* layout changes */ }
+    }
+  ]
+}
+```
+
+#### `POST /api/ai/recommendations`
+
+Generate AI component recommendations.
+
+**Request Body:**
+```json
+{
+  "ui_components": {},
+  "context": "dashboard"
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "recommendations": [
+    {
+      "id": "recommendation-id",
+      "component_type": "Charts",
+      "description": "Add a line chart to show trends",
+      "confidence": 0.9
+    }
+  ]
+}
+```
 
 ---
 

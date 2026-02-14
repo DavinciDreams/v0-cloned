@@ -6,11 +6,12 @@ import { useCallback, useState } from "react";
 import type { FileUIPart } from "ai";
 import type { StickToBottomContext } from "use-stick-to-bottom";
 import Link from "next/link";
+import { SaveIcon, FolderOpenIcon } from "lucide-react";
 
 // ============================================================================
 // Store Hooks
 // ============================================================================
-import { useMessages, useAppState } from "@/lib/store";
+import { useMessages, useAppState, useGenerativeUIStore } from "@/lib/store";
 
 // ============================================================================
 // AI Elements Components
@@ -20,6 +21,12 @@ import { PromptInput, PromptInputTextarea, type PromptInputMessage } from "@/com
 import { Conversation, ConversationContent } from "@/components/ai-elements/conversation";
 import { Canvas } from "@/components/ai-elements/canvas";
 import { ClearActions } from "@/components/ai-elements/clear-actions";
+
+// ============================================================================
+// Generations Components
+// ============================================================================
+import { SaveDialog } from "@/components/generations/save-dialog";
+import { SavedList } from "@/components/generations/saved-list";
 
 // ============================================================================
 // UI Components for Bindings
@@ -245,7 +252,10 @@ export default function Page() {
   // =====================
   const { messages, addMessage, updateMessage } = useMessages();
   const { isLoading, error, setLoading, setError } = useAppState();
+  const store = useGenerativeUIStore();
   const [navOpen, setNavOpen] = useState(false);
+  const [saveDialogOpen, setSaveDialogOpen] = useState(false);
+  const [savedListOpen, setSavedListOpen] = useState(false);
 
   // =====================
   // Chat Functionality
@@ -373,6 +383,18 @@ export default function Page() {
     }));
   }, [messages]);
 
+  // Handle save success
+  const handleSaveSuccess = (generationId: string) => {
+    console.log("Generation saved successfully:", generationId);
+    // Optionally refresh the saved list
+  };
+
+  // Handle load generation
+  const handleLoadGeneration = (generation: any) => {
+    console.log("Generation loaded:", generation.id);
+    setSavedListOpen(false);
+  };
+
   // =====================
   // Render
   // =====================
@@ -386,6 +408,27 @@ export default function Page() {
               Generous
             </Link>
             <div className="flex items-center gap-2">
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={() => setSavedListOpen(!savedListOpen)}
+                className="h-8 px-2 text-xs"
+              >
+                <FolderOpenIcon className="h-3.5 w-3.5 mr-1" />
+                Saved
+              </Button>
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={() => setSaveDialogOpen(true)}
+                className="h-8 px-2 text-xs"
+                disabled={messages.length === 0}
+              >
+                <SaveIcon className="h-3.5 w-3.5 mr-1" />
+                Save
+              </Button>
               <button
                 type="button"
                 onClick={() => setNavOpen(!navOpen)}
@@ -480,6 +523,28 @@ export default function Page() {
           </PromptInput>
         </div>
       </div>
+
+      {/* Save Dialog */}
+      <SaveDialog
+        isOpen={saveDialogOpen}
+        onClose={() => setSaveDialogOpen(false)}
+        onSaveSuccess={handleSaveSuccess}
+      />
+
+      {/* Saved Generations Dialog */}
+      <Dialog open={savedListOpen} onOpenChange={setSavedListOpen}>
+        <DialogContent className="sm:max-w-[600px] max-h-[80vh]">
+          <DialogHeader>
+            <DialogTitle>Saved Generations</DialogTitle>
+          </DialogHeader>
+          <ScrollArea className="max-h-[600px]">
+            <SavedList
+              onLoadGeneration={handleLoadGeneration}
+              className="pr-4"
+            />
+          </ScrollArea>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

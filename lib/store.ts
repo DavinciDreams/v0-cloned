@@ -40,6 +40,18 @@ export interface UIComponent {
 }
 
 /**
+ * Component layout state for draggable/resizable components
+ */
+export interface ComponentLayoutState {
+  id: string;
+  position: { x: number; y: number };
+  size: { width: number; height: number };
+  isLocked: boolean;
+  zIndex?: number;
+  maintainAspectRatio?: boolean;
+}
+
+/**
  * Store state interface
  */
 export interface StoreState {
@@ -52,6 +64,9 @@ export interface StoreState {
   // Component registry state
   componentRegistry: ComponentRegistry; // Component registry instance
   compactedComponents: Record<string, CompactComponent>; // Compacted components for storage
+  
+  // Component layout state
+  componentLayouts: Record<string, ComponentLayoutState>; // Map of component ID to layout state
   
   // Loading state
   isLoading: boolean;
@@ -121,6 +136,14 @@ export interface StoreActions {
   getComponentsByTypeFromCache: (type: string) => UIComponent[];
   getComponentCacheStats: () => import('./caching/component-cache').CacheStats;
   getComponentCacheHitRate: () => number;
+  
+  // Component layout actions
+  getComponentLayout: (id: string) => ComponentLayoutState | undefined;
+  setComponentLayout: (id: string, layout: ComponentLayoutState) => void;
+  updateComponentLayout: (id: string, updates: Partial<ComponentLayoutState>) => void;
+  removeComponentLayout: (id: string) => void;
+  clearComponentLayouts: () => void;
+  getAllComponentLayouts: () => Record<string, ComponentLayoutState>;
 }
 
 /**
@@ -150,6 +173,7 @@ const initialState: StoreState = {
   uiComponents: {},
   componentRegistry: new ComponentRegistry(),
   compactedComponents: {},
+  componentLayouts: {},
   isLoading: false,
   error: null,
   editableComponentManager: new EditableComponentManager(),
@@ -614,15 +638,91 @@ export const useGenerativeUIStore = create<GenerativeUIStore>()(
       const state = get();
       return state.componentGenerationCache.getHitRate();
     },
+
+    // =====================
+    // Component Layout Actions
+    // =====================
+
+    /**
+     * Get component layout state
+     */
+    getComponentLayout: (id) => {
+      const state = get();
+      return state.componentLayouts[id];
+    },
+
+    /**
+     * Set component layout state
+     */
+    setComponentLayout: (id, layout) => {
+      set((state) => ({
+        componentLayouts: {
+          ...state.componentLayouts,
+          [id]: layout,
+        },
+      }));
+    },
+
+    /**
+     * Update component layout state
+     */
+    updateComponentLayout: (id, updates) => {
+      set((state) => {
+        const existingLayout = state.componentLayouts[id];
+        const newLayout: ComponentLayoutState = existingLayout
+          ? { ...existingLayout, ...updates }
+          : {
+              id,
+              position: updates.position ?? { x: 0, y: 0 },
+              size: updates.size ?? { width: 400, height: 300 },
+              isLocked: updates.isLocked ?? false,
+              zIndex: updates.zIndex ?? 10,
+              maintainAspectRatio: updates.maintainAspectRatio ?? false,
+            };
+        return {
+          componentLayouts: {
+            ...state.componentLayouts,
+            [id]: newLayout,
+          },
+        };
+      });
+    },
+
+    /**
+     * Remove component layout state
+     */
+    removeComponentLayout: (id) => {
+      set((state) => {
+        const newLayouts = { ...state.componentLayouts };
+        delete newLayouts[id];
+        return { componentLayouts: newLayouts };
+      });
+    },
+
+    /**
+     * Clear all component layout states
+     */
+    clearComponentLayouts: () => {
+      set({ componentLayouts: {} });
+    },
+
+    /**
+     * Get all component layout states
+     */
+    getAllComponentLayouts: () => {
+      const state = get();
+      return state.componentLayouts;
+    },
     }),
     {
       name: 'generative-ui-storage', // Storage key for localStorage
       partialize: (state) => ({
-        // Only persist messages, UI components, and compacted components
+        // Only persist messages, UI components, compacted components, and component layouts
         // Not loading/error states or the registry itself (which is recreated)
         messages: state.messages,
         uiComponents: state.uiComponents,
         compactedComponents: state.compactedComponents,
+        componentLayouts: state.componentLayouts,
       }),
     }
   )
@@ -784,6 +884,29 @@ export const useCaching = () => {
     getComponentsByTypeFromCache,
     getComponentCacheStats,
     getComponentCacheHitRate,
+  };
+};
+
+/**
+ * Hook to access component layout state and actions
+ */
+export const useComponentLayouts = () => {
+  const componentLayouts = useGenerativeUIStore((state) => state.componentLayouts);
+  const getComponentLayout = useGenerativeUIStore((state) => state.getComponentLayout);
+  const setComponentLayout = useGenerativeUIStore((state) => state.setComponentLayout);
+  const updateComponentLayout = useGenerativeUIStore((state) => state.updateComponentLayout);
+  const removeComponentLayout = useGenerativeUIStore((state) => state.removeComponentLayout);
+  const clearComponentLayouts = useGenerativeUIStore((state) => state.clearComponentLayouts);
+  const getAllComponentLayouts = useGenerativeUIStore((state) => state.getAllComponentLayouts);
+
+  return {
+    componentLayouts,
+    getComponentLayout,
+    setComponentLayout,
+    updateComponentLayout,
+    removeComponentLayout,
+    clearComponentLayouts,
+    getAllComponentLayouts,
   };
 };
 
