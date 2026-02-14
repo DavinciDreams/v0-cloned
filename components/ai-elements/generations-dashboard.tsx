@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, Fragment as ReactFragment } from "react";
 import { DownloadIcon, ImageDownIcon, Trash2Icon, CheckSquare, Square, LayersIcon, SearchIcon, FilterIcon, MoreVerticalIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -338,7 +338,7 @@ export function GenerationsDashboard({ isOpen, onClose }: GenerationsDashboardPr
   const allSelected = filteredComponents.length > 0 && selectedCount === filteredComponents.length;
 
   return (
-    <>
+    <ReactFragment>
       <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl max-h-[80vh] overflow-hidden flex flex-col">
         <DialogHeader className="flex-shrink-0">
@@ -596,6 +596,7 @@ export function GenerationsDashboard({ isOpen, onClose }: GenerationsDashboardPr
           </div>
         </DialogFooter>
       </DialogContent>
+      </Dialog>
 
       {/* Confirmation Dialog */}
       <Dialog open={confirmDialogOpen} onOpenChange={setConfirmDialogOpen}>
@@ -638,7 +639,7 @@ export function GenerationsDashboard({ isOpen, onClose }: GenerationsDashboardPr
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </>
+    </ReactFragment>
   );
 }
 
