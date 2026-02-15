@@ -72,21 +72,27 @@ const matchJsxTag = (code: string) => {
 };
 
 const completeJsxTag = (code: string) => {
+  console.log('[completeJsxTag] Input code:', code);
+  
+  // Remove empty JSX expressions like {} that cause JSXEmptyExpression errors
+  const cleanedCode = code.replace(/\{\}/g, '');
+  console.log('[completeJsxTag] Cleaned code (removed empty expressions):', cleanedCode);
+  
   const stack: string[] = [];
   let result = "";
   let currentPosition = 0;
 
-  while (currentPosition < code.length) {
-    const match = matchJsxTag(code.slice(currentPosition));
+  while (currentPosition < cleanedCode.length) {
+    const match = matchJsxTag(cleanedCode.slice(currentPosition));
     if (!match) {
       // No more tags found, append remaining content
-      result += code.slice(currentPosition);
+      result += cleanedCode.slice(currentPosition);
       break;
     }
     const { tagName, type, endIndex } = match;
-
+    
     // Include any text content before this tag
-    result += code.slice(currentPosition, currentPosition + endIndex);
+    result += cleanedCode.slice(currentPosition, currentPosition + endIndex);
 
     if (type === "opening") {
       stack.push(tagName);
@@ -97,13 +103,15 @@ const completeJsxTag = (code: string) => {
     currentPosition += endIndex;
   }
 
-  return (
+  const finalResult = (
     result +
     stack
       .toReversed()
       .map((tag) => `</${tag}>`)
       .join("")
   );
+  console.log('[completeJsxTag] Output:', finalResult);
+  return finalResult;
 };
 
 export type JSXPreviewProps = ComponentProps<"div"> & {
@@ -169,6 +177,11 @@ export const JSXPreviewContent = memo(
       useJSXPreview();
     const errorReportedRef = useRef<string | null>(null);
 
+    // Debug: Log the JSX being parsed
+    useEffect(() => {
+      console.log('[JSXPreviewContent] Parsed JSX:', processedJsx);
+    }, [processedJsx]);
+
     // Reset error tracking when jsx changes
     // biome-ignore lint/correctness/useExhaustiveDependencies: processedJsx change should reset tracking
     useEffect(() => {
@@ -189,12 +202,16 @@ export const JSXPreviewContent = memo(
       [processedJsx, onErrorProp, setError]
     );
 
+    // Clean the processed JSX to remove empty expressions that cause JSXEmptyExpression errors
+    const cleanedJsx = processedJsx.replace(/\{\}/g, '');
+    console.log('[JSXPreviewContent] Cleaned JSX:', cleanedJsx);
+    
     return (
       <div className={cn("jsx-preview-content", className)} {...props}>
         <JsxParser
           bindings={bindings}
           components={components}
-          jsx={processedJsx}
+          jsx={cleanedJsx}
           onError={handleError}
           renderInWrapper={false}
         />
