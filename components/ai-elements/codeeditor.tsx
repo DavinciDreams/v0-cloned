@@ -39,7 +39,7 @@ import type {
 
 // --- Types ---
 
-export type CodeEditorProps = ComponentProps<"div"> & {
+export type CodeEditorProps = Omit<ComponentProps<"div">, "onChange"> & {
   data: CodeEditorData;
   options?: CodeEditorOptions;
   onChange?: (code: string) => void;
@@ -111,11 +111,19 @@ const getTheme = (themeName?: CodeEditorTheme) => {
 
 export const CodeEditor = memo(
   forwardRef<HTMLDivElement, CodeEditorProps>(
-    ({ data, options = {}, onChange, className, children, ...props }, ref) => {
+    ({ data, options: optionsProp, onChange, className, children, ...props }, ref) => {
       // Defensive check: if data is undefined, provide default empty code
       const safeData = data || { code: '' };
       const initialCode = safeData.code || '';
-      
+
+      // Provide default values for options to ensure width/height exist
+      const defaultOptions: CodeEditorOptions = {
+        width: "100%",
+        height: 600,
+        ...optionsProp,
+      };
+      const options = defaultOptions;
+
       const [code, setCode] = useState(initialCode);
       const [isFullscreen, setIsFullscreen] = useState(false);
 
@@ -137,6 +145,9 @@ export const CodeEditor = memo(
         onChange,
       };
 
+      const width = options.width;
+      const height = options.height;
+
       return (
         <CodeEditorContext.Provider value={value}>
           <div
@@ -147,8 +158,8 @@ export const CodeEditor = memo(
               className
             )}
             style={{
-              width: options.width || "100%",
-              height: options.height || 600,
+              width,
+              height,
             }}
             {...props}
           >
