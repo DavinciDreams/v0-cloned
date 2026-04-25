@@ -260,6 +260,7 @@ export const GenerativeMessage = memo(
               <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
             </span>
             <span>Generating...</span>
+            <span className="sr-only" aria-live="polite">AI is generating a response</span>
           </div>
         )}
       </div>

@@ -1,4 +1,5 @@
 import { getMafConfig } from '@/lib/maf/config';
+import { auth } from '@clerk/nextjs/server';
 
 /**
  * API route that proxies chat requests to a maf-standalone backend.
@@ -9,6 +10,14 @@ import { getMafConfig } from '@/lib/maf/config';
  * - { messages: [...] } (Vercel AI SDK format)
  */
 export async function POST(request: Request) {
+  const { userId } = await auth();
+  if (!userId) {
+    return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+      status: 401,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
+
   const config = getMafConfig();
 
   if (!config.enabled) {
