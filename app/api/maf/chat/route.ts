@@ -10,10 +10,17 @@ import { auth } from '@clerk/nextjs/server';
  * - { messages: [...] } (Vercel AI SDK format)
  */
 export async function POST(request: Request) {
-  const { userId } = await auth();
-  if (!userId) {
-    return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-      status: 401,
+  try {
+    const { userId } = await auth();
+    if (!userId) {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+        status: 401,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+  } catch {
+    return new Response(JSON.stringify({ error: 'Authentication error' }), {
+      status: 500,
       headers: { 'Content-Type': 'application/json' },
     });
   }

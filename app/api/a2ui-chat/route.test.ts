@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { POST } from './route';
 
 vi.mock('@clerk/nextjs/server', () => ({
@@ -30,6 +30,10 @@ function makeStreamBody(): ReadableStream<Uint8Array> {
 
 beforeEach(() => {
   vi.resetAllMocks();
+});
+
+afterEach(() => {
+  vi.unstubAllGlobals();
 });
 
 describe('POST /api/a2ui-chat — auth', () => {
