@@ -1,8 +1,19 @@
 # A2UI Component Mapping
 
+> **Accuracy note**: This document reflects the component mapping at an earlier point in development and
+> is provided for historical reference. The authoritative sources are:
+>
+> - `lib/a2ui/catalog.ts` and `lib/a2ui/catalog-standard-ui.ts` — the AI's component registry
+> - `lib/a2ui/renderer.tsx` — the renderer's component map (`SPECIALIZED_COMPONENTS` set + `a2uiComponents`)
+>
+> **Total component count: 114+** (as of last registry validation — 22 AI Elements, 16 Tool UI, 76 Standard UI).
+> The status tables below predate the Tool UI category and show many components as pending that are now complete.
+> Do not use the completion percentages here as a source of truth.
+
 This document maps all available components across three categories:
+
 1. **Standard UI Adapters** (76 from a2ui-bridge)
-2. **Custom Specialized Components** (11 existing)
+2. **Custom Specialized Components** (expanded to 38 AI Elements + Tool UI)
 3. **AI Elements** (70+ to be adapted)
 
 ## Status Legend

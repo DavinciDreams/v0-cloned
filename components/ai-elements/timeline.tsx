@@ -158,8 +158,20 @@ export const Timeline = forwardRef<TimelineRef, TimelineProps>(
         : 'timeline-ssr'
     );
 
-    // Expose ref
-    useImperativeHandle(ref, () => timelineRef.current as TimelineRef, []);
+    // Expose ref — delegate to timelineInstanceRef so the handle is valid
+    // immediately at mount (before async initialization completes).
+    useImperativeHandle(ref, () => ({
+      goTo: (slideIndex: number) => timelineInstanceRef.current?.goTo(slideIndex),
+      goToId: (id: string) => timelineInstanceRef.current?.goToId(id),
+      goToNext: () => timelineInstanceRef.current?.goToNext(),
+      goToPrev: () => timelineInstanceRef.current?.goToPrev(),
+      goToStart: () => timelineInstanceRef.current?.goToStart(),
+      goToEnd: () => timelineInstanceRef.current?.goToEnd(),
+      getData: (slideIndex: number) =>
+        timelineInstanceRef.current?.getData(slideIndex) ?? null,
+      getDataById: (id: string) =>
+        timelineInstanceRef.current?.getDataById(id) ?? null,
+    }), []);
 
     const copyToClipboard = useCallback(async () => {
       try {

@@ -1,87 +1,164 @@
 # A2UI Framework Integration
 
-Complete integration of a2ui-bridge adapter pattern with your existing A2UI system, enabling total generative UI with 100+ components.
+Complete integration of the a2ui-bridge adapter pattern with the existing A2UI system, enabling total generative UI with **114+ components** across three categories.
 
-## 📊 Current Status
+---
 
-### ✅ Completed (All Core Tasks)
-- **Adapter Utilities** - Extracted and adapted from a2ui-bridge ✅
-- **Component Adapters** - Created adapters for **76/76 standard UI components (100%)** ✅
-- **Deduplication** - Mapped components to avoid duplication ✅
-- **Catalog System** - Extended catalog with both specialized and standard UI components ✅
-- **Hybrid System** - Ready to render both adapter and composable components ✅
-- **Renderer Integration** - Updated renderer.tsx to use new unified component system ✅
+## Current Status
 
-### 🎯 Next Steps (Optional)
-- **Test AI Generation** - Verify all 87 components work with AI
+### Completed (All Core Tasks)
+
+- **Adapter Utilities** - Extracted and adapted from a2ui-bridge
+- **Component Adapters** - Created adapters for **76/76 standard UI components (100%)**
+- **Deduplication** - Mapped components to avoid duplication
+- **Catalog System** - Extended catalog with AI Elements, Tool UI, and Standard UI components
+- **Hybrid System** - Renders both adapter and composable components
+- **Renderer Integration** - `renderer.tsx` updated to use the unified component system
+
+### Next Steps (Optional)
+
+- **Test AI Generation** - Verify all 114+ components work with AI end-to-end
 - **AI Elements Adapters** - Programmatic adaptation of 70+ AI element components (optional enhancement)
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 
-```
-┌─────────────────────────────────────────────────┐
-│           A2UI Component System                  │
-├─────────────────────────────────────────────────┤
-│                                                  │
-│  📦 Specialized Components (11) ✅              │
-│  ├─ Timeline, Maps, ThreeScene, SVGPreview      │
-│  ├─ NodeEditor, KnowledgeGraph, Latex           │
-│  └─ ModelViewer, Phaser, Mermaid, Remotion      │
-│  Pattern: Composable (complex internal state)   │
-│                                                  │
-│  📦 Standard UI Adapters (76/76) ✅              │
-│  ├─ Layout: Row, Column, Flex, Grid, Card...    │
-│  ├─ Typography: Text, H1-H6, Badge, Label...    │
-│  ├─ Forms: Button, Input, Select, Checkbox...   │
-│  ├─ Feedback: Alert, Progress, Spinner, Toast...│
-│  ├─ Navigation: Tabs, Breadcrumb, Pagination... │
-│  ├─ Data: List, Table, Skeleton, Image...       │
-│  ├─ Disclosure: Accordion, Dialog, Popover...   │
-│  └─ Utility: Separator, ScrollArea, AspectRatio │
-│  Pattern: Adapter (maps to shadcn/ui)           │
-│                                                  │
-│  📦 AI Elements (70+) ⏳                         │
-│  ├─ Chat: message, prompt-input, conversation   │
-│  ├─ Dev: code-block, terminal, file-tree        │
-│  └─ UI: artifact, canvas, panel, toolbar        │
-│  Pattern: To be adapted programmatically        │
-│                                                  │
-└─────────────────────────────────────────────────┘
-```
-
----
-
-## 📁 File Structure
-
-```
-lib/a2ui/
-├── adapter.ts                  # ✅ Adapter utilities (createAdapter, extractValue, etc.)
-├── adapters/
-│   ├── index.ts               # ✅ Complete mapping (76 components listed)
-│   ├── button.tsx             # ✅ Button adapter
-│   ├── card.tsx               # ✅ Card adapter
-│   ├── input.tsx              # ✅ Input/TextField adapter
-│   ├── form.tsx               # ✅ Checkbox, Switch, Textarea, Slider, NumberInput
-│   ├── layout.tsx             # ✅ Row, Column, Flex, Grid, Box, Container, Center
-│   └── typography.tsx         # ✅ Text, H1-H6, Badge, Label, Code, Link, Blockquote
-├── components.ts               # ✅ Unified component registry
-├── catalog.ts                  # ✅ Extended with standard UI components
-├── catalog-standard-ui.ts      # ✅ Standard UI catalog entries
-├── renderer.tsx                # ✅ Updated for hybrid rendering (87 components)
-├── types.ts                    # ✅ Existing type definitions
-├── COMPONENT_MAPPING.md        # ✅ Complete component documentation
-└── README.md                   # ✅ This file
+```text
++--------------------------------------------------+
+|             A2UI Component System                |
++--------------------------------------------------+
+|                                                  |
+|  AI Elements - Data Viz & Interactive (38)       |
+|  +- Timeline, Maps, ThreeScene, SVGPreview       |
+|  +- NodeEditor, KnowledgeGraph, Latex, VRM       |
+|  +- ModelViewer, Phaser, Mermaid, Remotion       |
+|  +- Geospatial, Charts, WYSIWYG, Calendar        |
+|  +- CodeEditor, Markdown, DataTable, JSONViewer  |
+|  +- ImageGallery, ToolUI                         |
+|  Pattern: Composable (Zod-validated, complex     |
+|           internal state + sub-components)       |
+|                                                  |
+|  Tool UI - Specialized Tools (16)                |
+|  +- ApprovalCard, WeatherWidget, StatsDisplay    |
+|  +- ProgressTracker, OptionList, QuestionFlow    |
+|  +- InstagramPost, LinkedInPost, XPost           |
+|  +- LinkPreview, Video, MessageDraft             |
+|  +- ItemCarousel, OrderSummary                   |
+|  +- ParameterSlider, PreferencesPanel            |
+|  Pattern: Composable (same Zod-validated path)   |
+|                                                  |
+|  Standard UI Adapters (76)                       |
+|  +- Layout: Row, Column, Flex, Grid, Card...     |
+|  +- Typography: Text, H1-H6, Badge, Label...     |
+|  +- Forms: Button, Input, Select, Checkbox...    |
+|  +- Feedback: Alert, Progress, Spinner, Toast... |
+|  +- Navigation: Tabs, Breadcrumb, Pagination...  |
+|  +- Data: List, Table, Skeleton, Image...        |
+|  +- Disclosure: Accordion, Dialog, Popover...    |
+|  +- Utility: Separator, ScrollArea, AspectRatio  |
+|  Pattern: Adapter (maps props to shadcn/ui)      |
+|                                                  |
++--------------------------------------------------+
 ```
 
 ---
 
-## 🚀 Usage
+## How the AI Catalog Works
 
-### Creating New Adapters
+This is the most important thing to understand before contributing. If you skip this, you will be confused about why adding a component file alone is not enough.
 
-Use the adapter utilities to wrap any React component:
+### The catalog is the AI's vocabulary
+
+`lib/a2ui/catalog.ts` (and `catalog-standard-ui.ts` for the Standard UI slice) is a registry that defines every component the AI model is allowed to generate. Each entry looks like this:
+
+```typescript
+Charts: {
+  type: 'Charts',
+  description: `Interactive data visualizations using amCharts 5. Supports line, bar,
+    pie, scatter, histogram, heatmap, funnel, gauge, candlestick, and more.`,
+  props: ['data', 'options'],
+  examples: [chartsExamples]  // array of ComponentExample objects
+}
+```
+
+The entry has four parts:
+
+- **`type`** — must exactly match the key used in the renderer's `SPECIALIZED_COMPONENTS` set and in the `a2uiComponents` map.
+- **`description`** — plain English explanation of what this component does, what variants exist, and any gotchas. This text goes verbatim into the AI system prompt, so write it as if you are instructing the model.
+- **`props`** — list of top-level prop names the component accepts. Used in the prompt to tell the AI what fields to populate.
+- **`examples`** — one or more `ComponentExample` objects, each containing a real A2UI JSON spec. These are included in the prompt as concrete generation examples. A good example is worth more than a long description.
+
+### getCatalogPrompt() builds the system prompt section
+
+`getCatalogPrompt()` in `catalog.ts` iterates over every entry in `specializedCatalog` and `standardUICatalog`, then assembles a formatted string that looks like:
+
+```text
+You can generate interactive UIs using 114 components across two categories:
+
+## SPECIALIZED COMPONENTS (Data Visualization & Interactive)
+
+1. Charts
+   Description: Interactive data visualizations using amCharts 5...
+   Props: data, options
+
+   Example A2UI spec:
+   { "id": "charts-1", "component": { "Charts": { ... } } }
+
+...
+```
+
+### The system prompt includes this catalog
+
+In `app/api/chat/route.ts`, `getSystemPrompt()` calls `getCatalogPrompt()` and injects the result directly into the system prompt sent to the model on every request:
+
+```typescript
+function getSystemPrompt(): string {
+  const catalogPrompt = getCatalogPrompt();
+  return `You are an expert UI component generator...
+
+${catalogPrompt}
+
+...`;
+}
+```
+
+This means the AI knows about a component **only if it has a catalog entry**. A component that exists in the renderer but has no catalog entry is invisible to the model. Conversely, a catalog entry with no renderer registration will generate JSON that the renderer cannot render. Both sides must be kept in sync.
+
+### The data flow end to end
+
+```text
+User message
+    |
+    v
+app/api/chat/route.ts
+    |  injects getCatalogPrompt() into system prompt
+    v
+AI model generates A2UI JSON:
+    { "surfaceUpdate": { "components": [ { "id": "...", "component": { "Charts": { ... } } } ] } }
+    |
+    v
+A2UIRenderer (renderer.tsx)
+    |  looks up "Charts" in SPECIALIZED_COMPONENTS set
+    |  runs Zod validation via validateProps()
+    |  renders <Charts> composable component tree
+    v
+React component displayed in browser
+```
+
+---
+
+## Adding a New Component
+
+Follow these steps in order. Skipping one will leave either the AI or the renderer in a broken state.
+
+### Step 1: Create the React component
+
+Place it in `components/ai-elements/` for AI Elements, or `components/tool-ui/` for Tool UI components. Keep it a self-contained composable component with sub-components (Header, Content, Actions, etc.) following the pattern of existing components like `Charts` or `Calendar`.
+
+### Step 2: Create the A2UI adapter (Standard UI only)
+
+If your component is a Standard UI component (wraps a shadcn primitive), create an adapter in `lib/a2ui/adapters/`:
 
 ```typescript
 import { createAdapter, extractValue, createActionHandler } from '@/lib/a2ui/adapter';
@@ -89,7 +166,6 @@ import { YourComponent } from '@/components/ui/your-component';
 
 export const YourComponentAdapter = createAdapter(YourComponent, {
   mapProps: (a2ui, ctx) => ({
-    // Map A2UI properties to component props
     title: extractValue(a2ui.title),
     onClick: createActionHandler(a2ui.action, ctx),
     disabled: extractValue(a2ui.disabled) ?? false,
@@ -99,24 +175,26 @@ export const YourComponentAdapter = createAdapter(YourComponent, {
 });
 ```
 
-### Using in Catalog
+For AI Elements and Tool UI, the composable component itself is the adapter — no separate adapter file needed.
 
-Add component to catalog for AI discovery:
+### Step 3: Register in the catalog
+
+Add an entry to `lib/a2ui/catalog.ts` (for AI Elements / Tool UI) or `lib/a2ui/catalog-standard-ui.ts` (for Standard UI):
 
 ```typescript
-// In catalog-standard-ui.ts
 YourComponent: {
   type: 'YourComponent',
-  description: 'Your component description for AI',
-  props: ['title', 'action', 'disabled'],
+  description: 'Describe what this component renders and when to use it. ' +
+    'Include supported variants, any gotchas, and data format notes.',
+  props: ['data', 'options'],
   examples: [{
-    description: 'Example usage',
+    description: 'Basic usage example',
     spec: {
-      id: 'example-1',
+      id: 'yourcomponent-1',
       component: {
         YourComponent: {
-          title: { literalString: 'Hello' },
-          action: { name: 'onClick' }
+          data: { title: 'Hello', content: 'World' },
+          options: { height: 400 }
         }
       }
     }
@@ -124,159 +202,214 @@ YourComponent: {
 }
 ```
 
-### Register in Component Mapping
+Write the description as if you are instructing the AI model — it will appear verbatim in the system prompt. Be specific about required fields, coordinate formats, enum values, and anything the model commonly gets wrong.
+
+### Step 4: Register in the renderer
+
+Open `lib/a2ui/renderer.tsx` and do two things:
+
+1. Add your component type to the `SPECIALIZED_COMPONENTS` set (AI Elements / Tool UI) or ensure it is in the adapter map via `a2uiComponents` (Standard UI).
+2. Add a `case` to the `switch` statement in `renderA2UIComponent()` that validates props with `validateProps()` and renders the composable sub-component tree:
 
 ```typescript
-// In adapters/index.ts
-import { YourComponentAdapter } from './your-component';
+case 'YourComponent': {
+  const yourProps = validation.data as YourComponentProps;
+  return (
+    <div key={componentId} data-a2ui-id={componentId} data-a2ui-type={componentType}>
+      <YourComponent {...yourProps}>
+        <YourComponentHeader>
+          <YourComponentTitle />
+          <YourComponentActions>
+            <YourComponentCopyButton />
+            <YourComponentFullscreenButton />
+          </YourComponentActions>
+        </YourComponentHeader>
+        <YourComponentContent />
+      </YourComponent>
+    </div>
+  );
+}
+```
 
-export const shadcnAdapters: ComponentMapping = {
-  // ... other adapters
-  YourComponent: YourComponentAdapter,
+### Step 5: Add a test
+
+Create a test in `__tests__/` that at minimum verifies the component renders without throwing given a valid A2UI spec. Follow the patterns in existing test files.
+
+### Step 6: Verify
+
+```bash
+npm run test:run
+```
+
+All existing tests must still pass. If you touched the catalog, also do a manual smoke test in the app to confirm the AI generates valid JSON for your component and the renderer displays it correctly.
+
+---
+
+## Known Limitation: Action Handling is a TODO
+
+Interactive elements — `onClick`, `onChange`, form submissions, approval card buttons, option list selections — **render correctly but do not fire events back to the AI or update application state**.
+
+The `handleAction` function in `renderer.tsx` currently just logs to the console:
+
+```typescript
+const handleAction = (action: unknown) => {
+  console.log('[A2UI] Action:', action);
+  // TODO: Implement action handling (e.g., send to AI, update state, etc.)
 };
+```
+
+This is a known gap, not a bug. If you are building a component that requires interactive callbacks (confirmation dialogs, multi-step flows, form submissions), be aware that the UI will render but the interactions will be silent until this is implemented. Tracking issue: search the codebase for `TODO: Implement action handling`.
+
+---
+
+## File Structure
+
+```text
+lib/a2ui/
++-- adapter.ts                  # Adapter utilities (createAdapter, extractValue, etc.)
++-- adapters/
+|   +-- index.ts               # Complete adapter mapping (76 Standard UI components)
+|   +-- button.tsx             # Button adapter
+|   +-- card.tsx               # Card adapter
+|   +-- input.tsx              # Input/TextField adapter
+|   +-- form.tsx               # Checkbox, Switch, Textarea, Slider, NumberInput
+|   +-- layout.tsx             # Row, Column, Flex, Grid, Box, Container, Center
+|   +-- typography.tsx         # Text, H1-H6, Badge, Label, Code, Link, Blockquote
++-- components.ts               # Unified component registry
++-- catalog.ts                  # AI Elements + Tool UI catalog entries; exports getCatalogPrompt()
++-- catalog-standard-ui.ts      # Standard UI catalog entries
++-- renderer.tsx                # Hybrid renderer (114+ components)
++-- types.ts                    # Type definitions
++-- COMPONENT_MAPPING.md        # Component mapping reference (see accuracy note there)
++-- README.md                   # This file
 ```
 
 ---
 
-## 📈 Implementation Status
+## Implementation Status
 
-### Standard UI Components (76 total)
+### AI Elements (22 components)
 
-| Category | Status | Progress |
-|----------|--------|----------|
-| Layout (12) | ✅ | 12/12 (100%) |
-| Typography (16) | ✅ | 16/16 (100%) |
-| Forms (13) | ✅ | 13/13 (100%) |
-| Feedback (5) | ✅ | 5/5 (100%) |
-| Navigation (4) | ✅ | 4/4 (100%) |
-| Data Display (6) | ✅ | 6/6 (100%) |
-| Disclosure (8) | ✅ | 8/8 (100%) |
-| Utility (3) | ✅ | 3/3 (100%) |
-| **Total** | **✅** | **76/76 (100%)** |
+| Component | Category | Status |
+| --------- | -------- | ------ |
+| Timeline | Data Viz | Complete |
+| Maps | Data Viz | Complete |
+| Geospatial | Data Viz | Complete |
+| Charts | Data Viz | Complete |
+| KnowledgeGraph | Data Viz | Complete |
+| NodeEditor | Data Viz | Complete |
+| ThreeScene | 3D | Complete |
+| ModelViewer | 3D | Complete |
+| VRM | 3D | Complete |
+| Phaser | Game | Complete |
+| Remotion | Video | Complete |
+| SVGPreview | Media | Complete |
+| ImageGallery | Media | Complete |
+| Calendar | Scheduling | Complete |
+| DataTable | Data | Complete |
+| JSONViewer | Data | Complete |
+| CodeEditor | Dev | Complete |
+| Markdown | Content | Complete |
+| WYSIWYG | Content | Complete |
+| Latex | Math | Complete |
+| Mermaid | Diagram | Complete |
+| ToolUI | Dev | Complete |
 
-### Specialized Components (11 total)
+### Tool UI (16 components)
 
 | Component | Status |
-|-----------|--------|
-| Timeline | ✅ |
-| Maps | ✅ |
-| ThreeScene | ✅ |
-| SVGPreview | ✅ |
-| NodeEditor | ✅ |
-| KnowledgeGraph | ✅ |
-| Latex | ✅ |
-| ModelViewer | ✅ |
-| Phaser | ✅ |
-| Mermaid | ✅ |
-| Remotion | ✅ |
+| --------- | ------ |
+| ApprovalCard | Complete |
+| WeatherWidget | Complete |
+| StatsDisplay | Complete |
+| ProgressTracker | Complete |
+| OptionList | Complete |
+| QuestionFlow | Complete |
+| InstagramPost | Complete |
+| LinkedInPost | Complete |
+| XPost | Complete |
+| LinkPreview | Complete |
+| Video | Complete |
+| MessageDraft | Complete |
+| ItemCarousel | Complete |
+| OrderSummary | Complete |
+| ParameterSlider | Complete |
+| PreferencesPanel | Complete |
+
+### Standard UI Adapters (76 components)
+
+| Category | Progress |
+| -------- | -------- |
+| Layout (12) | 12/12 (100%) |
+| Typography (16) | 16/16 (100%) |
+| Forms (13) | 13/13 (100%) |
+| Feedback (5) | 5/5 (100%) |
+| Navigation (4) | 4/4 (100%) |
+| Data Display (6) | 6/6 (100%) |
+| Disclosure (8) | 8/8 (100%) |
+| Utility (3) | 3/3 (100%) |
+| **Total** | **76/76 (100%)** |
 
 ---
 
-## 🎯 Next Steps
+## Renderer Integration
 
-### High Priority
-1. ✅ **Complete Renderer Update** - Modified `renderer.tsx` to handle both adapter and composable components
-2. ✅ **Finish Form Adapters** - Select, RadioGroup, MultiSelect, DateTimeInput, ActionIcon
-3. ✅ **Add Feedback Components** - Alert, Progress, Spinner, Toast, Tooltip
-4. ✅ **Add Navigation Components** - Tabs, Breadcrumb, Pagination
-
-### Medium Priority
-5. ✅ **Add Data Display** - List, Table, Skeleton
-6. ✅ **Add Disclosure** - Accordion, Dialog, Sheet, Popover, DropdownMenu
-7. ✅ **Add Utility** - Separator, ScrollArea, AspectRatio
-8. **Test AI Generation** - Verify all 87 components work with AI
-9. **Create AI Element Adapters** - Programmatically adapt simple AI elements (optional)
-
-### Low Priority
-9. **Testing** - Create test cases for adapters
-10. **Documentation** - Add more examples to catalog
-11. **Optimization** - Performance testing and optimization
-
----
-
-## 🔧 Renderer Integration ✅
-
-The renderer has been updated to handle both patterns:
+The renderer handles both the composable pattern (AI Elements + Tool UI) and the adapter pattern (Standard UI) in a single `renderA2UIComponent` function.
 
 ```typescript
-// Hybrid rendering implementation
+// Hybrid rendering - simplified overview
 function renderA2UIComponent(
   component: A2UIComponent,
   componentsMap?: Map<string, A2UIComponent>,
-  onAction?: (action: any) => void
+  onAction?: (action: unknown) => void
 ): React.ReactNode {
   const [componentType, props] = Object.entries(component.component)[0];
   const ComponentAdapter = a2uiComponents[componentType];
 
-  // Check if it's a specialized composable component
+  // SPECIALIZED_COMPONENTS: Zod validation + composable sub-component tree
   if (SPECIALIZED_COMPONENTS.has(componentType)) {
-    // Use Zod validation and composable pattern
     const validation = validateProps(componentType, props);
-    // ... render with complex sub-components
+    // ... switch/case renders the correct composable tree
   }
 
-  // Otherwise, use adapter pattern
-  // Build children from component references
-  // Render using ComponentAdapter with extracted props
+  // Standard UI: resolve children by ID, render via adapter
+  return (
+    <ComponentAdapter node={a2uiNode} onAction={onAction} ...>
+      {children}
+    </ComponentAdapter>
+  );
 }
 ```
 
-**Key Features:**
-- ✅ Supports all 87 components (11 specialized + 76 standard UI)
-- ✅ Recursive child component rendering
-- ✅ Action handling for interactive components
-- ✅ Error boundaries with detailed error messages
-- ✅ Component validation with Zod (specialized only)
-- ✅ Dynamic component lookup from registry
+Key properties of the renderer:
+
+- Supports all 114+ components (38 AI Elements / Tool UI + 76 Standard UI)
+- Recursive child component rendering for Standard UI (children resolved by ID from `componentsMap`)
+- Zod validation for all AI Elements and Tool UI before rendering
+- `ComponentError` fallback with descriptive messages on validation or render failure
+- `UnknownComponent` fallback for component types not in the registry
 
 ---
 
-## 📚 Resources
-
-- **a2ui-bridge**: https://github.com/southleft/a2ui-bridge
-- **A2UI Protocol**: https://a2ui.org
-- **Component Mapping**: See `COMPONENT_MAPPING.md`
-- **Adapter Examples**: See files in `adapters/` directory
-
----
-
-## 🤝 Contributing
-
-To add a new component:
-
-1. Create adapter in `adapters/[category].tsx`
-2. Export from `adapters/index.ts`
-3. Add catalog entry in `catalog-standard-ui.ts`
-4. Test with AI generation
-5. Update this README with status
-
----
-
-## ✨ Key Features
-
-- ✅ **76 Standard UI Components** mapped from a2ui-bridge
-- ✅ **11 Specialized Components** for data viz and interactive experiences
-- ✅ **Adapter Pattern** for easy component integration
-- ✅ **Type-Safe** with TypeScript
-- ✅ **AI-Ready** catalog with examples
-- ✅ **Deduped** - Single source of truth for each component
-- ✅ **Hybrid Rendering** - Supports both patterns (complete!)
-- ✅ **Unified Registry** - Single component system for all 87 components
-- ✅ **Action Handling** - Interactive components with event handling
-- ⏳ **70+ AI Elements** ready for adaptation (optional)
-
----
-
-## 📊 Total Component Count
+## Total Component Count
 
 | Category | Count | Status |
-|----------|-------|--------|
-| Specialized | 11 | ✅ Complete |
-| Standard UI | 76 | ✅ Complete |
-| Renderer | 1 | ✅ Complete |
-| AI Elements | 0/70+ | ⏳ Optional |
-| **TOTAL** | **87/157+** | **✅ Core Complete** |
+| -------- | ----- | ------ |
+| AI Elements | 22 | Complete |
+| Tool UI | 16 | Complete |
+| Standard UI Adapters | 76 | Complete |
+| **Total** | **114+** | **Core Complete** |
 
-**Goal**: 100+ components for total generative UI
-**Current**: 87 components ready (all core components complete!)
-**Progress**: 87/100+ (87% to first milestone)
+The 70+ raw AI Elements from the a2ui-bridge spec remain available for optional adaptation.
+
+---
+
+## Resources
+
+- **a2ui-bridge**: [https://github.com/southleft/a2ui-bridge](https://github.com/southleft/a2ui-bridge)
+- **A2UI Protocol**: [https://a2ui.org](https://a2ui.org)
+- **Component Mapping**: See `COMPONENT_MAPPING.md`
+- **Adapter Examples**: See files in `adapters/` directory
+- **Catalog entry point**: `lib/a2ui/catalog.ts` — `getCatalogPrompt()` is exported from here
+- **Renderer entry point**: `lib/a2ui/renderer.tsx` — `A2UIRenderer` and `renderA2UIComponent`
+- **System prompt integration**: `app/api/chat/route.ts` — `getSystemPrompt()` calls `getCatalogPrompt()`
