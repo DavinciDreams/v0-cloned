@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { ClerkProvider, SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
+import Link from "next/link";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -91,21 +92,53 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-      <html lang="en">
+      <html lang="en" className="h-full">
         <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+          className={`${geistSans.variable} ${geistMono.variable} antialiased h-full flex flex-col`}
         >
-          <header className="border-b border-border bg-background px-4 py-3 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <h1 className="text-lg font-semibold">Generous</h1>
-              <span className="text-xs text-muted-foreground hidden sm:inline">
-                The Universal Canvas for AI
-              </span>
-            </div>
-            <div>
+          {/* Glass header — sits above all page content */}
+          <header
+            className="flex-shrink-0 px-4 py-3 flex items-center justify-between z-50 relative"
+            style={{
+              background: "oklch(1 0 0 / 0.06)",
+              backdropFilter: "blur(20px) saturate(180%)",
+              WebkitBackdropFilter: "blur(20px) saturate(180%)",
+              borderBottom: "1px solid oklch(1 0 0 / 0.12)",
+            }}
+          >
+            <Link href="/" className="flex items-center gap-3 group">
+              {/* Logo mark */}
+              <div
+                className="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold"
+                style={{
+                  background: "linear-gradient(135deg, oklch(0.62 0.26 285), oklch(0.58 0.24 310))",
+                  boxShadow: "0 0 12px oklch(0.62 0.26 285 / 0.4)",
+                }}
+              >
+                G
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-semibold text-foreground group-hover:text-gradient-primary transition-all">
+                  Generous
+                </span>
+                <span className="text-xs text-muted-foreground hidden sm:inline opacity-70">
+                  Universal Canvas for AI
+                </span>
+              </div>
+            </Link>
+
+            <div className="flex items-center gap-3">
               <SignedOut>
                 <SignInButton mode="modal">
-                  <button aria-label="Sign in to Generous" className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 h-9 px-4 py-2 bg-primary text-primary-foreground hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
+                  <button
+                    aria-label="Sign in to Generous"
+                    className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium transition-all h-8 px-4"
+                    style={{
+                      background: "linear-gradient(135deg, oklch(0.62 0.26 285), oklch(0.58 0.24 310))",
+                      color: "oklch(0.98 0.01 270)",
+                      boxShadow: "0 0 16px oklch(0.62 0.26 285 / 0.35)",
+                    }}
+                  >
                     Sign In
                   </button>
                 </SignInButton>
@@ -114,14 +147,18 @@ export default function RootLayout({
                 <UserButton
                   appearance={{
                     elements: {
-                      avatarBox: "w-9 h-9"
-                    }
+                      avatarBox: "w-8 h-8 ring-2 ring-white/20",
+                    },
                   }}
                 />
               </SignedIn>
             </div>
           </header>
-          {children}
+
+          {/* Page content — fills remaining viewport height */}
+          <div className="flex-1 min-h-0 overflow-auto relative z-10">
+            {children}
+          </div>
         </body>
       </html>
     </ClerkProvider>

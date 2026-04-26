@@ -170,7 +170,7 @@ const navGroups = [
     ],
   },
   {
-    label: "🔧 Development",
+    label: "Development",
     links: [
       { href: "/codeeditor-test", name: "Code Editor" },
       { href: "/jsonviewer-test", name: "JSON Viewer" },
@@ -180,7 +180,7 @@ const navGroups = [
     ],
   },
   {
-    label: "🎬 Multimedia",
+    label: "Multimedia",
     links: [
       { href: "/toolui-test", name: "Images & Video" },
       { href: "/imagegallery-test", name: "Image Gallery" },
@@ -189,7 +189,7 @@ const navGroups = [
     ],
   },
   {
-    label: "🎮 3D & Games",
+    label: "3D & Games",
     links: [
       { href: "/threescene-test", name: "Three.js" },
       { href: "/phaser-test", name: "Phaser" },
@@ -198,7 +198,7 @@ const navGroups = [
     ],
   },
   {
-    label: "📊 Productivity",
+    label: "Productivity",
     links: [
       { href: "/wysiwyg-test", name: "WYSIWYG" },
       { href: "/calendar-test", name: "Calendar" },
@@ -208,27 +208,27 @@ const navGroups = [
     ],
   },
   {
-    label: "🗺️ Maps",
+    label: "Maps",
     links: [
       { href: "/maps-test", name: "Maps" },
       { href: "/geospatial-test", name: "Geospatial" },
     ],
   },
   {
-    label: "📈 Charts",
+    label: "Charts",
     links: [
       { href: "/charts-test", name: "Charts" },
       { href: "/timeline-test", name: "Timeline" },
     ],
   },
   {
-    label: "📱 Social",
+    label: "Social",
     links: [
       { href: "/toolui-test", name: "Social Media Posts" },
     ],
   },
   {
-    label: "📝 Forms",
+    label: "Forms",
     links: [
       { href: "/forms-showcase", name: "Forms Showcase" },
     ],
@@ -252,13 +252,11 @@ export default function Page() {
   const handleSubmit = useCallback(async (message: PromptInputMessage, event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const prompt = message.text.trim();
-    
+
     if (!prompt) return;
 
-    // Clear any previous errors
     setError(null);
 
-    // Add user message
     const userMessageId = nanoid();
     addMessage({
       id: userMessageId,
@@ -267,7 +265,6 @@ export default function Page() {
       timestamp: Date.now(),
     });
 
-    // Create assistant message placeholder for streaming
     const assistantMessageId = nanoid();
     addMessage({
       id: assistantMessageId,
@@ -276,23 +273,19 @@ export default function Page() {
       timestamp: Date.now(),
     });
 
-    // Set loading state
     setLoading(true);
 
     try {
-      // Prepare messages for API
       const apiMessages = messages.map((msg) => ({
         role: msg.role,
         content: msg.content,
       }));
 
-      // Add current user message
       apiMessages.push({
         role: "user",
         content: prompt,
       });
 
-      // Call streaming API
       console.log("Sending chat request with", apiMessages.length, "messages");
       const response = await fetch("/api/chat", {
         method: "POST",
@@ -313,7 +306,6 @@ export default function Page() {
         throw new Error(errorData.error || "Failed to get response");
       }
 
-      // Stream the response
       const reader = response.body?.getReader();
       const decoder = new TextDecoder();
       let fullContent = "";
@@ -337,7 +329,6 @@ export default function Page() {
             console.log("Received", chunkCount, "chunks, content length:", fullContent.length);
           }
 
-          // Update message with streaming content
           updateMessage(assistantMessageId, {
             content: fullContent,
           });
@@ -350,8 +341,7 @@ export default function Page() {
       console.error("Chat error:", err);
       const errorMessage = err instanceof Error ? err.message : "An unexpected error occurred";
       setError(errorMessage);
-      
-      // Update assistant message with error
+
       updateMessage(assistantMessageId, {
         content: `I apologize, but I encountered an error: ${errorMessage}`,
       });
@@ -376,33 +366,43 @@ export default function Page() {
   // Render
   // =====================
   return (
-    <div className="flex h-screen w-full flex-col bg-background">
-      {/* Navigation Bar */}
-      <div className="border-b bg-background flex-shrink-0">
+    // h-full fills the flex-1 wrapper in layout.tsx — fixes the off-screen input bug
+    <div className="flex h-full w-full flex-col">
+      {/* Components navigation bar */}
+      <div
+        className="flex-shrink-0"
+        style={{
+          background: "oklch(1 0 0 / 0.04)",
+          backdropFilter: "blur(12px)",
+          WebkitBackdropFilter: "blur(12px)",
+          borderBottom: "1px solid oklch(1 0 0 / 0.10)",
+        }}
+      >
         <div className="mx-auto max-w-5xl px-4">
-          <div className="flex items-center justify-between h-10">
-            <Link href="/" className="text-sm font-semibold text-foreground whitespace-nowrap">
-              Generous
-            </Link>
+          <div className="flex items-center justify-end h-9">
             <button
               type="button"
               onClick={() => setNavOpen(!navOpen)}
-              className="text-xs text-muted-foreground hover:text-foreground transition-colors px-2 py-1 rounded-md hover:bg-muted"
+              className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors px-3 py-1.5 rounded-lg"
+              style={{ background: navOpen ? "oklch(1 0 0 / 0.08)" : "transparent" }}
             >
-              {navOpen ? "Hide" : "Components"} {navOpen ? "\u25B2" : "\u25BC"}
+              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+              {navOpen ? "Hide components" : "Components"}
             </button>
           </div>
           {navOpen && (
-            <div className="pb-3 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-4 text-xs">
+            <div className="pb-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-4 text-xs">
               {navGroups.map((group) => (
                 <div key={group.label}>
-                  <div className="font-medium text-muted-foreground mb-1.5">{group.label}</div>
+                  <div className="font-medium text-muted-foreground mb-1.5 text-[10px] uppercase tracking-wider">{group.label}</div>
                   <div className="space-y-0.5">
                     {group.links.map((link) => (
                       <Link
                         key={link.href}
                         href={link.href}
-                        className="block text-foreground/80 hover:text-foreground hover:bg-muted rounded px-1.5 py-0.5 transition-colors"
+                        className="block text-foreground/70 hover:text-foreground rounded px-1.5 py-0.5 transition-colors"
                       >
                         {link.name}
                       </Link>
@@ -415,19 +415,28 @@ export default function Page() {
         </div>
       </div>
 
-      {/* Messages Display - Conversation handles scroll behavior */}
+      {/* Messages area — StickToBottom handles auto-scroll to latest message */}
       <Conversation className="flex-1">
         <ConversationContent className="overflow-y-auto">
           <div className="px-4 py-6">
             <div className="mx-auto max-w-3xl space-y-6">
               {messages.length === 0 ? (
-                <div className="flex h-full items-center justify-center">
-                  <div className="text-center">
+                <div className="flex min-h-[40vh] items-center justify-center">
+                  <div className="text-center space-y-3">
+                    <div
+                      className="mx-auto w-14 h-14 rounded-2xl flex items-center justify-center text-2xl mb-4"
+                      style={{
+                        background: "oklch(0.62 0.26 285 / 0.15)",
+                        border: "1px solid oklch(0.62 0.26 285 / 0.30)",
+                      }}
+                    >
+                      ✨
+                    </div>
                     <h2 className="text-2xl font-semibold text-foreground">
                       Ask for anything.
                     </h2>
-                    <p className="mt-2 text-muted-foreground">
-                      The universal canvas for AI.
+                    <p className="text-muted-foreground max-w-xs">
+                      Charts, 3D scenes, maps, code, timelines — watch it render live.
                     </p>
                   </div>
                 </div>
@@ -468,12 +477,31 @@ export default function Page() {
         </ConversationContent>
       </Conversation>
 
-      {/* Prompt Input - OUTSIDE Conversation to prevent overflow issues */}
-      <div className="border-t bg-background p-4 flex-shrink-0">
+      {/* Prompt input — pinned to bottom, always visible */}
+      <div
+        className="flex-shrink-0 px-4 py-4"
+        style={{
+          background: "oklch(1 0 0 / 0.04)",
+          backdropFilter: "blur(20px) saturate(180%)",
+          WebkitBackdropFilter: "blur(20px) saturate(180%)",
+          borderTop: "1px solid oklch(1 0 0 / 0.10)",
+        }}
+      >
         <div className="mx-auto max-w-3xl">
-          <PromptInput onSubmit={handleSubmit}>
-            <PromptInputTextarea placeholder="What would you like to know?" />
-          </PromptInput>
+          <div
+            className="rounded-2xl overflow-hidden"
+            style={{
+              background: "oklch(1 0 0 / 0.06)",
+              backdropFilter: "blur(16px)",
+              WebkitBackdropFilter: "blur(16px)",
+              border: "1px solid oklch(1 0 0 / 0.15)",
+              boxShadow: "0 4px 24px oklch(0 0 0 / 0.3), inset 0 1px 0 oklch(1 0 0 / 0.10)",
+            }}
+          >
+            <PromptInput onSubmit={handleSubmit}>
+              <PromptInputTextarea placeholder="Ask for anything — a chart, a map, a 3D scene, code..." />
+            </PromptInput>
+          </div>
         </div>
       </div>
     </div>
