@@ -13,18 +13,6 @@ import {
   highlightCode,
 } from './code-block';
 
-// Mock clipboard at module level
-const clipboardWriteTextMock = vi.fn(() => Promise.resolve());
-const clipboardReadTextMock = vi.fn(() => Promise.resolve(''));
-
-Object.defineProperty(navigator, 'clipboard', {
-  value: {
-    writeText: clipboardWriteTextMock,
-    readText: clipboardReadTextMock,
-  },
-  writable: false,
-  configurable: true,
-});
 
 // Mock shiki
 vi.mock('shiki', () => ({
@@ -52,10 +40,19 @@ const sampleCode = `function hello() {
 const pythonCode = `def hello():
     print("Hello, World!")`;
 
+// vitest.setup.ts installs navigator.clipboard as an own property with vi.fn() mocks.
+// Replacing navigator.clipboard via Object.defineProperty doesn't work reliably because
+// happy-dom may return the original object via its prototype getter regardless.
+// Instead we mutate writeText directly on the existing clipboard object each beforeEach,
+// and keep a local reference so assertions don't depend on navigator.clipboard identity.
+let writeTextMock: ReturnType<typeof vi.fn>;
+
 describe('CodeBlock', () => {
   beforeEach(() => {
-    // Clear clipboard mock calls before each test
     vi.clearAllMocks();
+    writeTextMock = vi.fn().mockResolvedValue(undefined);
+    // Mutate the clipboard object that setup.ts installed in-place.
+    (navigator.clipboard as any).writeText = writeTextMock;
   });
 
   describe('CodeBlock Container', () => {
@@ -222,12 +219,19 @@ describe('CodeBlock', () => {
         </CodeBlock>
       );
 
+      // Spy immediately before click so we intercept the exact call
+      const writeTextSpy = vi
+        .spyOn(navigator.clipboard, 'writeText')
+        .mockResolvedValue(undefined);
+
       const button = screen.getByRole('button');
       await user.click(button);
 
       await waitFor(() => {
-        expect(clipboardWriteTextMock).toHaveBeenCalledWith(sampleCode);
+        expect(writeTextSpy).toHaveBeenCalledWith(sampleCode);
       });
+
+      writeTextSpy.mockRestore();
     });
 
     it('shows check icon after successful copy', async () => {
@@ -267,10 +271,7 @@ describe('CodeBlock', () => {
       const user = userEvent.setup();
       const onError = vi.fn();
 
-      // Mock clipboard to fail (use module-level mock)
-      clipboardWriteTextMock.mockRejectedValueOnce(
-        new Error('Copy failed')
-      );
+      writeTextMock.mockRejectedValueOnce(new Error('Copy failed'));
 
       render(
         <CodeBlock code={sampleCode} language="javascript">
@@ -367,15 +368,21 @@ describe('CodeBlock', () => {
   });
 
   describe('highlightCode utility', () => {
+    // Each test uses its own unique string so the module-level tokensCache
+    // is always cold. Sharing the same key would cause test 2 to hit the
+    // cache warm (populated by test 1's async work) and skip the callback.
+    const uniqueCodeForCacheMiss = 'const CACHE_TEST_MISS = "highlightCode-cache-miss";';
+    const uniqueCodeForCallback = 'const CACHE_TEST_CB = "highlightCode-cache-callback";';
+
     it('returns tokenized code synchronously when cached', () => {
-      const result = highlightCode(sampleCode, 'javascript');
+      const result = highlightCode(uniqueCodeForCacheMiss, 'javascript');
       // First call returns null (not cached yet)
       expect(result).toBeNull();
     });
 
     it('calls callback with tokenized code asynchronously', async () => {
       const callback = vi.fn();
-      highlightCode(sampleCode, 'javascript', callback);
+      highlightCode(uniqueCodeForCallback, 'javascript', callback);
 
       await waitFor(() => {
         expect(callback).toHaveBeenCalledWith(
@@ -413,7 +420,7 @@ describe('CodeBlock', () => {
       await user.keyboard('{Enter}');
 
       await waitFor(() => {
-        expect(clipboardWriteTextMock).toHaveBeenCalled();
+        expect(writeTextMock).toHaveBeenCalled();
       });
     });
   });

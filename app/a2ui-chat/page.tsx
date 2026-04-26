@@ -306,7 +306,7 @@ export default function A2UIChatPage() {
   /**
    * Handle Enter key to send message
    */
-  function handleKeyPress(e: React.KeyboardEvent<HTMLInputElement>) {
+  function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       sendMessage();
@@ -320,10 +320,10 @@ export default function A2UIChatPage() {
         <div className="flex items-center gap-2 mb-2">
           <Sparkles className="w-8 h-8 text-purple-500" />
           <h1 className="text-4xl font-bold">A2UI Chat</h1>
-          <Badge variant="default" className="text-xs bg-purple-600">87 Components</Badge>
+          <Badge variant="default" className="text-xs bg-purple-600">114 Components</Badge>
         </div>
         <p className="text-muted-foreground text-lg">
-          Chat with AI to generate UIs using 87 components - specialized visualizations + standard UI
+          Chat with AI to generate UIs using 114 components - specialized visualizations + standard UI
         </p>
       </div>
 
@@ -370,7 +370,7 @@ export default function A2UIChatPage() {
         <Input
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          onKeyPress={handleKeyPress}
+          onKeyDown={handleKeyDown}
           placeholder="Ask AI to generate any UI component..."
           disabled={isLoading}
           className="flex-1"
@@ -379,6 +379,7 @@ export default function A2UIChatPage() {
           onClick={sendMessage}
           disabled={isLoading || !input.trim()}
           size="icon"
+          aria-label="Send message"
         >
           <Send className="w-4 h-4" />
         </Button>

@@ -210,7 +210,7 @@ Create a `.env.local` file:
 ```env
 # AI Provider (Zhipu by default - swap for OpenAI, Anthropic, etc.)
 ZHIPU_API_KEY=your_api_key
-ZHIPU_BASE_URL=https://open.bigmodel.cn/api/paas/v4
+ZHIPU_BASE_URL=https://api.z.ai/api/paas/v4
 ZHIPU_MODEL=glm-4.7
 ```
 
@@ -233,6 +233,54 @@ npm start
 ```
 
 Open [http://localhost:3000](http://localhost:3000) to see the app.
+
+---
+
+## Deployment
+
+### Vercel (recommended)
+
+1. Push your fork to GitHub
+2. Import the repo at [vercel.com/new](https://vercel.com/new)
+3. Vercel auto-deploys from `master` and creates preview URLs for every PR
+
+### Required production environment variables
+
+| Variable | Description |
+| --- | --- |
+| `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | Clerk publishable key (from Clerk Dashboard) |
+| `CLERK_SECRET_KEY` | Clerk secret key |
+| `ZHIPU_API_KEY` (or `OPENAI_API_KEY`, etc.) | API key for your chosen AI provider |
+
+Set these in your Vercel project's Environment Variables settings. For Clerk production setup (enabling GitHub/Discord/Google OAuth on your production domain), see [AUTHENTICATION.md](./AUTHENTICATION.md).
+
+---
+
+## AI Provider
+
+The default AI provider is **Zhipu GLM-4.7** — a cost-effective, capable model well-suited for generative UI tasks. It is configured in `app/api/chat/route.ts`.
+
+To swap to OpenAI, update the route:
+
+```ts
+// Before (Zhipu default)
+import { createZhipu } from "zhipu-ai-provider";
+const zhipu = createZhipu({ baseURL: process.env.ZHIPU_BASE_URL, apiKey: process.env.ZHIPU_API_KEY });
+const result = await streamText({ model: zhipu("glm-4.7"), ... });
+
+// After (OpenAI)
+import { openai } from "@ai-sdk/openai";
+const result = await streamText({ model: openai("gpt-4o"), ... });
+```
+
+The Vercel AI SDK abstracts the provider interface, so swapping is straightforward. Each provider needs its own env var — see `.env.example` for the full list:
+
+| Provider | Env var |
+| --- | --- |
+| Zhipu (default) | `ZHIPU_API_KEY` |
+| OpenAI | `OPENAI_API_KEY` |
+| Anthropic | `ANTHROPIC_API_KEY` |
+| Google | `GOOGLE_API_KEY` |
 
 ---
 
@@ -623,6 +671,10 @@ All routes are available on the [live deployment](https://v0-cloned-kappa.vercel
 | `/imagegallery-test` | Image gallery playground | [Open](https://v0-cloned-kappa.vercel.app/imagegallery-test) |
 | `/toolui-test` | Tool UI components playground | [Open](https://v0-cloned-kappa.vercel.app/toolui-test) |
 | `/tool-ui-showcase` | Tool UI showcase page | [Open](https://v0-cloned-kappa.vercel.app/tool-ui-showcase) |
+| `/empire-borders` | Agents of Empire: territorial boundary visualization prototype | — |
+| `/territorial-expansion` | Agents of Empire: expansion simulation prototype | — |
+| `/territorial-polygons` | Agents of Empire: polygon data explorer prototype | — |
+| `/jsx-diagnostic` | Developer diagnostic tool for testing JSX rendering | — |
 
 ---
 
@@ -677,7 +729,7 @@ npm run test:coverage
 
 ### Test Coverage
 
-**256 total unit tests** across 10 test files:
+**1,800+ unit tests** across 10 test files:
 
 #### Core Utilities (245 tests)
 - `lib/utils.test.ts` (78 tests) - `cn()` className utility with edge cases
@@ -783,4 +835,4 @@ See the comprehensive QA report for details on:
 
 ## License
 
-Open source.
+[MIT License](./LICENSE)

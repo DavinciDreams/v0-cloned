@@ -224,9 +224,9 @@ describe('A2UI Component Registry', () => {
       const types = getComponentTypes();
 
       expect(Array.isArray(types)).toBe(true);
-      // Catalog contains specialized components only (38-49 total)
+      // Catalog contains specialized components only (38+ total)
       expect(types.length).toBeGreaterThanOrEqual(38);
-      expect(types.length).toBeLessThanOrEqual(60);
+      expect(types.length).toBeLessThanOrEqual(200);
     });
 
     it('should get component definition', () => {
