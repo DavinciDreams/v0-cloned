@@ -1,4 +1,28 @@
 "use client";
+/**
+ * @module CodeEditor
+ * @description AI-powered code editor component built on CodeMirror. Supports multiple
+ * programming languages (JavaScript, Python, HTML, CSS, JSON, Markdown) with syntax
+ * highlighting, line numbers, code folding, and configurable themes. Includes copy,
+ * download, and fullscreen controls.
+ *
+ * Uses a compound component pattern: CodeEditor (root), CodeEditorHeader,
+ * CodeEditorContent, and action buttons.
+ *
+ * @example
+ * ```tsx
+ * <CodeEditor
+ *   data={{ code: 'console.log("Hello, World!")', language: "javascript" }}
+ *   options={{ theme: "dark", lineNumbers: true }}
+ *   onChange={(newCode) => console.log(newCode)}
+ * >
+ *   <CodeEditorHeader>
+ *     <CodeEditorTitle>Script</CodeEditorTitle>
+ *   </CodeEditorHeader>
+ *   <CodeEditorContent />
+ * </CodeEditor>
+ * ```
+ */
 
 import type { ComponentProps, HTMLAttributes } from "react";
 import { Button } from "@/components/ui/button";
@@ -39,9 +63,13 @@ import type {
 
 // --- Types ---
 
+/** Props for the {@link CodeEditor} root component. */
 export type CodeEditorProps = ComponentProps<"div"> & {
+  /** Code editor data including source code and language. */
   data: CodeEditorData;
+  /** Optional configuration for theme, line numbers, and editor features. */
   options?: CodeEditorOptions;
+  /** Callback fired when the code content changes. */
   onChange?: (code: string) => void;
 };
 

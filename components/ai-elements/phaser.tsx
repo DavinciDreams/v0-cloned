@@ -1,4 +1,29 @@
 "use client";
+/**
+ * @module Phaser
+ * @description AI-powered Phaser game engine integration component. Embeds a Phaser
+ * game instance within a React component with configurable physics, scale modes, and
+ * scene definitions provided as JavaScript code strings. Includes play/pause/restart
+ * controls and fullscreen support.
+ *
+ * Uses a compound component pattern: Phaser (root), PhaserHeader, PhaserContent,
+ * PhaserError, and control buttons.
+ *
+ * @example
+ * ```tsx
+ * <Phaser
+ *   data={{
+ *     config: { width: 800, height: 600, backgroundColor: "#000" },
+ *     scenes: [{ key: "main", create: "this.add.text(400, 300, 'Hello!')" }]
+ *   }}
+ * >
+ *   <PhaserHeader>
+ *     <PhaserTitle>My Game</PhaserTitle>
+ *   </PhaserHeader>
+ *   <PhaserContent />
+ * </Phaser>
+ * ```
+ */
 
 import type { ComponentProps, HTMLAttributes, ReactNode } from "react";
 import { Button } from "@/components/ui/button";
@@ -27,6 +52,7 @@ import {
 
 // --- Types ---
 
+/** Phaser game configuration including renderer type, dimensions, physics, and scale settings. */
 export interface PhaserConfig {
   type?: "AUTO" | "CANVAS" | "WEBGL";
   width?: number;
@@ -44,23 +70,27 @@ export interface PhaserConfig {
   [key: string]: unknown;
 }
 
+/** Phaser scene definition with lifecycle hooks as JavaScript code strings. */
 export interface PhaserScene {
   key: string;
-  preload?: string; // JavaScript code as string
-  create?: string; // JavaScript code as string
-  update?: string; // JavaScript code as string
+  preload?: string;
+  create?: string;
+  update?: string;
 }
 
+/** Data payload for the Phaser component including game config and scene definitions. */
 export interface PhaserData {
   config: PhaserConfig;
   scenes: PhaserScene[];
 }
 
+/** Configuration options for the Phaser component. */
 export interface PhaserOptions {
   autoStart?: boolean;
   showControls?: boolean;
 }
 
+/** Imperative handle exposed by the Phaser component via ref. */
 export interface PhaserRef {
   start: () => void;
   pause: () => void;
@@ -95,9 +125,13 @@ const usePhaserContext = () => {
 
 // --- Phaser Component ---
 
+/** Props for the {@link Phaser} root component. */
 export interface PhaserProps extends HTMLAttributes<HTMLDivElement> {
+  /** Phaser game data including configuration and scene definitions. */
   data: PhaserData;
+  /** Optional configuration for auto-start and control visibility. */
   options?: PhaserOptions;
+  /** Child components (header, content, error). */
   children?: ReactNode;
 }
 

@@ -1,4 +1,23 @@
 "use client";
+/**
+ * @module JSONViewer
+ * @description AI-powered JSON viewer component built on @uiw/react-json-view.
+ * Renders JSON data with collapsible nodes, syntax highlighting, and dark/light
+ * theme support. Includes copy-to-clipboard, JSON download, and fullscreen mode.
+ *
+ * Uses a compound component pattern: JSONViewer (root), JSONViewerHeader,
+ * JSONViewerContent, and action buttons.
+ *
+ * @example
+ * ```tsx
+ * <JSONViewer data={{ json: { name: "Alice", age: 30, hobbies: ["reading", "coding"] } }}>
+ *   <JSONViewerHeader>
+ *     <JSONViewerTitle>API Response</JSONViewerTitle>
+ *   </JSONViewerHeader>
+ *   <JSONViewerContent />
+ * </JSONViewer>
+ * ```
+ */
 
 import type { ComponentProps, HTMLAttributes, ReactNode } from "react";
 import { Button } from "@/components/ui/button";
@@ -33,8 +52,11 @@ import type {
 
 // --- Types ---
 
+/** Props for the {@link JSONViewer} root component. */
 export type JSONViewerProps = ComponentProps<"div"> & {
+  /** JSON data to display in the viewer. */
   data: JSONViewerData;
+  /** Optional configuration for theme, collapsed state, and display options. */
   options?: JSONViewerOptions;
 };
 

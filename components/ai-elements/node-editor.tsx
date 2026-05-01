@@ -1,4 +1,30 @@
 "use client";
+/**
+ * @module NodeEditor
+ * @description AI-powered visual node editor component built on ReactFlow (xyflow).
+ * Provides a drag-and-drop canvas for creating and connecting nodes with customizable
+ * node and edge types. Supports minimap, controls, background grid, and interactive
+ * editing with add/remove/connect operations.
+ *
+ * Uses a compound component pattern: NodeEditor (root), NodeEditorHeader,
+ * NodeEditorContent, NodeEditorError, and action buttons.
+ *
+ * @example
+ * ```tsx
+ * <NodeEditor
+ *   data={{
+ *     nodes: [{ id: "1", type: "default", data: { label: "Input" }, position: { x: 0, y: 0 } }],
+ *     edges: []
+ *   }}
+ *   options={{ showMiniMap: true, interactive: true }}
+ * >
+ *   <NodeEditorHeader>
+ *     <NodeEditorTitle>Flow Editor</NodeEditorTitle>
+ *   </NodeEditorHeader>
+ *   <NodeEditorContent />
+ * </NodeEditor>
+ * ```
+ */
 
 import type { ComponentProps, HTMLAttributes, ReactNode } from "react";
 import type {
@@ -43,11 +69,13 @@ import "@xyflow/react/dist/style.css";
 
 // --- Types ---
 
+/** Data payload for the NodeEditor containing nodes and edges arrays. */
 export interface NodeEditorData {
   nodes: Node[];
   edges: Edge[];
 }
 
+/** Configuration options for the NodeEditor canvas and interaction behavior. */
 export interface NodeEditorOptions {
   nodeTypes?: NodeTypes;
   edgeTypes?: EdgeTypes;
@@ -63,12 +91,19 @@ export interface NodeEditorOptions {
   selectionKeyCode?: string | string[];
 }
 
+/** Props for the {@link NodeEditor} root component. */
 export type NodeEditorProps = HTMLAttributes<HTMLDivElement> & {
+  /** Node editor data containing nodes and edges. */
   data: NodeEditorData;
+  /** Optional configuration for canvas features and interaction. */
   options?: NodeEditorOptions;
+  /** Optional title displayed in the editor header. */
   title?: string;
+  /** Callback fired when nodes are added, removed, or moved. */
   onNodesChange?: OnNodesChange;
+  /** Callback fired when edges are added or removed. */
   onEdgesChange?: OnEdgesChange;
+  /** Callback fired when two nodes are connected. */
   onConnect?: OnConnect;
 };
 

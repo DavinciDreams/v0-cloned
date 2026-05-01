@@ -1,4 +1,29 @@
 "use client";
+/**
+ * @module Geospatial
+ * @description AI-powered geospatial visualization component built on deck.gl and MapLibre GL.
+ * Supports multiple layer types including scatter, arc, heatmap, trips, grid, and polygon layers
+ * with temporal animation capabilities via a built-in timeline controller.
+ *
+ * Uses a compound component pattern: Geospatial (root), GeospatialHeader, GeospatialContent,
+ * GeospatialLayerToggle, GeospatialLegend, and GeospatialError.
+ *
+ * @example
+ * ```tsx
+ * <Geospatial
+ *   data={{
+ *     center: { lng: -122.4, lat: 37.8 },
+ *     zoom: 10,
+ *     layers: [{ id: "points", type: "scatter", data: [{ lng: -122.4, lat: 37.8, value: 42 }] }]
+ *   }}
+ * >
+ *   <GeospatialHeader>
+ *     <GeospatialTitle>Bay Area Points</GeospatialTitle>
+ *   </GeospatialHeader>
+ *   <GeospatialContent />
+ * </Geospatial>
+ * ```
+ */
 
 import type { ComponentProps, HTMLAttributes, ReactNode } from "react";
 import { Button } from "@/components/ui/button";
@@ -27,12 +52,13 @@ import {
 
 // --- Types ---
 
+/** Geographic coordinates using longitude and latitude. */
 export interface GeospatialCoordinates {
   lng: number;
   lat: number;
 }
 
-// Standard data point for most layer types
+/** Standard data point for most geospatial layer types (scatter, arc, heatmap, etc.). */
 export interface StandardDataPoint {
   lng: number;
   lat: number;
@@ -45,12 +71,13 @@ export interface StandardDataPoint {
   timestamp?: number | string;
 }
 
-// Trips data point (has path array instead of lng/lat)
+/** Trips data point with a path array for animated trip trajectories. */
 export interface TripsDataPoint {
   path: Array<{ lng: number; lat: number; timestamp?: number | string }>;
   properties?: Record<string, unknown>;
 }
 
+/** Configuration for a single geospatial visualization layer. */
 export interface GeospatialLayer {
   id: string;
   type: 'point' | 'line' | 'polygon' | 'heatmap' | 'hexagon' | 'arc' | 'trips';
@@ -67,6 +94,7 @@ export interface GeospatialLayer {
   temporal?: boolean; // Indicates time-dependent data
 }
 
+/** Data payload for the Geospatial component including center, zoom, and layers. */
 export interface GeospatialData {
   center: GeospatialCoordinates;
   zoom: number;
@@ -84,6 +112,7 @@ export interface GeospatialData {
   };
 }
 
+/** Configuration options for the Geospatial component. */
 export interface GeospatialOptions {
   height?: number | string;
   width?: number | string;
@@ -92,6 +121,7 @@ export interface GeospatialOptions {
   [key: string]: unknown;
 }
 
+/** Imperative handle exposed by the Geospatial component via ref. */
 export interface GeospatialRef {
   flyTo: (coords: GeospatialCoordinates, zoom?: number) => void;
   setZoom: (zoom: number) => void;
@@ -164,9 +194,13 @@ function buildColorRange(colors: string[]): Array<[number, number, number]> {
 
 // --- Geospatial Component ---
 
+/** Props for the {@link Geospatial} root component. */
 export interface GeospatialProps extends HTMLAttributes<HTMLDivElement> {
+  /** Geospatial data including map center, zoom level, and visualization layers. */
   data: GeospatialData;
+  /** Optional configuration for map height, temporal animation, and layer defaults. */
   options?: GeospatialOptions;
+  /** Child components (header, content, legend, error). */
   children?: ReactNode;
 }
 
@@ -235,6 +269,9 @@ Geospatial.displayName = "Geospatial";
 
 // --- Geospatial Header ---
 
+/**
+ * Header section of the geospatial component containing title, actions, and layer toggles.
+ */
 export const GeospatialHeader = forwardRef<
   HTMLDivElement,
   HTMLAttributes<HTMLDivElement>
@@ -254,6 +291,9 @@ GeospatialHeader.displayName = "GeospatialHeader";
 
 // --- Geospatial Title ---
 
+/**
+ * Title element for the geospatial component header.
+ */
 export const GeospatialTitle = forwardRef<
   HTMLDivElement,
   HTMLAttributes<HTMLDivElement>
@@ -271,6 +311,9 @@ GeospatialTitle.displayName = "GeospatialTitle";
 
 // --- Geospatial Actions ---
 
+/**
+ * Container for geospatial action buttons (copy, fullscreen).
+ */
 export const GeospatialActions = forwardRef<
   HTMLDivElement,
   HTMLAttributes<HTMLDivElement>
@@ -286,6 +329,9 @@ GeospatialActions.displayName = "GeospatialActions";
 
 // --- Geospatial Layer Toggle ---
 
+/**
+ * Toggle control for showing/hiding individual geospatial layers on the map.
+ */
 export const GeospatialLayerToggle = forwardRef<
   HTMLDivElement,
   HTMLAttributes<HTMLDivElement>
@@ -330,6 +376,9 @@ GeospatialLayerToggle.displayName = "GeospatialLayerToggle";
 
 // --- Geospatial Copy Button ---
 
+/**
+ * Button to copy geospatial layer data to the clipboard as JSON.
+ */
 export const GeospatialCopyButton = forwardRef<
   HTMLButtonElement,
   ComponentProps<typeof Button>
@@ -365,6 +414,9 @@ GeospatialCopyButton.displayName = "GeospatialCopyButton";
 
 // --- Geospatial Fullscreen Button ---
 
+/**
+ * Button to toggle the geospatial map between inline and fullscreen display.
+ */
 export const GeospatialFullscreenButton = forwardRef<
   HTMLButtonElement,
   ComponentProps<typeof Button>
@@ -393,6 +445,11 @@ GeospatialFullscreenButton.displayName = "GeospatialFullscreenButton";
 
 // --- Geospatial Content (deck.gl + MapLibre) ---
 
+/**
+ * Main map rendering area using deck.gl and MapLibre GL. Supports scatter, arc,
+ * heatmap, trips, grid, and polygon layer types with interactive tooltips and
+ * temporal animation when timeline data is provided.
+ */
 export const GeospatialContent = memo(
   forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
     ({ className, ...props }, ref) => {
@@ -816,6 +873,9 @@ GeospatialContent.displayName = "GeospatialContent";
 
 // --- Geospatial Legend ---
 
+/**
+ * Legend component showing color scales and labels for geospatial layers.
+ */
 export const GeospatialLegend = forwardRef<
   HTMLDivElement,
   HTMLAttributes<HTMLDivElement>

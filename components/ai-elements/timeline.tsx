@@ -1,4 +1,31 @@
 "use client";
+/**
+ * @module Timeline
+ * @description AI-powered interactive timeline component built on TimelineJS3.
+ * Renders chronological events with rich media support (images, video, audio),
+ * configurable navigation, zoom levels, and era markers. Supports both human
+ * and cosmological time scales.
+ *
+ * Uses a compound component pattern: Timeline (root), TimelineHeader, TimelineContent,
+ * TimelineError, and action buttons.
+ *
+ * @example
+ * ```tsx
+ * <Timeline
+ *   data={{
+ *     title: { text: { headline: "History of AI" } },
+ *     events: [
+ *       { start_date: { year: 1950 }, text: { headline: "Turing Test", text: "Alan Turing proposes..." } }
+ *     ]
+ *   }}
+ * >
+ *   <TimelineHeader>
+ *     <TimelineTitle>AI Timeline</TimelineTitle>
+ *   </TimelineHeader>
+ *   <TimelineContent />
+ * </Timeline>
+ * ```
+ */
 
 import type { ComponentProps, HTMLAttributes, ReactNode } from "react";
 import { Button } from "@/components/ui/button";
@@ -27,6 +54,7 @@ import "@knight-lab/timelinejs/dist/css/timeline.css";
 
 // --- Types (Matching TimelineJS3 format) ---
 
+/** A date object matching TimelineJS3 date format with year, month, day, and time components. */
 export interface TimelineDate {
   year: number;
   month?: number;
@@ -39,11 +67,13 @@ export interface TimelineDate {
   format?: string;
 }
 
+/** Text content for a timeline slide with headline and body text. */
 export interface TimelineText {
   headline?: string;
   text?: string;
 }
 
+/** Media attachment for a timeline slide supporting images, video, and audio URLs. */
 export interface TimelineMedia {
   url: string;
   caption?: string;
@@ -55,6 +85,7 @@ export interface TimelineMedia {
   link_target?: string;
 }
 
+/** A single timeline event (slide) with date range, text, media, and display options. */
 export interface TimelineSlide {
   start_date?: TimelineDate;
   end_date?: TimelineDate;
@@ -70,12 +101,14 @@ export interface TimelineSlide {
   unique_id?: string;
 }
 
+/** An era marker spanning a date range on the timeline navigation bar. */
 export interface TimelineEra {
   start_date: TimelineDate;
   end_date: TimelineDate;
   text?: TimelineText;
 }
 
+/** Data payload for the Timeline component including title slide, events, and optional eras. */
 export interface TimelineData {
   title?: TimelineSlide;
   events: TimelineSlide[];
@@ -83,6 +116,7 @@ export interface TimelineData {
   scale?: "human" | "cosmological";
 }
 
+/** Configuration options for the Timeline renderer and navigation. */
 export interface TimelineOptions {
   height?: number | string;
   width?: number | string;
@@ -100,6 +134,7 @@ export interface TimelineOptions {
   [key: string]: unknown;
 }
 
+/** Imperative handle exposed by the Timeline component via ref for navigation control. */
 export interface TimelineRef {
   goTo: (slideIndex: number) => void;
   goToId: (id: string) => void;
@@ -138,9 +173,13 @@ const useTimelineContext = () => {
 
 // --- Timeline Component ---
 
+/** Props for the {@link Timeline} root component. */
 export interface TimelineProps extends HTMLAttributes<HTMLDivElement> {
+  /** Timeline data including title, events, eras, and time scale. */
   data: TimelineData;
+  /** Optional configuration for dimensions, language, navigation, and zoom. */
   options?: TimelineOptions;
+  /** Child components (header, content, error). */
   children?: ReactNode;
 }
 

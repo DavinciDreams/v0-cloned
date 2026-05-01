@@ -1,4 +1,24 @@
 "use client";
+/**
+ * @module VRM
+ * @description AI-powered VRM (Virtual Reality Model) avatar viewer component built on
+ * Three.js and @pixiv/three-vrm. Supports loading and displaying 3D anime-style avatars
+ * with configurable animations, camera positioning, and lighting. Includes play/pause
+ * controls for animation playback and orbit camera controls.
+ *
+ * Uses a compound component pattern: VRM (root), VRMHeader, VRMContent, VRMError,
+ * and utility buttons for animation control.
+ *
+ * @example
+ * ```tsx
+ * <VRM data={{ modelUrl: "/avatars/model.vrm", animations: [{ name: "idle", loop: true }] }}>
+ *   <VRMHeader>
+ *     <VRMTitle>Avatar Preview</VRMTitle>
+ *   </VRMHeader>
+ *   <VRMContent />
+ * </VRM>
+ * ```
+ */
 
 import type { ComponentProps, HTMLAttributes, ReactNode } from "react";
 import { Button } from "@/components/ui/button";
@@ -29,23 +49,27 @@ import type { VRM as VRMType } from "@pixiv/three-vrm";
 
 // --- Types ---
 
+/** 3D vector with x, y, z components. */
 export interface VRMVector3 {
   x: number;
   y: number;
   z: number;
 }
 
+/** Animation configuration for VRM avatar playback. */
 export interface Animation {
   name: string;
   clip?: string;
   loop?: boolean;
 }
 
+/** Camera position and look-at target configuration. */
 export interface CameraConfig {
   position: VRMVector3;
   target?: VRMVector3;
 }
 
+/** Scene lighting configuration with ambient and directional lights. */
 export interface LightingConfig {
   ambient?: number;
   directional?: {
@@ -54,6 +78,7 @@ export interface LightingConfig {
   };
 }
 
+/** Data payload for the VRM component including model URL, animations, camera, and lighting. */
 export interface VRMData {
   modelUrl: string;
   animations?: Animation[];
@@ -62,6 +87,7 @@ export interface VRMData {
   background?: string;
 }
 
+/** Configuration options for the VRM renderer. */
 export interface VRMOptions {
   height?: number | string;
   width?: number | string;
@@ -100,9 +126,13 @@ const useVRMContext = () => {
 
 // --- VRM Component ---
 
+/** Props for the {@link VRM} root component. */
 export interface VRMProps extends HTMLAttributes<HTMLDivElement> {
+  /** VRM avatar data including model URL, animations, camera, and lighting configuration. */
   data: VRMData;
+  /** Optional renderer configuration for dimensions and controls. */
   options?: VRMOptions;
+  /** Child components (header, content, error). */
   children?: ReactNode;
 }
 

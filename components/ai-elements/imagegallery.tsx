@@ -1,4 +1,32 @@
 "use client";
+/**
+ * @module ImageGallery
+ * @description AI-powered image gallery component with responsive grid layouts and
+ * lightbox viewer. Built on react-photo-album for masonry/column/grid layouts and
+ * yet-another-react-lightbox for fullscreen image viewing with captions, download,
+ * zoom, slideshow, and fullscreen plugins.
+ *
+ * Uses a compound component pattern: ImageGallery (root), ImageGalleryHeader,
+ * ImageGalleryGrid, and action buttons.
+ *
+ * @example
+ * ```tsx
+ * <ImageGallery
+ *   data={{
+ *     images: [
+ *       { src: "/img1.jpg", width: 800, height: 600, alt: "Photo 1" },
+ *       { src: "/img2.jpg", width: 1200, height: 800, alt: "Photo 2" }
+ *     ],
+ *     layout: "masonry"
+ *   }}
+ * >
+ *   <ImageGalleryHeader>
+ *     <ImageGalleryTitle>Gallery</ImageGalleryTitle>
+ *   </ImageGalleryHeader>
+ *   <ImageGalleryGrid />
+ * </ImageGallery>
+ * ```
+ */
 
 import type { ComponentProps, HTMLAttributes } from "react";
 import { Button } from "@/components/ui/button";
@@ -41,9 +69,13 @@ import type {
 
 // --- Types ---
 
+/** Props for the {@link ImageGallery} root component. */
 export type ImageGalleryProps = ComponentProps<"div"> & {
+  /** Gallery data including image list and layout configuration. */
   data: ImageGalleryData;
+  /** Optional configuration for layout type, spacing, and lightbox behavior. */
   options?: ImageGalleryOptions;
+  /** Callback fired when an image is clicked. */
   onImageClick?: (image: ImageItem, index: number) => void;
 };
 

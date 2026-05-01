@@ -1,4 +1,24 @@
 "use client";
+/**
+ * @module WYSIWYG
+ * @description AI-powered WYSIWYG (What You See Is What You Get) rich text editor component.
+ * Provides a contenteditable-based editor with toolbar controls for text formatting,
+ * links, lists, and headings. Supports HTML and markdown content input/output with
+ * configurable feature sets.
+ *
+ * Uses a compound component pattern: WYSIWYG (root), WYSIWYGHeader, WYSIWYGContent,
+ * and WYSIWYGError.
+ *
+ * @example
+ * ```tsx
+ * <WYSIWYG data={{ content: "<h1>Hello World</h1><p>Rich text content</p>" }}>
+ *   <WYSIWYGHeader>
+ *     <WYSIWYGTitle>Editor</WYSIWYGTitle>
+ *   </WYSIWYGHeader>
+ *   <WYSIWYGContent />
+ * </WYSIWYG>
+ * ```
+ */
 
 import type { ComponentProps, HTMLAttributes, ReactNode } from "react";
 import { Button } from "@/components/ui/button";
@@ -58,9 +78,13 @@ const useWYSIWYGContext = () => {
 
 // --- WYSIWYG Component ---
 
+/** Props for the {@link WYSIWYG} root component. */
 export interface WYSIWYGProps extends HTMLAttributes<HTMLDivElement> {
+  /** WYSIWYG data including the initial content string. */
   data: WYSIWYGData;
+  /** Optional configuration for enabled features, theme, and output format. */
   options?: WYSIWYGOptions;
+  /** Child components (header, content, error). */
   children?: ReactNode;
 }
 

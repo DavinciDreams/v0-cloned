@@ -1,4 +1,29 @@
 "use client";
+/**
+ * @module Maps
+ * @description AI-powered interactive map component built on Leaflet. Supports markers
+ * with popups, fly-to animations, zoom controls, and fullscreen mode. Provides an
+ * imperative ref API for programmatic map manipulation.
+ *
+ * Uses a compound component pattern: Maps (root), MapsHeader, MapsContent,
+ * and action buttons.
+ *
+ * @example
+ * ```tsx
+ * <Maps
+ *   data={{
+ *     markers: [{ coordinates: { longitude: -73.9857, latitude: 40.7484 }, label: "Empire State" }],
+ *     center: { longitude: -73.9857, latitude: 40.7484 },
+ *     zoom: 12
+ *   }}
+ * >
+ *   <MapsHeader>
+ *     <MapsTitle>NYC Map</MapsTitle>
+ *   </MapsHeader>
+ *   <MapsContent />
+ * </Maps>
+ * ```
+ */
 
 import type { ComponentProps, HTMLAttributes, ReactNode } from "react";
 import { Button } from "@/components/ui/button";
@@ -27,11 +52,13 @@ import "leaflet/dist/leaflet.css";
 
 // --- Types ---
 
+/** Geographic coordinates using longitude and latitude. */
 export interface MapsCoordinates {
   longitude: number;
   latitude: number;
 }
 
+/** A map marker with coordinates, optional label, color, and popup content. */
 export interface MapsMarker {
   id?: string;
   coordinates: MapsCoordinates;
@@ -40,18 +67,21 @@ export interface MapsMarker {
   popup?: ReactNode;
 }
 
+/** Current map view state including center coordinates and zoom level. */
 export interface MapsViewState {
   longitude: number;
   latitude: number;
   zoom: number;
 }
 
+/** Data payload for the Maps component including markers, center, and zoom. */
 export interface MapsData {
   markers?: MapsMarker[];
   center?: MapsCoordinates;
   zoom?: number;
 }
 
+/** Configuration options for the Maps component. */
 export interface MapsOptions {
   height?: number | string;
   width?: number | string;
@@ -60,6 +90,7 @@ export interface MapsOptions {
   [key: string]: unknown;
 }
 
+/** Imperative handle exposed by the Maps component via ref. */
 export interface MapsRef {
   flyTo: (coords: MapsCoordinates, zoom?: number) => void;
   setZoom: (zoom: number) => void;
@@ -96,9 +127,13 @@ const useMapsContext = () => {
 
 // --- Maps Component ---
 
+/** Props for the {@link Maps} root component. */
 export interface MapsProps extends HTMLAttributes<HTMLDivElement> {
+  /** Map data including markers, center coordinates, and zoom level. */
   data: MapsData;
+  /** Optional configuration for dimensions, interactivity, and controls. */
   options?: MapsOptions;
+  /** Child components (header, content). */
   children?: ReactNode;
 }
 

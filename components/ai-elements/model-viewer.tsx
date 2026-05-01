@@ -1,4 +1,26 @@
 "use client";
+/**
+ * @module ModelViewer
+ * @description AI-powered 3D model viewer component supporting multiple formats (glTF, GLB,
+ * OBJ, FBX, STL, DAE) with orbit controls, auto-rotation, grid/axes helpers, and
+ * configurable camera positioning. Built on Three.js with dynamic format-based loaders.
+ *
+ * Uses a compound component pattern: ModelViewer (root), ModelViewerHeader,
+ * ModelViewerContent, and ModelViewerError sub-components.
+ *
+ * @example
+ * ```tsx
+ * <ModelViewer
+ *   data={{ url: "/models/scene.glb", format: "glb" }}
+ *   options={{ autoRotate: true, showGrid: true }}
+ * >
+ *   <ModelViewerHeader>
+ *     <ModelViewerTitle>3D Model</ModelViewerTitle>
+ *   </ModelViewerHeader>
+ *   <ModelViewerContent />
+ * </ModelViewer>
+ * ```
+ */
 
 import type { ComponentProps, HTMLAttributes, ReactNode } from "react";
 import { Button } from "@/components/ui/button";
@@ -25,8 +47,10 @@ import {
 
 // --- Types ---
 
+/** Supported 3D model file formats. */
 export type ModelFormat = "gltf" | "glb" | "obj" | "fbx" | "stl" | "dae";
 
+/** Data payload specifying the 3D model URL, format, and optional transforms. */
 export interface ModelViewerData {
   url: string;
   format: ModelFormat;
@@ -35,6 +59,7 @@ export interface ModelViewerData {
   rotation?: { x: number; y: number; z: number };
 }
 
+/** Configuration options for the ModelViewer renderer and controls. */
 export interface ModelViewerOptions {
   height?: number | string;
   width?: number | string;
@@ -49,9 +74,13 @@ export interface ModelViewerOptions {
   [key: string]: unknown;
 }
 
+/** Imperative handle exposed by the ModelViewer component via ref. */
 export interface ModelViewerRef {
+  /** Reset the camera to its default position. */
   resetCamera: () => void;
+  /** Enable or disable auto-rotation of the model. */
   setAutoRotate: (enabled: boolean) => void;
+  /** Focus the camera on the center of the loaded model. */
   focusOnModel: () => void;
 }
 
@@ -86,9 +115,13 @@ const useModelViewerContext = () => {
 
 // --- ModelViewer Component ---
 
+/** Props for the {@link ModelViewer} root component. */
 export interface ModelViewerProps extends HTMLAttributes<HTMLDivElement> {
+  /** 3D model data specifying the URL, format, and optional transforms. */
   data: ModelViewerData;
+  /** Optional renderer configuration for dimensions, controls, and helpers. */
   options?: ModelViewerOptions;
+  /** Child components (header, content, error). */
   children?: ReactNode;
 }
 
