@@ -10,9 +10,11 @@ const isPublicRoute = createRouteMatcher([
 export default clerkMiddleware(async (auth, req) => {
   // Protect all routes except sign-in and sign-up
   if (!isPublicRoute(req)) {
+    // Next.js 16 requires absolute URLs for redirects
+    const signInUrl = new URL('/sign-in', req.url).toString();
     await auth.protect({
-      unauthenticatedUrl: '/sign-in',
-      unauthorizedUrl: '/sign-in',
+      unauthenticatedUrl: signInUrl,
+      unauthorizedUrl: signInUrl,
     });
   }
 });
