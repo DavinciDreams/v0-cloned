@@ -17,7 +17,10 @@ export default defineConfig({
         'lib/**/*.ts',
         'lib/**/*.tsx',
         'components/tool-ui/shared/**/*.ts',
-        'components/tool-ui/shared/**/*.tsx'
+        'components/tool-ui/shared/**/*.tsx',
+        'components/ai-elements/**/*.ts',
+        'components/ai-elements/**/*.tsx',
+        'app/api/**/*.ts',
       ],
       exclude: [
         '**/*.test.ts',

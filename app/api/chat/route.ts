@@ -2,6 +2,8 @@ import { NextRequest } from "next/server";
 import { streamText } from "ai";
 import { createZhipu } from "zhipu-ai-provider";
 import { getCatalogPrompt } from "@/lib/a2ui/catalog";
+import { auth } from '@clerk/nextjs/server';
+import { z } from 'zod';
 
 /**
  * System prompt for generative UI features
@@ -731,18 +733,40 @@ You are helpful, concise, and focused on generating high-quality, functional UI 
  * - temperature: Optional temperature for generation (default: 0.7)
  * - maxTokens: Optional max tokens (default: 4000)
  */
+const messageSchema = z.object({
+  role: z.enum(['user', 'assistant', 'system']),
+  content: z.string().min(1),
+});
+
+const chatRequestSchema = z.object({
+  messages: z.array(messageSchema).optional(),
+  prompt: z.string().optional(),
+  stream: z.boolean().optional().default(true),
+  temperature: z.number().optional().default(0.7),
+  maxTokens: z.number().optional().default(4000),
+});
+
 export async function POST(req: NextRequest) {
   try {
-    console.log("Chat API: Received request");
-    const { messages, prompt, stream = true, temperature = 0.7, maxTokens = 4000 } = await req.json();
+    const { userId } = await auth();
+    if (!userId) {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+        status: 401,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
 
-    console.log("Chat API: Parsed body -", {
-      messagesCount: messages?.length,
-      hasPrompt: !!prompt,
-      stream,
-      temperature,
-      maxTokens
-    });
+    const parseResult = chatRequestSchema.safeParse(await req.json());
+    if (!parseResult.success) {
+      return new Response(JSON.stringify({ error: 'Invalid request body', details: parseResult.error.flatten() }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+    const { messages, prompt, stream, temperature, maxTokens } = parseResult.data;
+
+    const clampedTemperature = Math.min(Math.max(Number(temperature) || 0.7, 0), 2);
+    const clampedMaxTokens = Math.min(Math.max(Math.floor(Number(maxTokens) || 4000), 1), 8000);
 
     // Validate required fields
     if (!messages && !prompt) {
@@ -754,12 +778,6 @@ export async function POST(req: NextRequest) {
     }
 
     // Use Zhipu provider, base URL, and model from env
-    console.log("Chat API: Initializing Zhipu provider -", {
-      baseURL: process.env.ZHIPU_BASE_URL,
-      hasApiKey: !!process.env.ZHIPU_API_KEY,
-      model: process.env.ZHIPU_MODEL || "glm-4.7"
-    });
-
     const zhipu = createZhipu({
       baseURL: process.env.ZHIPU_BASE_URL,
       apiKey: process.env.ZHIPU_API_KEY,
@@ -771,19 +789,17 @@ export async function POST(req: NextRequest) {
 
     // Streaming response
     if (stream) {
-      console.log("Chat API: Starting stream with", preparedMessages.length, "messages");
       const result = streamText({
         model: zhipu(modelName),
         system: getSystemPrompt(),
         messages: preparedMessages,
-        temperature,
-        maxOutputTokens: maxTokens,
+        temperature: clampedTemperature,
+        maxOutputTokens: clampedMaxTokens,
         onError: ({ error }) => {
           console.error("Chat API: Streaming error:", error);
         },
       });
 
-      console.log("Chat API: Returning text stream response");
       return result.toTextStreamResponse();
     }
 

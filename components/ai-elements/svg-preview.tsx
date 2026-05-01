@@ -1,4 +1,26 @@
 "use client";
+/**
+ * @module SVGPreview
+ * @description AI-powered SVG preview and editing component with code/preview toggle modes.
+ * Validates SVG markup, renders inline previews with configurable dimensions, and provides
+ * code editing with syntax highlighting. Supports fullscreen view, copy-to-clipboard,
+ * and SVG file download.
+ *
+ * Uses a compound component pattern: SVGPreview (root), SVGPreviewHeader, SVGPreviewContent,
+ * SVGPreviewError, and action buttons.
+ *
+ * @example
+ * ```tsx
+ * <SVGPreview svg={`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+ *   <circle cx="50" cy="50" r="40" fill="blue" />
+ * </svg>`} title="My SVG">
+ *   <SVGPreviewHeader>
+ *     <SVGPreviewTitle>My SVG</SVGPreviewTitle>
+ *   </SVGPreviewHeader>
+ *   <SVGPreviewContent />
+ * </SVGPreview>
+ * ```
+ */
 
 import type { ComponentProps, HTMLAttributes, ReactNode } from "react";
 
@@ -33,14 +55,21 @@ import {
 
 // --- Types ---
 
+/** Props for the {@link SVGPreview} root component. */
 export type SVGPreviewProps = HTMLAttributes<HTMLDivElement> & {
+  /** Raw SVG markup string to preview and/or edit. */
   svg: string;
+  /** Optional title displayed in the preview header. */
   title?: string;
+  /** Optional filename for SVG download. */
   filename?: string;
+  /** Optional width for the SVG preview container. */
   width?: string | number;
+  /** Optional height for the SVG preview container. */
   height?: string | number;
 };
 
+/** Display mode for the SVG preview: rendered preview or code editor. */
 export type SVGPreviewMode = "preview" | "code";
 
 interface SVGPreviewContextType {

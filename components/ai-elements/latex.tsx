@@ -1,4 +1,30 @@
 "use client";
+/**
+ * @module Latex
+ * @description AI-powered LaTeX equation rendering component using KaTeX. Supports
+ * multiple equations with inline and display modes, configurable macros, and error
+ * handling. Includes copy-to-clipboard and fullscreen viewing.
+ *
+ * Uses a compound component pattern: Latex (root), LatexHeader, LatexContent,
+ * LatexError, and action buttons.
+ *
+ * @example
+ * ```tsx
+ * <Latex
+ *   data={{
+ *     equations: [
+ *       { id: "1", latex: "E = mc^2", displayMode: true },
+ *       { id: "2", latex: "\\int_0^\\infty e^{-x} dx = 1", displayMode: true }
+ *     ]
+ *   }}
+ * >
+ *   <LatexHeader>
+ *     <LatexTitle>Physics Equations</LatexTitle>
+ *   </LatexHeader>
+ *   <LatexContent />
+ * </Latex>
+ * ```
+ */
 
 import type { ComponentProps, HTMLAttributes, ReactNode } from "react";
 import { Button } from "@/components/ui/button";
@@ -27,6 +53,7 @@ import "katex/dist/katex.min.css";
 
 // --- Types ---
 
+/** A single LaTeX equation with optional ID, display mode, and label. */
 export interface LatexEquation {
   id?: string;
   equation: string;
@@ -34,12 +61,14 @@ export interface LatexEquation {
   label?: string;
 }
 
+/** Data payload for the Latex component containing one or more equations. */
 export interface LatexData {
   equations?: LatexEquation[];
   equation?: string;
   displayMode?: boolean;
 }
 
+/** Configuration options for KaTeX rendering. */
 export interface LatexOptions {
   displayMode?: boolean;
   throwOnError?: boolean;
@@ -54,6 +83,7 @@ export interface LatexOptions {
   [key: string]: unknown;
 }
 
+/** Imperative handle exposed by the Latex component via ref. */
 export interface LatexRef {
   renderEquation: (equation: string, displayMode?: boolean) => void;
   clearEquations: () => void;
@@ -87,9 +117,13 @@ const useLatexContext = () => {
 
 // --- Latex Component ---
 
+/** Props for the {@link Latex} root component. */
 export interface LatexProps extends HTMLAttributes<HTMLDivElement> {
+  /** LaTeX data containing one or more equations to render. */
   data: LatexData;
+  /** Optional configuration for rendering mode and macros. */
   options?: LatexOptions;
+  /** Child components (header, content, error). */
   children?: ReactNode;
 }
 

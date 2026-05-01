@@ -1,4 +1,29 @@
 "use client";
+/**
+ * @module DataTable
+ * @description AI-powered data table component built on TanStack Table (React Table v8).
+ * Supports sorting, filtering, pagination, row selection, CSV download, and fullscreen mode.
+ * Renders tabular data with configurable columns, search, and responsive layout.
+ *
+ * Uses a compound component pattern: DataTable (root), DataTableHeader, DataTableContent,
+ * DataTablePagination, and action buttons (copy, download, fullscreen).
+ *
+ * @example
+ * ```tsx
+ * <DataTable
+ *   data={{
+ *     columns: [{ key: "name", label: "Name" }, { key: "age", label: "Age" }],
+ *     rows: [{ name: "Alice", age: 30 }, { name: "Bob", age: 25 }]
+ *   }}
+ * >
+ *   <DataTableHeader>
+ *     <DataTableTitle>Users</DataTableTitle>
+ *   </DataTableHeader>
+ *   <DataTableContent />
+ *   <DataTablePagination />
+ * </DataTable>
+ * ```
+ */
 
 import type { ComponentProps, HTMLAttributes } from "react";
 import { Button } from "@/components/ui/button";
@@ -53,9 +78,13 @@ import type {
 
 // --- Types ---
 
+/** Props for the {@link DataTable} root component. */
 export type DataTableProps = ComponentProps<"div"> & {
+  /** Table data including column definitions and row values. */
   data: DataTableData;
+  /** Optional configuration for pagination, sorting, filtering, and search. */
   options?: DataTableOptions;
+  /** Callback fired when row selection changes. */
   onRowSelect?: (selectedRows: DataTableRow[]) => void;
 };
 

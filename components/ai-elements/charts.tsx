@@ -1,4 +1,30 @@
 "use client";
+/**
+ * @module Charts
+ * @description AI-powered chart visualization component supporting 13+ chart types
+ * including line, bar, area, pie, scatter, bubble, radar, sankey, chord, treemap,
+ * graph, wordcloud, venn, heatmap, funnel, gauge, and candlestick charts.
+ *
+ * Built on a compound component pattern with Charts (root), ChartsHeader,
+ * ChartsContent, ChartsLegend, and ChartsError sub-components. Supports fullscreen
+ * mode, copy-to-clipboard of chart data, and CSV/PNG export.
+ *
+ * @example
+ * ```tsx
+ * <Charts data={{ series: [{ name: "Sales", data: [10, 20, 30] }] }} options={{ type: "bar" }}>
+ *   <ChartsHeader>
+ *     <ChartsTitle>Monthly Sales</ChartsTitle>
+ *     <ChartsActions>
+ *       <ChartsCopyButton />
+ *       <ChartsExportButton />
+ *       <ChartsFullscreenButton />
+ *     </ChartsActions>
+ *   </ChartsHeader>
+ *   <ChartsContent />
+ *   <ChartsLegend />
+ * </Charts>
+ * ```
+ */
 
 import type { ComponentProps, HTMLAttributes, ReactNode } from "react";
 import { Button } from "@/components/ui/button";
@@ -82,9 +108,13 @@ const useChartsContext = () => {
 
 // --- Charts Component ---
 
+/** Props for the {@link Charts} root component. */
 export interface ChartsProps extends HTMLAttributes<HTMLDivElement> {
+  /** Chart data containing series, data points, or specialized chart data (sankey, chord, etc.). */
   data: ChartsData;
+  /** Chart rendering options including type, colors, axes, legend, and animation settings. */
   options?: ChartsOptions;
+  /** Child components (header, content, legend, error). */
   children?: ReactNode;
 }
 
@@ -132,6 +162,13 @@ Charts.displayName = "Charts";
 
 // --- Charts Header ---
 
+/** Props for {@link ChartsHeader}. */
+export type ChartsHeaderProps = HTMLAttributes<HTMLDivElement>;
+
+/**
+ * Header section of the chart containing title, actions, and controls.
+ * Must be used within a {@link Charts} component.
+ */
 export const ChartsHeader = forwardRef<
   HTMLDivElement,
   HTMLAttributes<HTMLDivElement>
@@ -154,6 +191,10 @@ ChartsHeader.displayName = "ChartsHeader";
 
 // --- Charts Title ---
 
+/**
+ * Title element for the chart header.
+ * Displays the chart title with appropriate typography styling.
+ */
 export const ChartsTitle = forwardRef<
   HTMLDivElement,
   HTMLAttributes<HTMLDivElement>
@@ -173,6 +214,10 @@ ChartsTitle.displayName = "ChartsTitle";
 
 // --- Charts Actions ---
 
+/**
+ * Container for chart action buttons (copy, export, fullscreen).
+ * Positions actions in a horizontal row with gap spacing.
+ */
 export const ChartsActions = forwardRef<
   HTMLDivElement,
   HTMLAttributes<HTMLDivElement>
@@ -192,6 +237,10 @@ ChartsActions.displayName = "ChartsActions";
 
 // --- Charts Export Button ---
 
+/**
+ * Button to export chart data as CSV or chart image as PNG.
+ * Automatically serializes the chart data for download.
+ */
 export const ChartsExportButton = forwardRef<
   HTMLButtonElement,
   ComponentProps<typeof Button> & { format?: 'png' | 'svg' }
@@ -234,6 +283,10 @@ ChartsExportButton.displayName = "ChartsExportButton";
 
 // --- Charts Copy Button ---
 
+/**
+ * Button to copy chart data to the clipboard as formatted JSON.
+ * Shows a check icon briefly after successful copy.
+ */
 export const ChartsCopyButton = forwardRef<
   HTMLButtonElement,
   ComponentProps<typeof Button>
@@ -269,6 +322,10 @@ ChartsCopyButton.displayName = "ChartsCopyButton";
 
 // --- Charts Fullscreen Button ---
 
+/**
+ * Button to toggle the chart between inline and fullscreen display modes.
+ * Uses the Fullscreen API when available, with a CSS fallback.
+ */
 export const ChartsFullscreenButton = forwardRef<
   HTMLButtonElement,
   ComponentProps<typeof Button>
@@ -301,6 +358,13 @@ ChartsFullscreenButton.displayName = "ChartsFullscreenButton";
 
 // --- Charts Content ---
 
+/**
+ * Main chart rendering area. Automatically selects the appropriate chart renderer
+ * based on the data type (series, sankey, chord, treemap, graph, wordcloud,
+ * venn, heatmap, funnel, gauge, or candlestick).
+ *
+ * Displays an error message if chart rendering fails.
+ */
 export const ChartsContent = memo(
   forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
     ({ className, ...props }, ref) => {
@@ -1082,6 +1146,10 @@ ChartsContent.displayName = "ChartsContent";
 
 // --- Charts Legend ---
 
+/**
+ * Legend component displaying color-coded labels for chart series.
+ * Supports interactive toggle of series visibility.
+ */
 export const ChartsLegend = forwardRef<
   HTMLDivElement,
   HTMLAttributes<HTMLDivElement>
@@ -1119,6 +1187,10 @@ ChartsLegend.displayName = "ChartsLegend";
 
 // --- Charts Error ---
 
+/**
+ * Error display component shown when chart rendering fails.
+ * Shows the error message with an alert icon.
+ */
 export const ChartsError = forwardRef<
   HTMLDivElement,
   HTMLAttributes<HTMLDivElement> & { error: string }

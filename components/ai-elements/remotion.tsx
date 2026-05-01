@@ -1,4 +1,34 @@
 "use client";
+/**
+ * @module Remotion
+ * @description AI-powered video composition player component built on Remotion.
+ * Renders pre-built composition templates (countdown, title-card, slideshow, etc.)
+ * with configurable dimensions, frame rate, and duration. Includes play/pause controls,
+ * a timeline scrubber, and fullscreen support.
+ *
+ * Uses a compound component pattern: Remotion (root), RemotionHeader, RemotionContent,
+ * RemotionControls, and RemotionError.
+ *
+ * @example
+ * ```tsx
+ * <Remotion
+ *   data={{
+ *     composition: {
+ *       type: "countdown",
+ *       width: 1920, height: 1080, fps: 30,
+ *       durationInFrames: 150,
+ *       props: { title: "New Year", backgroundColor: "#000" }
+ *     }
+ *   }}
+ * >
+ *   <RemotionHeader>
+ *     <RemotionTitle>Countdown Video</RemotionTitle>
+ *   </RemotionHeader>
+ *   <RemotionContent />
+ *   <RemotionControls />
+ * </Remotion>
+ * ```
+ */
 
 import type { ComponentProps, HTMLAttributes, ReactNode } from "react";
 import { Button } from "@/components/ui/button";
@@ -34,6 +64,7 @@ import {
 
 // --- Types ---
 
+/** Remotion composition configuration specifying type, dimensions, and props. */
 export interface RemotionComposition {
   type: CompositionType;
   width: number;
@@ -43,10 +74,12 @@ export interface RemotionComposition {
   props: Record<string, unknown>;
 }
 
+/** Data payload for the Remotion component containing the composition definition. */
 export interface RemotionData {
   composition: RemotionComposition;
 }
 
+/** Configuration options for the Remotion player. */
 export interface RemotionOptions {
   autoPlay?: boolean;
   loop?: boolean;
@@ -55,6 +88,7 @@ export interface RemotionOptions {
   playbackRate?: number;
 }
 
+/** Imperative handle exposed by the Remotion component via ref. */
 export interface RemotionRef {
   play: () => void;
   pause: () => void;
@@ -87,9 +121,13 @@ const useRemotionContext = () => {
 
 // --- Remotion Component ---
 
+/** Props for the {@link Remotion} root component. */
 export interface RemotionProps extends HTMLAttributes<HTMLDivElement> {
+  /** Remotion data containing the composition definition. */
   data: RemotionData;
+  /** Optional player configuration for autoplay, looping, and playback rate. */
   options?: RemotionOptions;
+  /** Child components (header, content, controls, error). */
   children?: ReactNode;
 }
 

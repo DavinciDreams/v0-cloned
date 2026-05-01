@@ -1,4 +1,24 @@
 "use client";
+/**
+ * @module Mermaid
+ * @description AI-powered Mermaid diagram rendering component. Parses and renders
+ * Mermaid.js diagram definitions (flowchart, sequence, class, state, ER, Gantt, pie, etc.)
+ * with configurable themes, security levels, and a code/preview toggle mode.
+ * Supports fullscreen view, copy-to-clipboard, and PNG/SVG download.
+ *
+ * Uses a compound component pattern: Mermaid (root), MermaidHeader, MermaidContent,
+ * MermaidError, and action buttons.
+ *
+ * @example
+ * ```tsx
+ * <Mermaid data={{ diagram: "graph TD; A-->B; B-->C;", theme: "default" }}>
+ *   <MermaidHeader>
+ *     <MermaidTitle>Flow Diagram</MermaidTitle>
+ *   </MermaidHeader>
+ *   <MermaidContent />
+ * </Mermaid>
+ * ```
+ */
 
 import type { ComponentProps, HTMLAttributes, ReactNode } from "react";
 import { Button } from "@/components/ui/button";
@@ -33,13 +53,16 @@ import {
 
 // --- Types ---
 
+/** Display mode for the Mermaid component: rendered preview or raw code. */
 export type MermaidMode = "preview" | "code";
 
+/** Data payload containing the Mermaid diagram definition and optional theme. */
 export interface MermaidData {
   diagram: string;
   theme?: "default" | "dark" | "forest" | "neutral";
 }
 
+/** Configuration options for Mermaid rendering including theme and security level. */
 export interface MermaidOptions {
   theme?: "default" | "dark" | "forest" | "neutral";
   securityLevel?: "strict" | "loose" | "antiscript" | "sandbox";
@@ -47,9 +70,13 @@ export interface MermaidOptions {
   [key: string]: unknown;
 }
 
+/** Props for the {@link Mermaid} root component. */
 export type MermaidProps = HTMLAttributes<HTMLDivElement> & {
+  /** Mermaid diagram data containing the diagram definition string. */
   data: MermaidData;
+  /** Optional rendering configuration for theme and security level. */
   options?: MermaidOptions;
+  /** Optional title displayed in the diagram header. */
   title?: string;
 };
 

@@ -1,4 +1,35 @@
 "use client";
+/**
+ * @module KnowledgeGraph
+ * @description AI-powered knowledge graph visualization component built on ReactFlow (xyflow).
+ * Displays entities as styled nodes with type-based coloring and relationships as labeled edges.
+ * Supports force-directed, hierarchical, radial, and manual layout modes with interactive
+ * search, zoom controls, and entity filtering.
+ *
+ * Uses a compound component pattern: KnowledgeGraph (root), KnowledgeGraphHeader,
+ * KnowledgeGraphContent, KnowledgeGraphSearch, KnowledgeGraphLegend, and KnowledgeGraphError.
+ *
+ * @example
+ * ```tsx
+ * <KnowledgeGraph
+ *   data={{
+ *     entities: [
+ *       { id: "1", label: "Alice", type: "person" },
+ *       { id: "2", label: "Acme Corp", type: "organization" }
+ *     ],
+ *     relationships: [
+ *       { id: "r1", source: "1", target: "2", label: "works_at", type: "employment" }
+ *     ]
+ *   }}
+ * >
+ *   <KnowledgeGraphHeader>
+ *     <KnowledgeGraphTitle>Org Chart</KnowledgeGraphTitle>
+ *     <KnowledgeGraphSearch />
+ *   </KnowledgeGraphHeader>
+ *   <KnowledgeGraphContent />
+ * </KnowledgeGraph>
+ * ```
+ */
 
 import type { ComponentProps, HTMLAttributes, ReactNode } from "react";
 import type { Edge, Node, NodeTypes } from "@xyflow/react";
@@ -38,10 +69,10 @@ import "@xyflow/react/dist/style.css";
 
 // --- Types ---
 
-// EntityType accepts any string for extensibility
-// Common types: person, organization, concept, location, event, document, custom
+/** Entity type string (e.g., "person", "organization", "concept", "location", "event", "document"). */
 export type EntityType = string;
 
+/** A node entity in the knowledge graph with a type, label, and optional properties. */
 export interface KnowledgeGraphEntity {
   id: string;
   label: string;
@@ -51,6 +82,7 @@ export interface KnowledgeGraphEntity {
   metadata?: Record<string, unknown>;
 }
 
+/** A directed relationship (edge) between two entities in the knowledge graph. */
 export interface KnowledgeGraphRelationship {
   id: string;
   source: string;
@@ -62,11 +94,13 @@ export interface KnowledgeGraphRelationship {
   [key: string]: unknown;
 }
 
+/** Data payload for the KnowledgeGraph component including entities and relationships. */
 export interface KnowledgeGraphData {
   entities: KnowledgeGraphEntity[];
   relationships: KnowledgeGraphRelationship[];
 }
 
+/** Configuration options for the KnowledgeGraph layout and display. */
 export interface KnowledgeGraphOptions {
   layout?: "force" | "hierarchical" | "radial" | "manual";
   showLabels?: boolean;
@@ -75,9 +109,13 @@ export interface KnowledgeGraphOptions {
   colorScheme?: Record<EntityType, string>;
 }
 
+/** Props for the {@link KnowledgeGraph} root component. */
 export type KnowledgeGraphProps = HTMLAttributes<HTMLDivElement> & {
+  /** Knowledge graph data containing entities (nodes) and relationships (edges). */
   data: KnowledgeGraphData;
+  /** Optional layout and display configuration. */
   options?: KnowledgeGraphOptions;
+  /** Optional title displayed in the graph header. */
   title?: string;
 };
 

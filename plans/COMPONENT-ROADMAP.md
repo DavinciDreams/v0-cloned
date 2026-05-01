@@ -53,7 +53,7 @@
 - **Mermaid** ✅
 - **Remotion** ✅
 
-**Total Components in A2UI:** 87 components
+**Total Components in A2UI:** 114+ components
 
 ---
 
@@ -302,7 +302,7 @@ These libraries are more about **data processing** than **UI rendering**. Consid
 ### **Phase 2: Polish & Optimization (Q2 2026)** 🔧
 
 **Code Quality:**
-- [ ] Audit all 87 components for consistency
+- [ ] Audit all 114+ components for consistency
 - [ ] Ensure all components follow schema-as-single-source-of-truth
 - [ ] Add comprehensive TypeScript types
 - [ ] Performance audit (bundle size, render performance)
@@ -310,7 +310,7 @@ These libraries are more about **data processing** than **UI rendering**. Consid
 - [ ] Improve accessibility across all components
 
 **Documentation:**
-- [ ] Create component showcase page with all 87 components
+- [ ] Create component showcase page with all 114+ components
 - [ ] Add interactive examples for each component
 - [ ] Write integration guides for developers
 - [ ] Document A2UI chat → component generation patterns
@@ -366,7 +366,7 @@ These libraries are more about **data processing** than **UI rendering**. Consid
 
 ## 📈 Current Stats
 
-- **Total Components:** 87
+- **Total Components:** 114+
 - **Component Categories:** 12
   - AI Tools (18 from ToolUI)
   - Data Visualization (Charts, KnowledgeGraph, Mermaid)

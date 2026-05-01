@@ -1,4 +1,30 @@
 "use client";
+/**
+ * @module ThreeScene
+ * @description AI-powered 3D scene visualization component built on Three.js.
+ * Supports adding 3D objects (box, sphere, cylinder, cone, torus, plane), configurable
+ * lighting (ambient, directional, point, spot, hemisphere), and camera controls
+ * (perspective/orthographic) with orbit controls for interactive scene exploration.
+ *
+ * Uses a compound component pattern: ThreeScene (root), ThreeSceneHeader,
+ * ThreeSceneContent, ThreeSceneError, and utility buttons.
+ *
+ * @example
+ * ```tsx
+ * <ThreeScene
+ *   data={{
+ *     objects: [{ type: "box", color: "#4488ff", position: { x: 0, y: 0, z: 0 } }],
+ *     lights: [{ type: "ambient", intensity: 0.5 }, { type: "directional", position: { x: 5, y: 5, z: 5 } }],
+ *     camera: { type: "perspective", position: { x: 0, y: 2, z: 5 } }
+ *   }}
+ * >
+ *   <ThreeSceneHeader>
+ *     <ThreeSceneTitle>3D Scene</ThreeSceneTitle>
+ *   </ThreeSceneHeader>
+ *   <ThreeSceneContent />
+ * </ThreeScene>
+ * ```
+ */
 
 import type { ComponentProps, HTMLAttributes, ReactNode } from "react";
 import { Button } from "@/components/ui/button";
@@ -25,6 +51,7 @@ import {
 
 // --- Types ---
 
+/** Configuration for a 3D object in the scene. Supports primitives and custom THREE.Object3D instances. */
 export interface ThreeSceneObject {
   id?: string;
   object?: any; // THREE.Object3D (for pre-built objects)
@@ -36,6 +63,7 @@ export interface ThreeSceneObject {
   scale?: number | { x?: number; y?: number; z?: number };
 }
 
+/** Configuration for a light source in the 3D scene. */
 export interface ThreeSceneLight {
   id?: string;
   type: "ambient" | "directional" | "point" | "spot" | "hemisphere";
@@ -44,6 +72,7 @@ export interface ThreeSceneLight {
   position?: { x?: number; y?: number; z?: number };
 }
 
+/** Configuration for the scene camera (perspective or orthographic). */
 export interface ThreeSceneCamera {
   type: "perspective" | "orthographic";
   position?: { x?: number; y?: number; z?: number };
@@ -52,18 +81,25 @@ export interface ThreeSceneCamera {
   far?: number;
 }
 
+/** Complete 3D scene data including objects, lights, camera, background, and fog settings. */
 export interface ThreeSceneData {
+  /** Array of 3D objects to render in the scene. */
   objects?: ThreeSceneObject[];
+  /** Array of light sources illuminating the scene. */
   lights?: ThreeSceneLight[];
+  /** Camera configuration for viewing the scene. */
   camera?: ThreeSceneCamera;
-  background?: number | string; // Color or 'transparent'
+  /** Background color (hex number or CSS string) or 'transparent'. */
+  background?: number | string;
+  /** Optional fog effect configuration. */
   fog?: {
-    color: number | string; // Hex color (0xffffff) or CSS string ("#fff", "red")
+    color: number | string;
     near: number;
     far: number;
   };
 }
 
+/** Configuration options for the ThreeScene renderer and controls. */
 export interface ThreeSceneOptions {
   height?: number | string;
   width?: number | string;
@@ -77,13 +113,21 @@ export interface ThreeSceneOptions {
   [key: string]: unknown;
 }
 
+/** Imperative handle exposed by the ThreeScene component via ref. */
 export interface ThreeSceneRef {
+  /** Add a new 3D object to the scene. */
   addObject: (object: ThreeSceneObject) => void;
+  /** Remove a 3D object from the scene by its ID. */
   removeObject: (id: string) => void;
+  /** Add a new light source to the scene. */
   addLight: (light: ThreeSceneLight) => void;
-  getScene: () => any | null; // Returns THREE.Scene
-  getCamera: () => any | null; // Returns THREE.Camera
-  getRenderer: () => any | null; // Returns THREE.WebGLRenderer
+  /** Get the underlying THREE.Scene instance. */
+  getScene: () => any | null;
+  /** Get the underlying THREE.Camera instance. */
+  getCamera: () => any | null;
+  /** Get the underlying THREE.WebGLRenderer instance. */
+  getRenderer: () => any | null;
+  /** Reset the camera to its default position and orientation. */
   resetCamera: () => void;
 }
 
@@ -116,12 +160,24 @@ const useThreeSceneContext = () => {
 
 // --- ThreeScene Component ---
 
+/** Props for the {@link ThreeScene} root component. */
 export interface ThreeSceneProps extends HTMLAttributes<HTMLDivElement> {
+  /** 3D scene data including objects, lights, camera, and environment settings. */
   data: ThreeSceneData;
+  /** Optional renderer configuration for dimensions, antialiasing, and controls. */
   options?: ThreeSceneOptions;
+  /** Child components (header, content, error). */
   children?: ReactNode;
 }
 
+/**
+ * Root ThreeScene component providing context for all 3D scene sub-components.
+ * Renders an interactive Three.js scene with orbit controls, configurable lighting,
+ * and support for primitive 3D objects.
+ *
+ * @param props - {@link ThreeSceneProps} including `data` and optional `options`.
+ * @param ref - Forwarded ref exposing {@link ThreeSceneRef} for imperative scene manipulation.
+ */
 export const ThreeScene = forwardRef<ThreeSceneRef, ThreeSceneProps>(
   ({ data, options, children, className, ...props }, ref) => {
     const [error, setError] = useState<string | null>(null);

@@ -1,4 +1,27 @@
 "use client";
+/**
+ * @module Markdown
+ * @description AI-powered Markdown editor and preview component built on @uiw/react-md-editor.
+ * Supports live editing with split preview, syntax highlighting, and configurable toolbar.
+ * Includes copy-to-clipboard, markdown download, and fullscreen mode.
+ *
+ * Uses a compound component pattern: Markdown (root), MarkdownHeader, MarkdownContent,
+ * and action buttons.
+ *
+ * @example
+ * ```tsx
+ * <Markdown
+ *   data={{ content: "# Hello World\n\nThis is **markdown** content." }}
+ *   options={{ mode: "split" }}
+ *   onChange={(newContent) => console.log(newContent)}
+ * >
+ *   <MarkdownHeader>
+ *     <MarkdownTitle>README</MarkdownTitle>
+ *   </MarkdownHeader>
+ *   <MarkdownContent />
+ * </Markdown>
+ * ```
+ */
 
 import type { ComponentProps, HTMLAttributes } from "react";
 import { Button } from "@/components/ui/button";
@@ -32,9 +55,13 @@ import type {
 
 // --- Types ---
 
+/** Props for the {@link Markdown} root component. */
 export type MarkdownProps = ComponentProps<"div"> & {
+  /** Markdown data containing the content string. */
   data: MarkdownData;
+  /** Optional configuration for editor mode, theme, and toolbar visibility. */
   options?: MarkdownOptions;
+  /** Callback fired when the markdown content changes. */
   onChange?: (content: string) => void;
 };
 

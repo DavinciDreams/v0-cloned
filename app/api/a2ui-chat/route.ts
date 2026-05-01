@@ -2,6 +2,8 @@ import { NextRequest } from "next/server";
 import { streamText } from "ai";
 import { createOpenAI } from "@ai-sdk/openai";
 import { getCatalogPrompt } from "@/lib/a2ui/catalog";
+import { auth } from '@clerk/nextjs/server';
+import { z } from 'zod';
 
 /**
  * System prompt for A2UI component generation
@@ -211,25 +213,41 @@ Remember: Always generate valid A2UI JSON wrapped in markdown code fences!`;
  * - temperature: Optional temperature for generation (default: 0.7)
  * - maxTokens: Optional max tokens (default: 4000)
  */
+const a2uiRequestSchema = z.object({
+  messages: z.array(z.object({
+    role: z.enum(['user', 'assistant', 'system']),
+    content: z.string().min(1),
+  })).min(1),
+  temperature: z.number().optional().default(0.7),
+  maxTokens: z.number().optional().default(16000),
+});
+
 export async function POST(req: NextRequest) {
   try {
-    const { messages, temperature = 0.7, maxTokens = 128000 } = await req.json();
-
-    // Validate required fields
-    if (!messages || !Array.isArray(messages) || messages.length === 0) {
-      return new Response(
-        JSON.stringify({ error: "'messages' array is required" }),
-        { status: 400, headers: { "Content-Type": "application/json" } }
-      );
+    const { userId } = await auth();
+    if (!userId) {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+        status: 401,
+        headers: { 'Content-Type': 'application/json' },
+      });
     }
+
+    const parseResult = a2uiRequestSchema.safeParse(await req.json());
+    if (!parseResult.success) {
+      return new Response(JSON.stringify({ error: 'Invalid request body', details: parseResult.error.flatten() }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+    const { messages, temperature, maxTokens } = parseResult.data;
+
+    const clampedTemperature = Math.min(Math.max(Number(temperature) || 0.7, 0), 2);
+    const clampedMaxTokens = Math.min(Math.max(Math.floor(Number(maxTokens) || 16000), 1), 32000);
 
     // Use ZAI (GLM-4.7) for reliable JSON generation
     const systemPrompt = getA2UISystemPrompt();
 
     const endpoint = `${process.env.ZHIPU_BASE_URL}/chat/completions`;
-    console.log("[A2UI Chat] Endpoint:", endpoint);
-    console.log("[A2UI Chat] Model:", process.env.ZHIPU_MODEL);
-    console.log("[A2UI Chat] API Key:", process.env.ZHIPU_API_KEY ? "✓ Set" : "✗ Missing");
 
     const requestBody = {
       model: process.env.ZHIPU_MODEL,
@@ -237,12 +255,10 @@ export async function POST(req: NextRequest) {
         { role: "system", content: systemPrompt },
         ...messages
       ],
-      temperature,
-      max_tokens: maxTokens,
+      temperature: clampedTemperature,
+      max_tokens: clampedMaxTokens,
       stream: true,
     };
-
-    console.log("[A2UI Chat] Request body:", JSON.stringify(requestBody, null, 2).substring(0, 500));
 
     const response = await fetch(endpoint, {
       method: "POST",
@@ -253,16 +269,11 @@ export async function POST(req: NextRequest) {
       body: JSON.stringify(requestBody),
     });
 
-    console.log("[A2UI Chat] Response status:", response.status);
-    console.log("[A2UI Chat] Response headers:", JSON.stringify(Object.fromEntries(response.headers.entries())));
-
     if (!response.ok) {
       const errorText = await response.text();
       console.error("[A2UI Chat] ZAI error response:", errorText);
       throw new Error(`ZAI API error: ${response.status} - ${errorText}`);
     }
-
-    console.log("[A2UI Chat] ZAI stream started successfully, passing through directly");
 
     // Pass through ZAI's stream directly - it's already in SSE format
     return new Response(response.body, {

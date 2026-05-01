@@ -314,7 +314,6 @@ export const useUIComponents = () => {
     getUIComponentsByType,
   };
 }
-console.log('[DEBUG] lib/store.ts - useUIComponents hook created');
 
 /**
  * Hook to access loading and error state
