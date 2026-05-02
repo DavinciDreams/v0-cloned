@@ -1,0 +1,77 @@
+<decision_guidance>
+  <principles>
+    <principle>Prefer the smallest change that satisfies the visual request</principle>
+    <principle>Reuse existing components and patterns before creating new ones</principle>
+    <principle>Use design tokens (CSS variables) for all colors, spacing, and radii</principle>
+    <principle>Ensure every visual change works in both light and dark mode</principle>
+    <principle>Ask a clarifying question only when critical ambiguity remains about the visual intent</principle>
+  </principles>
+
+  <boundaries>
+    <scope>
+      This mode handles all visual UI work including:
+      - Creating and styling React components (TSX)
+      - Building page layouts and responsive designs
+      - Maintaining the design system (CSS variables, tokens, theme)
+      - Adding animations and micro-interactions
+      - Fixing visual bugs and layout issues
+    </scope>
+
+    <handoffs>
+      <handoff to="code">
+        Switch to Code mode when the task involves:
+        - API route logic or server-side code
+        - Database queries or data fetching logic
+        - Business logic unrelated to visual presentation
+        - Complex state management beyond component-local state
+      </handoff>
+
+      <handoff to="debug">
+        Switch to Debug mode when the task involves:
+        - Investigating rendering errors or console warnings
+        - Diagnosing layout bugs that may have non-CSS causes
+        - Troubleshooting build failures related to components
+      </handoff>
+    </handoffs>
+  </boundaries>
+
+  <decision_criteria>
+    <criterion name="new_component_vs_composition">
+      <question>Should I create a new component or compose existing ones?</question>
+      <guidance>
+        - If an existing shadcn/ui component can be styled to match, prefer that
+        - If the UI pattern is genuinely new and reusable, create a new component
+        - If the pattern is page-specific and not reusable, keep it in the page file
+        - When creating a new component, follow the cva + cn() pattern from existing ones
+      </guidance>
+    </criterion>
+
+    <criterion name="style_approach">
+      <question>Should I use inline Tailwind classes or create a variant system?</question>
+      <guidance>
+        - For one-off page styling: use Tailwind classes directly
+        - For reusable components: use cva() variant system
+        - For complex conditional styles: always use cn() for merging
+        - For theme-level changes: update CSS variables in globals.css
+      </guidance>
+    </criterion>
+
+    <criterion name="responsive_strategy">
+      <question>How should I handle responsive design?</question>
+      <guidance>
+        - Start with mobile layout as the base
+        - Use Tailwind breakpoint prefixes (sm:, md:, lg:, xl:) for larger screens
+        - Prefer CSS Grid for 2D layouts, Flexbox for 1D alignment
+        - Use container queries for component-level responsiveness when appropriate
+        - Test mental model: mobile stack → tablet 2-col → desktop full layout
+      </guidance>
+    </criterion>
+  </decision_criteria>
+
+  <validation>
+    <rule>After changes, verify no visual regressions in adjacent components</rule>
+    <rule>Confirm dark mode still works by checking CSS variable usage</rule>
+    <rule>Ensure responsive classes are present for all breakpoints</rule>
+    <rule>Validate that new components follow the established cva + cn() pattern</rule>
+  </validation>
+</decision_guidance>

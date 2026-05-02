@@ -506,6 +506,7 @@ export const RemotionContent = memo(
             fps={data.composition.fps}
             compositionWidth={data.composition.width}
             compositionHeight={data.composition.height}
+            acknowledgeRemotionLicense
             controls={options?.controls ?? false}
             loop={options?.loop ?? true}
             autoPlay={options?.autoPlay ?? false}

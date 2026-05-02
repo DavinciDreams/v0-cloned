@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { ClerkProvider, SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
+import { ClerkProvider, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import Link from "next/link";
+import { SignInTrigger } from "@/components/auth/sign-in-trigger";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -96,58 +98,40 @@ export default function RootLayout({
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased h-full flex flex-col`}
         >
-          {/* Glass header — sits above all page content */}
-          <header
-            className="flex-shrink-0 px-4 py-3 flex items-center justify-between z-50 relative"
-            style={{
-              background: "oklch(1 0 0 / 0.06)",
-              backdropFilter: "blur(20px) saturate(180%)",
-              WebkitBackdropFilter: "blur(20px) saturate(180%)",
-              borderBottom: "1px solid oklch(1 0 0 / 0.12)",
-            }}
-          >
+          {/* Sets .dark on <html> before first paint — localStorage wins, then OS preference */}
+          <script dangerouslySetInnerHTML={{ __html: `(function(){var t=localStorage.getItem('theme');if(t==='dark'||(t===null&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.classList.add('dark')}})()` }} />
+
+          {/* Header */}
+          <header className="flex-shrink-0 px-6 py-3 flex items-center justify-between z-50 relative bg-background border-b border-border">
             <Link href="/" className="flex items-center gap-3 group">
-              {/* Logo mark */}
-              <div
-                className="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold"
-                style={{
-                  background: "linear-gradient(135deg, oklch(0.62 0.26 285), oklch(0.58 0.24 310))",
-                  boxShadow: "0 0 12px oklch(0.62 0.26 285 / 0.4)",
-                }}
-              >
+              <div className="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold bg-primary text-primary-foreground">
                 G
               </div>
-              <div className="flex items-center gap-2">
-                <span className="text-sm font-semibold text-foreground group-hover:text-gradient-primary transition-all">
+              <div className="flex items-center gap-2.5">
+                <span className="text-sm font-semibold text-foreground">
                   Generous
                 </span>
-                <span className="text-xs text-muted-foreground hidden sm:inline opacity-70">
+                <span className="text-xs text-muted-foreground hidden sm:inline">
                   Universal Canvas for AI
                 </span>
               </div>
             </Link>
 
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
+              <ThemeToggle />
               <SignedOut>
-                <SignInButton mode="modal">
-                  <button
-                    aria-label="Sign in to Generous"
-                    className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium transition-all h-8 px-4"
-                    style={{
-                      background: "linear-gradient(135deg, oklch(0.62 0.26 285), oklch(0.58 0.24 310))",
-                      color: "oklch(0.98 0.01 270)",
-                      boxShadow: "0 0 16px oklch(0.62 0.26 285 / 0.35)",
-                    }}
-                  >
-                    Sign In
-                  </button>
-                </SignInButton>
+                <SignInTrigger
+                  aria-label="Sign in to Generous"
+                  className="inline-flex h-8 items-center justify-center gap-2 whitespace-nowrap rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  Sign In
+                </SignInTrigger>
               </SignedOut>
               <SignedIn>
                 <UserButton
                   appearance={{
                     elements: {
-                      avatarBox: "w-8 h-8 ring-2 ring-white/20",
+                      avatarBox: "w-8 h-8",
                     },
                   }}
                 />
@@ -155,8 +139,8 @@ export default function RootLayout({
             </div>
           </header>
 
-          {/* Page content — fills remaining viewport height */}
-          <div className="flex-1 min-h-0 overflow-auto relative z-10">
+          {/* Page content */}
+          <div className="flex-1 min-h-0 overflow-auto relative">
             {children}
           </div>
         </body>

@@ -505,7 +505,9 @@ export const GeospatialContent = memo(
             // Create DeckGL overlay component using useControl
             function DeckOverlay({ layers }: { layers: any[] }) {
               const overlay = useControl<InstanceType<typeof MapboxOverlay>>(
-                () => new MapboxOverlay({ interleaved: true, layers: [] })
+                // Aggregation layers such as HeatmapLayer are more reliable outside
+                // of interleaved mode with MapLibre.
+                () => new MapboxOverlay({ interleaved: false, layers: [] })
               );
               overlay.setProps({ layers });
               return null;

@@ -193,7 +193,7 @@ export default function EmpireBordersPage() {
         <ol className="space-y-2 list-decimal list-inside">
           <li>Move the <strong>slider to 1206</strong> to see just Mongolia</li>
           <li>Click <strong>Play (▶️)</strong> to watch the empire spread</li>
-          <li>As years progress, you'll see the red/blue heat areas <strong>expand across the map</strong></li>
+          <li>As years progress, you&apos;ll see the red/blue heat areas <strong>expand across the map</strong></li>
           <li>The density shows controlled territory - brighter = more intense control</li>
           <li>Adjust speed with the speed button (0.5x → 1x → 2x → 4x)</li>
         </ol>

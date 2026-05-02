@@ -616,16 +616,13 @@ const sampleToolUI: ToolUIData = {
 
 export default function ShowcasePage() {
   const [activeTab, setActiveTab] = useState("svg");
-  const [isMounted, setIsMounted] = useState(false);
   const [sampleThreeScene, setSampleThreeScene] = useState<ThreeSceneData | null>(null);
 
   useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
-  useEffect(() => {
     // Only create 3D scene when the tab is active
-    if (!isMounted || activeTab !== "threescene" || sampleThreeScene) return;
+    if (activeTab !== "threescene" || sampleThreeScene) return;
+
+    let cancelled = false;
 
     // Create 3D objects only on client
     const createObjects = async () => {
@@ -648,6 +645,10 @@ export default function ShowcasePage() {
         roughness: 0.3,
       });
       const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+
+      if (cancelled) {
+        return;
+      }
 
       setSampleThreeScene({
         camera: {
@@ -686,7 +687,11 @@ export default function ShowcasePage() {
     };
 
     createObjects();
-  }, [isMounted, activeTab, sampleThreeScene]);
+
+    return () => {
+      cancelled = true;
+    };
+  }, [activeTab, sampleThreeScene]);
 
   return (
     <div className="min-h-screen bg-background">

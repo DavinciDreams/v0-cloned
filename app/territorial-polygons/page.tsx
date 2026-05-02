@@ -330,10 +330,10 @@ export default function TerritorialPolygonsPage() {
         <h2 className="text-xl font-semibold mb-3">How to Use</h2>
         <ol className="space-y-2 list-decimal list-inside">
           <li><strong>Reset the timeline</strong> - Click the reset button (🔄) or drag slider to 1206</li>
-          <li>You'll see <strong>one red region</strong> (Mongolia)</li>
+          <li>You&apos;ll see <strong>one red region</strong> (Mongolia)</li>
           <li><strong>Click Play</strong> - watch new colored regions appear as time progresses</li>
           <li>Each new region = newly conquered territory</li>
-          <li>By 1227, you'll see multiple colored regions showing the full empire extent</li>
+          <li>By 1227, you&apos;ll see multiple colored regions showing the full empire extent</li>
         </ol>
       </div>
 

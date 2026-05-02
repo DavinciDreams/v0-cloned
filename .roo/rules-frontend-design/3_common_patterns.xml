@@ -1,0 +1,133 @@
+<common_patterns>
+  <overview>
+    Reusable patterns from the Generous Works project for building consistent
+    UI components and layouts.
+  </overview>
+
+  <component_patterns>
+    <pattern name="shadcn_ui_component">
+      <description>
+        Standard pattern for shadcn/ui-style components using cva variants,
+        cn() class merging, and data attributes.
+      </description>
+      <structure>
+        1. Import React, cva, VariantProps, and cn
+        2. Define variant styles with cva()
+        3. Create component function with React.ComponentProps
+        4. Add data-slot attribute to root element
+        5. Use cn() to merge variant classes with user className
+        6. Spread remaining props
+      </structure>
+      <key_elements>
+        <element>cva() for variant definitions with variants and defaultVariants</element>
+        <element>cn() for class merging (wraps clsx + tailwind-merge)</element>
+        <element>data-slot on root element for styling hooks</element>
+        <element>data-variant / data-size for CSS attribute selectors</element>
+        <element>asChild pattern using Slot from radix-ui for composition</element>
+      </key_elements>
+    </pattern>
+
+    <pattern name="tool_ui_component">
+      <description>
+        Pattern for tool-ui components that render AI-generated content.
+        Each gets its own directory with a standard file structure.
+      </description>
+      <file_structure>
+        - index.ts (barrel export)
+        - schema.ts (Zod schema for props validation)
+        - _adapter.tsx (adapter connecting schema to component)
+        - component-name.tsx (the actual component)
+        - error-boundary.tsx (error handling wrapper)
+      </file_structure>
+    </pattern>
+
+    <pattern name="client_component">
+      <description>
+        Pattern for components requiring client-side interactivity.
+      </description>
+      <approach>
+        Add "use client" directive at the top of the file.
+        Keep server-compatible logic in parent components when possible.
+        Use React hooks for state and effects.
+      </approach>
+    </pattern>
+  </component_patterns>
+
+  <styling_patterns>
+    <pattern name="theme_tokens">
+      <description>Available design tokens from globals.css</description>
+      <color_tokens>
+        - background / foreground (canvas surface)
+        - card / card-foreground (card surfaces)
+        - popover / popover-foreground (popover surfaces)
+        - primary / primary-foreground (emerald accent)
+        - secondary / secondary-foreground (warm gray)
+        - muted / muted-foreground (subdued elements)
+        - accent / accent-foreground (highlight areas)
+        - destructive (error/danger states)
+        - border (borders and dividers)
+        - input (form input borders)
+        - ring (focus rings)
+      </color_tokens>
+      <radius_tokens>
+        - radius-sm, radius-md, radius-lg, radius-xl, radius-2xl, radius-3xl, radius-4xl
+      </radius_tokens>
+      <sidebar_tokens>
+        - sidebar, sidebar-foreground, sidebar-primary, sidebar-accent, sidebar-border, sidebar-ring
+      </sidebar_tokens>
+      <chart_tokens>
+        - chart-1 through chart-5 (chart color palette)
+      </chart_tokens>
+    </pattern>
+
+    <pattern name="dark_mode">
+      <description>Dark mode implementation approach</description>
+      <approach>
+        Use CSS variables defined in :root and .dark selectors.
+        Apply dark: prefix only for overrides that differ from variable defaults.
+        The dark variant is: @custom-variant dark (&:is(.dark *)).
+      </approach>
+    </pattern>
+
+    <pattern name="responsive_breakpoints">
+      <description>Standard Tailwind breakpoints</description>
+      <breakpoints>
+        - Default: mobile (0px+)
+        - sm: 640px
+        - md: 768px
+        - lg: 1024px
+        - xl: 1280px
+        - 2xl: 1536px
+      </breakpoints>
+      <approach>Write mobile-first base styles, then add larger breakpoint overrides</approach>
+    </pattern>
+  </styling_patterns>
+
+  <layout_patterns>
+    <pattern name="page_layout">
+      <description>Standard page layout structure</description>
+      <approach>
+        Use container utility for max-width constraint.
+        Apply responsive padding with px-4 md:px-6 lg:px-8.
+        Stack sections vertically with flex flex-col gap-*.
+        Use grid for multi-column layouts: grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3.
+      </approach>
+    </pattern>
+
+    <pattern name="card_grid">
+      <description>Responsive card grid layout</description>
+      <approach>
+        grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4
+      </approach>
+    </pattern>
+
+    <pattern name="sidebar_layout">
+      <description>Main content with sidebar pattern</description>
+      <approach>
+        Use flex or grid with sidebar component.
+        Sidebar collapses to sheet on mobile (responsive pattern).
+        Content area fills remaining space.
+      </approach>
+    </pattern>
+  </layout_patterns>
+</common_patterns>

@@ -1,0 +1,73 @@
+<workflow_instructions>
+  <mode_overview>
+    Frontend Designer mode handles all visual UI work: creating components, building
+    page layouts, styling with Tailwind CSS, maintaining the design system, and
+    ensuring responsive, accessible interfaces.
+  </mode_overview>
+
+  <initialization_steps>
+    <step number="1">
+      <action>Understand the design request</action>
+      <details>
+        Parse the user's input to identify:
+        - Visual objective (new component, layout, style fix, theme update)
+        - Target area (components/ui, components/ai-elements, app/pages, CSS)
+        - Constraints (responsive needs, accessibility, existing patterns to follow)
+      </details>
+    </step>
+
+    <step number="2">
+      <action>Gather design context</action>
+      <details>
+        Read the minimal set of files needed to act safely:
+        - Existing components in the target area for pattern consistency
+        - globals.css for current theme tokens and CSS variables
+        - components.json for shadcn/ui configuration
+        - Any related page or layout files
+      </details>
+    </step>
+  </initialization_steps>
+
+  <main_workflow>
+    <phase name="design_analysis">
+      <description>Analyze the design request and plan the approach</description>
+      <steps>
+        <step>Identify which existing components or patterns to reuse</step>
+        <step>Determine if new components are needed or if existing ones can be composed</step>
+        <step>Map out responsive behavior across breakpoints</step>
+        <step>Identify accessibility requirements</step>
+      </steps>
+    </phase>
+
+    <phase name="implementation">
+      <description>Build or modify the visual elements</description>
+      <steps>
+        <step>Create or update component files following shadcn/ui patterns</step>
+        <step>Apply Tailwind CSS classes using the project's design tokens</step>
+        <step>Ensure dark mode support via the existing CSS variable system</step>
+        <step>Add appropriate data-slot and data-variant attributes for consistency</step>
+        <step>Verify responsive behavior with appropriate breakpoint classes</step>
+      </steps>
+    </phase>
+
+    <phase name="validation">
+      <description>Verify the implementation meets design standards</description>
+      <steps>
+        <step>Check visual consistency with existing components</step>
+        <step>Verify responsive classes cover all breakpoints</step>
+        <step>Ensure dark mode styles are present where needed</step>
+        <step>Confirm accessibility attributes (ARIA, keyboard navigation)</step>
+        <step>Validate that the cn() utility is used for conditional classes</step>
+      </steps>
+    </phase>
+  </main_workflow>
+
+  <completion_criteria>
+    <criterion>Visual output matches the design intent</criterion>
+    <criterion>Component follows existing project patterns (cva variants, cn() merging, data attributes)</criterion>
+    <criterion>Responsive behavior is handled across breakpoints</criterion>
+    <criterion>Dark mode is supported via CSS variables</criterion>
+    <criterion>Accessibility basics are covered</criterion>
+    <criterion>No breaking changes to existing components or layouts</criterion>
+  </completion_criteria>
+</workflow_instructions>

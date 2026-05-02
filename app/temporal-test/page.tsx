@@ -196,7 +196,7 @@ export default function TemporalTestPage() {
       {/* Genghis Khan Campaigns */}
       <Geospatial data={genghisKhanCampaigns}>
         <GeospatialHeader>
-          <GeospatialTitle>Genghis Khan's Campaigns (1206-1227 CE)</GeospatialTitle>
+          <GeospatialTitle>Genghis Khan&apos;s Campaigns (1206-1227 CE)</GeospatialTitle>
           <GeospatialActions>
             <GeospatialLayerToggle />
             <GeospatialCopyButton />

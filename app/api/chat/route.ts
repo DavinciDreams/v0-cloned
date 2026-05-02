@@ -758,6 +758,7 @@ export async function POST(req: NextRequest) {
 
     const parseResult = chatRequestSchema.safeParse(await req.json());
     if (!parseResult.success) {
+      console.error('Chat API: Zod validation failed:', JSON.stringify(parseResult.error.flatten()));
       return new Response(JSON.stringify({ error: 'Invalid request body', details: parseResult.error.flatten() }), {
         status: 400,
         headers: { 'Content-Type': 'application/json' },

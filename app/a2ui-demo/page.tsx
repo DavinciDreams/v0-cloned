@@ -31,7 +31,7 @@ export default function A2UIDemoPage() {
           </CardHeader>
           <CardContent className="text-sm space-y-2">
             <p>
-              <strong>A2UI (Agent-to-User Interface)</strong> is Google's protocol for AI agents to generate
+              <strong>A2UI (Agent-to-User Interface)</strong> is Google&apos;s protocol for AI agents to generate
               rich, interactive UIs using declarative JSON specifications.
             </p>
             <div className="flex flex-wrap gap-2 mt-4">
@@ -93,13 +93,13 @@ export default function A2UIDemoPage() {
                 All 76 standard UI components (Button, Input, Card, Badge, etc.) are now available through the adapter pattern.
               </p>
               <p className="text-muted-foreground">
-                ✅ Dynamic component rendering
+                âœ… Dynamic component rendering
                 <br />
-                ✅ No duplication - wraps existing shadcn components
+                âœ… No duplication - wraps existing shadcn components
                 <br />
-                ✅ Type-safe with TypeScript
+                âœ… Type-safe with TypeScript
                 <br />
-                ✅ Action handling for interactive components
+                âœ… Action handling for interactive components
               </p>
             </CardContent>
           </Card>
@@ -132,13 +132,13 @@ export default function A2UIDemoPage() {
                 Components can reference other components as children, creating complex UI hierarchies.
               </p>
               <p className="text-muted-foreground">
-                ✅ Card contains Text and Button children
+                âœ… Card contains Text and Button children
                 <br />
-                ✅ Components resolved by ID reference
+                âœ… Components resolved by ID reference
                 <br />
-                ✅ Full component tree rendering
+                âœ… Full component tree rendering
                 <br />
-                ✅ Actions propagate correctly
+                âœ… Actions propagate correctly
               </p>
             </CardContent>
           </Card>
@@ -216,17 +216,17 @@ export default function A2UIDemoPage() {
             </CardHeader>
             <CardContent className="text-sm space-y-2">
               <p>
-                The Timeline component above has <strong>invalid coordinates</strong> (year: "2020" as string instead of number).
+                The Timeline component above has <strong>invalid coordinates</strong> (year: <code>&quot;2020&quot;</code> as string instead of number).
               </p>
               <p>
                 Zod validation catches this error before rendering and displays a helpful error message.
               </p>
               <p className="text-muted-foreground">
-                ✅ Component doesn't crash
+                âœ… Component doesn&apos;t crash
                 <br />
-                ✅ User sees what went wrong
+                âœ… User sees what went wrong
                 <br />
-                ✅ Developer gets validation details in console
+                âœ… Developer gets validation details in console
               </p>
             </CardContent>
           </Card>
@@ -237,16 +237,16 @@ export default function A2UIDemoPage() {
       <div className="mt-8 p-6 bg-muted rounded-lg">
         <h3 className="font-semibold mb-2">Implementation Status</h3>
         <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground">
-          <li>✅ Phase 1: A2UI foundation + Zod validation (Complete)</li>
-          <li>✅ Phase 2: 76 Standard UI Adapters (Complete)</li>
-          <li>✅ Phase 3: Hybrid Renderer - 87 total components (Complete)</li>
-          <li>✅ Phase 4: Demo page with adapter tests (You are here)</li>
-          <li>⏳ Phase 5: AI agent endpoint integration</li>
-          <li>⏳ Phase 6: End-to-end AI → UI generation</li>
+          <li>âœ… Phase 1: A2UI foundation + Zod validation (Complete)</li>
+          <li>âœ… Phase 2: 76 Standard UI Adapters (Complete)</li>
+          <li>âœ… Phase 3: Hybrid Renderer - 87 total components (Complete)</li>
+          <li>âœ… Phase 4: Demo page with adapter tests (You are here)</li>
+          <li>â³ Phase 5: AI agent endpoint integration</li>
+          <li>â³ Phase 6: End-to-end AI â†’ UI generation</li>
         </ul>
         <div className="mt-4 p-4 bg-green-500/10 border border-green-500/20 rounded-lg">
           <p className="text-sm font-semibold text-green-700 dark:text-green-400">
-            🎉 Total Generative UI System: 87 components ready (11 specialized + 76 standard UI)
+            ðŸŽ‰ Total Generative UI System: 87 components ready (11 specialized + 76 standard UI)
           </p>
         </div>
       </div>
@@ -528,7 +528,7 @@ const invalidMessage: A2UIMessage = {
               events: [
                 {
                   unique_id: 'bad-event',
-                  start_date: { year: '2020' as any }, // ❌ String instead of number
+                  start_date: { year: '2020' as any }, // âŒ String instead of number
                   text: { headline: 'Invalid Event' }
                 }
               ]
@@ -549,7 +549,7 @@ const unknownMessage: A2UIMessage = {
       {
         id: 'unknown-component',
         component: {
-          BarChart: { // ❌ Not in catalog
+          BarChart: { // âŒ Not in catalog
             data: {
               values: [10, 20, 30]
             }
@@ -753,7 +753,7 @@ const nestedComponentsMessage: A2UIMessage = {
         id: 'checkmark-1',
         component: {
           Text: {
-            text: { literalString: '✓' }
+            text: { literalString: 'âœ“' }
           }
         }
       },
@@ -778,7 +778,7 @@ const nestedComponentsMessage: A2UIMessage = {
         id: 'checkmark-2',
         component: {
           Text: {
-            text: { literalString: '✓' }
+            text: { literalString: 'âœ“' }
           }
         }
       },
@@ -803,7 +803,7 @@ const nestedComponentsMessage: A2UIMessage = {
         id: 'checkmark-3',
         component: {
           Text: {
-            text: { literalString: '✓' }
+            text: { literalString: 'âœ“' }
           }
         }
       },

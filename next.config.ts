@@ -3,7 +3,7 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   /* config options here */
   turbopack: {
-    // Configure Turbopack rules for optimal performance
+    root: __dirname,
     rules: {
       // Tell Turbopack to use ignore-loader for LESS files
       "*.less": {

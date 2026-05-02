@@ -1,0 +1,118 @@
+<best_practices>
+  <general_principles>
+    <principle priority="high">
+      <name>Follow existing component patterns</name>
+      <description>
+        All new components must follow the patterns established in the project's
+        shadcn/ui components (cva variants, cn() class merging, data attributes).
+      </description>
+      <rationale>Consistency makes components predictable and maintainable</rationale>
+    </principle>
+
+    <principle priority="high">
+      <name>Use design tokens, not raw values</name>
+      <description>
+        Always use CSS variable-based Tailwind classes (bg-primary, text-muted-foreground,
+        border-border) instead of hardcoded colors or spacing values.
+      </description>
+      <rationale>Ensures theme consistency and dark mode support automatically</rationale>
+    </principle>
+
+    <principle priority="high">
+      <name>Mobile-first responsive design</name>
+      <description>
+        Write base styles for mobile, then add responsive overrides with sm:, md:, lg:,
+        xl:, 2xl: prefixes.
+      </description>
+      <rationale>Progressive enhancement is more reliable than desktop-first degradation</rationale>
+    </principle>
+
+    <principle priority="medium">
+      <name>Prefer composition over complexity</name>
+      <description>
+        Build complex UIs by composing simple, focused components rather than creating
+        monolithic ones.
+      </description>
+      <rationale>Composable components are reusable, testable, and easier to understand</rationale>
+    </principle>
+  </general_principles>
+
+  <code_conventions>
+    <convention category="component_structure">
+      <rule>Use function declarations, not arrow functions, for components</rule>
+      <rule>Use React.ComponentProps utility for prop types</rule>
+      <rule>Add data-slot attribute to root element for styling hooks</rule>
+      <rule>Use cva() from class-variance-authority for variant management</rule>
+      <rule>Use cn() from @/lib/utils for conditional class merging</rule>
+    </convention>
+
+    <convention category="imports">
+      <rule>Import cn from @/lib/utils</rule>
+      <rule>Import UI primitives from radix-ui (not @radix-ui/*)</rule>
+      <rule>Import cva and VariantProps from class-variance-authority</rule>
+      <rule>Import Slot from radix-ui</rule>
+    </convention>
+
+    <convention category="tailwind_usage">
+      <rule>Use semantic color tokens (primary, secondary, muted, accent, destructive)</rule>
+      <rule>Use oklch-based CSS variables defined in globals.css</rule>
+      <rule>Apply dark: variant for any dark-mode-specific overrides</rule>
+      <rule>Use Tailwind's built-in spacing scale (p-4, gap-2, etc.)</rule>
+      <rule>Leverage focus-visible: for keyboard focus styles</rule>
+    </convention>
+
+    <convention category="file_organization">
+      <rule>UI primitives go in components/ui/</rule>
+      <rule>AI-specific elements go in components/ai-elements/</rule>
+      <rule>Tool UI components go in components/tool-ui/</rule>
+      <rule>Page files go in app/ directory following Next.js App Router conventions</rule>
+      <rule>Each tool-ui component gets its own directory with index.ts barrel export</rule>
+    </convention>
+  </code_conventions>
+
+  <common_pitfalls>
+    <pitfall>
+      <description>Using hardcoded color values instead of design tokens</description>
+      <why_problematic>Breaks theming and dark mode support</why_problematic>
+      <correct_approach>Use Tailwind semantic classes like bg-primary, text-muted-foreground</correct_approach>
+    </pitfall>
+
+    <pitfall>
+      <description>Not using cn() for conditional classes</description>
+      <why_problematic>Causes class conflicts that tailwind-merge can't resolve</why_problematic>
+      <correct_approach>Always wrap conditional classes with cn()</correct_approach>
+    </pitfall>
+
+    <pitfall>
+      <description>Ignoring dark mode in new styles</description>
+      <why_problematic>Components look broken in dark mode</why_problematic>
+      <correct_approach>Test dark mode variants; use CSS variable-based tokens which handle both modes</correct_approach>
+    </pitfall>
+
+    <pitfall>
+      <description>Creating one-off styles instead of reusable components</description>
+      <why_problematic>Leads to style duplication and inconsistency</why_problematic>
+      <correct_approach>Extract repeated patterns into shared components with variants</correct_approach>
+    </pitfall>
+  </common_pitfalls>
+
+  <quality_checklist>
+    <category name="before_starting">
+      <item>Review existing components in the target area for patterns</item>
+      <item>Check globals.css for available design tokens</item>
+      <item>Identify reusable components that can be composed</item>
+    </category>
+    <category name="during_implementation">
+      <item>Use cn() for all conditional class merging</item>
+      <item>Apply design tokens, not hardcoded values</item>
+      <item>Add data-slot attributes to root elements</item>
+      <item>Include dark mode support</item>
+    </category>
+    <category name="before_completion">
+      <item>Verify responsive behavior across breakpoints</item>
+      <item>Check accessibility (ARIA attributes, keyboard navigation)</item>
+      <item>Ensure no visual regressions in existing components</item>
+      <item>Validate that imports are correct and minimal</item>
+    </category>
+  </quality_checklist>
+</best_practices>

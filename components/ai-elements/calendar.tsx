@@ -1,6 +1,6 @@
 "use client";
 
-import type { ComponentProps, HTMLAttributes, ReactNode } from "react";
+import type { ComponentProps, HTMLAttributes } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import {
@@ -97,8 +97,6 @@ export const Calendar = memo(
         options = {},
         onEventClick,
         onEventUpdate,
-        onEventCreate,
-        onEventDelete,
         className,
         children,
         ...props
@@ -106,34 +104,26 @@ export const Calendar = memo(
       ref
     ) => {
       const [isFullscreen, setIsFullscreen] = useState(false);
-
-      // Defensive check: ensure data exists
-      if (!data) {
-        return (
-          <div className="p-8 text-center text-muted-foreground">
-            <p>No calendar data provided</p>
-          </div>
-        );
-      }
+      const safeData: CalendarData = data ?? { events: [] };
 
       // Create events service plugin once and memoize it
       const eventsService = useMemo(() => createEventsServicePlugin(), []);
 
       // Memoize view configuration
       const viewsConfig = useMemo(() => {
-        const views = data?.views || [data?.defaultView || "month-grid"];
+        const views = safeData.views || [safeData.defaultView || "month-grid"];
         const configs = views.map(createViewFromType);
         // Ensure at least one view (schedule-x requires non-empty array)
         if (configs.length === 0) {
           configs.push(createViewMonthGrid());
         }
         return configs as [any, ...any[]];
-      }, [data.views, data.defaultView]);
+      }, [safeData.views, safeData.defaultView]);
 
       // Memoize event transformation
       const scheduleXEvents = useMemo(
         () =>
-          (data?.events || []).map((event) => {
+          safeData.events.map((event) => {
             // Convert date strings to Temporal objects
             // Schedule-X requires Temporal.PlainDate or Temporal.PlainDateTime
             const parseDateTime = (dateStr: string) => {
@@ -163,7 +153,7 @@ export const Calendar = memo(
               _options: event._options,
             };
           }),
-        [data.events]
+        [safeData.events]
       );
 
       // Memoize calendar config
@@ -175,14 +165,14 @@ export const Calendar = memo(
         };
 
         // Add optional config fields only if defined
-        if (data.selectedDate) config.selectedDate = data.selectedDate;
-        if (data.config?.locale) config.locale = data.config.locale;
-        if (data.config?.firstDayOfWeek !== undefined) config.firstDayOfWeek = data.config.firstDayOfWeek;
-        if (data.config?.weekOptions) config.weekOptions = data.config.weekOptions;
-        if (data.config?.monthGridOptions) config.monthGridOptions = data.config.monthGridOptions;
-        if (data.config?.dayBoundaries) config.dayBoundaries = data.config.dayBoundaries;
-        if (data.config?.minDate) config.minDate = data.config.minDate;
-        if (data.config?.maxDate) config.maxDate = data.config.maxDate;
+        if (safeData.selectedDate) config.selectedDate = safeData.selectedDate;
+        if (safeData.config?.locale) config.locale = safeData.config.locale;
+        if (safeData.config?.firstDayOfWeek !== undefined) config.firstDayOfWeek = safeData.config.firstDayOfWeek;
+        if (safeData.config?.weekOptions) config.weekOptions = safeData.config.weekOptions;
+        if (safeData.config?.monthGridOptions) config.monthGridOptions = safeData.config.monthGridOptions;
+        if (safeData.config?.dayBoundaries) config.dayBoundaries = safeData.config.dayBoundaries;
+        if (safeData.config?.minDate) config.minDate = safeData.config.minDate;
+        if (safeData.config?.maxDate) config.maxDate = safeData.config.maxDate;
 
         // Add callbacks
         config.callbacks = {
@@ -223,8 +213,8 @@ export const Calendar = memo(
         viewsConfig,
         scheduleXEvents,
         eventsService,
-        data.selectedDate,
-        data.config,
+        safeData.selectedDate,
+        safeData.config,
         onEventClick,
         onEventUpdate,
       ]);
@@ -232,13 +222,21 @@ export const Calendar = memo(
       const calendar = useCalendarApp(calendarConfig);
 
       const value: CalendarContextValue = {
-        data,
+        data: safeData,
         options,
         isFullscreen,
         setIsFullscreen,
         calendarApp: calendar,
         eventsService: eventsService,
       };
+
+      if (!data) {
+        return (
+          <div className="p-8 text-center text-muted-foreground">
+            <p>No calendar data provided</p>
+          </div>
+        );
+      }
 
       return (
         <CalendarContext.Provider value={value}>
@@ -343,7 +341,7 @@ CalendarActions.displayName = "CalendarActions";
 // --- Calendar Navigation ---
 
 export const CalendarNavigation = memo(() => {
-  const { calendarApp } = useCalendar();
+  useCalendar();
 
   const handlePrevious = useCallback(() => {
     // TODO: Implement navigation when schedule-x exposes API

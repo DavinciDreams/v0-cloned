@@ -20,7 +20,7 @@ export default function ToggleGroupTestPage() {
 
         {/* Single Selection */}
         <section className="space-y-4 border rounded-lg p-6">
-          <h2 className="text-xl font-semibold">Single Selection (type="single")</h2>
+          <h2 className="text-xl font-semibold">{'Single Selection (type="single")'}</h2>
           <div className="space-y-4">
             <div>
               <p className="text-sm text-muted-foreground mb-2">Text Alignment (default variant)</p>
@@ -57,7 +57,7 @@ export default function ToggleGroupTestPage() {
 
         {/* Multiple Selection */}
         <section className="space-y-4 border rounded-lg p-6">
-          <h2 className="text-xl font-semibold">Multiple Selection (type="multiple")</h2>
+          <h2 className="text-xl font-semibold">{'Multiple Selection (type="multiple")'}</h2>
           <div className="space-y-4">
             <div>
               <p className="text-sm text-muted-foreground mb-2">Text Formatting</p>
@@ -82,7 +82,7 @@ export default function ToggleGroupTestPage() {
           <h2 className="text-xl font-semibold">Sizes</h2>
           <div className="space-y-4">
             <div>
-              <p className="text-sm text-muted-foreground mb-2">Small (size="sm")</p>
+              <p className="text-sm text-muted-foreground mb-2">{'Small (size="sm")'}</p>
               <ToggleGroup type="single">
                 <ToggleGroupItem value="left" aria-label="Align left" size="sm">
                   <AlignLeft />
@@ -97,7 +97,7 @@ export default function ToggleGroupTestPage() {
             </div>
 
             <div>
-              <p className="text-sm text-muted-foreground mb-2">Default (size="default")</p>
+              <p className="text-sm text-muted-foreground mb-2">{'Default (size="default")'}</p>
               <ToggleGroup type="single">
                 <ToggleGroupItem value="left" aria-label="Align left">
                   <AlignLeft />
@@ -112,7 +112,7 @@ export default function ToggleGroupTestPage() {
             </div>
 
             <div>
-              <p className="text-sm text-muted-foreground mb-2">Large (size="lg")</p>
+              <p className="text-sm text-muted-foreground mb-2">{'Large (size="lg")'}</p>
               <ToggleGroup type="single">
                 <ToggleGroupItem value="left" aria-label="Align left" size="lg">
                   <AlignLeft />

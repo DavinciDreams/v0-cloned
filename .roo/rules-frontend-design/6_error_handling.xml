@@ -1,0 +1,74 @@
+<error_handling>
+  <overview>
+    Common error scenarios in frontend design work and how to recover from them.
+  </overview>
+
+  <common_errors>
+    <error category="styling">
+      <problem>Classes not applying or appearing incorrectly</problem>
+      <causes>
+        <cause>Missing cn() wrapper causing class conflicts</cause>
+        <cause>Tailwind class not included in the build (dynamic class construction)</cause>
+        <cause>Incorrect class order (specificity issues)</cause>
+        <cause>CSS variable not defined in globals.css</cause>
+      </causes>
+      <recovery>
+        1. Verify the class is a valid Tailwind utility or custom class
+        2. Ensure cn() is used for conditional merging
+        3. Check that dynamic classes use full class names (not string concatenation)
+        4. Confirm the CSS variable exists in both :root and .dark
+      </recovery>
+    </error>
+
+    <error category="layout">
+      <problem>Layout breaking at certain breakpoints</problem>
+      <causes>
+        <cause>Missing responsive breakpoint classes</cause>
+        <cause>Fixed widths that don't adapt</cause>
+        <cause>Flexbox/Grid container missing necessary properties</cause>
+      </causes>
+      <recovery>
+        1. Check for hardcoded widths (w-[Npx]) that should be responsive
+        2. Add appropriate breakpoint prefixes (sm:, md:, lg:)
+        3. Use min-w-0 on flex children to prevent overflow
+        4. Verify grid template columns adapt across breakpoints
+      </recovery>
+    </error>
+
+    <error category="dark_mode">
+      <problem>Component looks broken in dark mode</problem>
+      <causes>
+        <cause>Hardcoded light-mode colors (bg-white, text-black)</cause>
+        <cause>Missing dark: variant overrides</cause>
+        <cause>CSS variable not updated in .dark selector</cause>
+      </causes>
+      <recovery>
+        1. Replace hardcoded colors with semantic tokens (bg-background, text-foreground)
+        2. Add dark: overrides where tokens don't cover the use case
+        3. Verify the CSS variable is defined in the .dark block of globals.css
+      </recovery>
+    </error>
+
+    <error category="component_integration">
+      <problem>New component doesn't match existing design language</problem>
+      <causes>
+        <cause>Not following the cva + cn() pattern</cause>
+        <cause>Using different border-radius, shadow, or spacing values</cause>
+        <cause>Missing data-slot attribute</cause>
+      </causes>
+      <recovery>
+        1. Compare with an existing similar component for pattern alignment
+        2. Use the same radius tokens (rounded-md, rounded-lg)
+        3. Apply consistent shadow utilities (shadow-xs, shadow-sm)
+        4. Add data-slot attribute matching the component name
+      </recovery>
+    </error>
+  </common_errors>
+
+  <prevention>
+    <practice>Always read an existing similar component before creating a new one</practice>
+    <practice>Use design tokens exclusively — never hardcode colors or spacing</practice>
+    <practice>Test dark mode mentally for every style change</practice>
+    <practice>Verify responsive behavior at all breakpoints</practice>
+  </prevention>
+</error_handling>

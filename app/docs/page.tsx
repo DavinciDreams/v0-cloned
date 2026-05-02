@@ -292,7 +292,7 @@ function EnvRow({
 }
 
 // ---------------------------------------------------------------------------
-// Flow step — for the how-it-works pipeline diagram
+// Flow step â€” for the how-it-works pipeline diagram
 // ---------------------------------------------------------------------------
 
 function PipelineStep({
@@ -521,8 +521,8 @@ export default function DocsPage() {
               </p>
 
               <p className="text-base text-muted-foreground leading-relaxed mb-3">
-                Generous is a universal canvas for AI. Describe what you want —
-                a chart, a 3D scene, a dashboard, a game, a map, a timeline —
+                Generous is a universal canvas for AI. Describe what you want â€”
+                a chart, a 3D scene, a dashboard, a game, a map, a timeline â€”
                 and Generous renders it live, in your browser, right now.
               </p>
               <p className="text-base text-muted-foreground leading-relaxed mb-8">
@@ -574,7 +574,7 @@ export default function DocsPage() {
                   {
                     icon: PuzzleIcon,
                     title: "114+ Components",
-                    desc: "Charts, maps, 3D, games, editors — all AI-addressable.",
+                    desc: "Charts, maps, 3D, games, editors â€” all AI-addressable.",
                   },
                   {
                     icon: LayersIcon,
@@ -711,7 +711,7 @@ npm install`}
               </SectionHeading>
               <CodeBlock
                 language="bash"
-                code={`# Fast (Turbopack — recommended)
+                code={`# Fast (Turbopack â€” recommended)
 npm run dev
 
 # Stable (Webpack)
@@ -725,7 +725,7 @@ npm run dev:webpack`}
                 >
                   http://localhost:3000
                 </a>{" "}
-                — type any prompt to generate a live component.
+                â€” type any prompt to generate a live component.
               </p>
             </section>
 
@@ -752,7 +752,7 @@ npm run dev:webpack`}
                 <PipelineStep
                   step="1"
                   label="User prompt"
-                  description="The user types a natural language request — 'Show me a bar chart of monthly revenue' or 'Build me a login form.'"
+                  description="The user types a natural language request â€” 'Show me a bar chart of monthly revenue' or 'Build me a login form.'"
                 />
                 <PipelineStep
                   step="2"
@@ -767,14 +767,14 @@ npm run dev:webpack`}
                 <PipelineStep
                   step="4"
                   label="Live render"
-                  description="The GenerativeMessage component detects JSX vs. A2UI JSON as the stream arrives and routes each to the correct renderer — in real time."
+                  description="The GenerativeMessage component detects JSX vs. A2UI JSON as the stream arrives and routes each to the correct renderer â€” in real time."
                   last
                 />
               </div>
 
               {/* JSX mode */}
               <SectionHeading id="jsx-mode" level={3}>
-                JSX Mode — Simple UI Components
+                JSX Mode â€” Simple UI Components
               </SectionHeading>
               <p className="text-sm text-muted-foreground mb-3">
                 For layout, forms, and UI primitives the AI emits JSX directly.
@@ -787,7 +787,7 @@ npm run dev:webpack`}
                     Prompt
                   </p>
                   <div className="rounded-lg border border-border bg-muted/30 px-4 py-3 text-sm text-foreground italic">
-                    "Create a settings card with a title and a save button"
+                    {`"Create a settings card with a title and a save button"`}
                   </div>
                 </div>
                 <div>
@@ -810,7 +810,7 @@ npm run dev:webpack`}
 
               {/* A2UI mode */}
               <SectionHeading id="a2ui-mode" level={3}>
-                A2UI JSON Mode — Data-Driven Components
+                A2UI JSON Mode â€” Data-Driven Components
               </SectionHeading>
               <p className="text-sm text-muted-foreground mb-3">
                 For complex, data-heavy components the AI emits A2UI JSON. The{" "}
@@ -824,7 +824,7 @@ npm run dev:webpack`}
                     Prompt
                   </p>
                   <div className="rounded-lg border border-border bg-muted/30 px-4 py-3 text-sm text-foreground italic">
-                    "Line chart of website visitors, Jan–Jun 2024"
+                    {`"Line chart of website visitors, Jan-Jun 2024"`}
                   </div>
                 </div>
                 <div>
@@ -862,7 +862,7 @@ npm run dev:webpack`}
               <div className="rounded-lg border border-border bg-muted/30 px-4 py-3 text-sm text-muted-foreground">
                 The full A2UI protocol is defined in{" "}
                 <InlineCode>lib/a2ui/</InlineCode>. The catalog lives in{" "}
-                <InlineCode>lib/a2ui/catalog.ts</InlineCode> — it is the single
+                <InlineCode>lib/a2ui/catalog.ts</InlineCode> â€” it is the single
                 source of truth for what the AI knows how to render.
               </div>
             </section>
@@ -907,7 +907,7 @@ npm run dev:webpack`}
 
               {/* UI Primitives */}
               <SectionHeading id="ui-primitives" level={3}>
-                UI Primitives — 33 components
+                UI Primitives â€” 33 components
               </SectionHeading>
               <p className="text-sm text-muted-foreground mb-4">
                 Foundation layer built on shadcn/ui and Radix UI. Used by the
@@ -972,7 +972,7 @@ npm run dev:webpack`}
 
               {/* AI Elements */}
               <SectionHeading id="ai-elements" level={3}>
-                AI Elements — 90+ components
+                AI Elements â€” 90+ components
               </SectionHeading>
               <p className="text-sm text-muted-foreground mb-4">
                 Rich, interactive components built for AI-generated content.
@@ -1075,7 +1075,7 @@ npm run dev:webpack`}
 
               {/* Tool UI */}
               <SectionHeading id="tool-ui" level={3}>
-                Tool UI — 18 components
+                Tool UI â€” 18 components
               </SectionHeading>
               <p className="text-sm text-muted-foreground mb-4">
                 Specialized components for rendering structured AI tool call
@@ -1137,7 +1137,7 @@ npm run dev:webpack`}
               </SectionHeading>
               <p className="text-muted-foreground leading-relaxed mb-8">
                 The Generous backend exposes a single streaming chat endpoint.
-                All component knowledge is injected via system prompt — clients
+                All component knowledge is injected via system prompt â€” clients
                 send plain messages.
               </p>
 
@@ -1258,7 +1258,7 @@ npm run dev:webpack`}
               />
               <p className="mt-3 text-sm text-muted-foreground">
                 JSX is executed client-side in a sandboxed evaluation context.
-                Only registered component names resolve — unknown tags are
+                Only registered component names resolve â€” unknown tags are
                 silently dropped.
               </p>
             </section>
@@ -1410,7 +1410,7 @@ CLERK_SECRET_KEY=sk_test_...`}
                     />
                     <EnvRow
                       name="CLERK_SECRET_KEY"
-                      description="Clerk secret key — server-side only"
+                      description="Clerk secret key â€” server-side only"
                     />
                     <EnvRow
                       name="NEXT_PUBLIC_MAF_URL"
@@ -1447,7 +1447,7 @@ CLERK_SECRET_KEY=sk_test_...`}
                       Generous is open source
                     </h3>
                     <p className="text-sm text-muted-foreground leading-relaxed mb-4">
-                      Contributions are welcome — whether that is a new
+                      Contributions are welcome â€” whether that is a new
                       component adapter, a bug fix, improved docs, or a
                       completely new rendering capability. The project is built
                       in the open and wants your ideas.
@@ -1511,7 +1511,7 @@ CLERK_SECRET_KEY=sk_test_...`}
                     },
                     {
                       step: "6",
-                      text: "Write tests — npm run test:run — and open a PR",
+                      text: "Write tests â€” npm run test:run â€” and open a PR",
                     },
                   ].map(({ step, text }) => (
                     <div key={step} className="flex items-start gap-3">

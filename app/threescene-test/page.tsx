@@ -14,16 +14,10 @@ import {
 import { useEffect, useState } from "react";
 
 export default function ThreeSceneTestPage() {
-  const [isMounted, setIsMounted] = useState(false);
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
   const [testData, setTestData] = useState<ThreeSceneData | null>(null);
 
   useEffect(() => {
-    if (!isMounted) return;
+    let cancelled = false;
 
     // Create 3D objects only on client
     const createObjects = async () => {
@@ -66,6 +60,10 @@ export default function ThreeSceneTestPage() {
         wireframe: true,
       });
       const icosahedron = new THREE.Mesh(icoGeometry, icoMaterial);
+
+      if (cancelled) {
+        return;
+      }
 
       setTestData({
         camera: {
@@ -116,7 +114,11 @@ export default function ThreeSceneTestPage() {
     };
 
     createObjects();
-  }, [isMounted]);
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   if (!testData) {
     return (

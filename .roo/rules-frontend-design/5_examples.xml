@@ -1,0 +1,151 @@
+<complete_examples>
+  <example name="create_new_ui_component">
+    <scenario>
+      User requests a new Badge-like component for status indicators with
+      color variants (success, warning, error, info).
+    </scenario>
+
+    <user_request>
+      "Create a status badge component with success, warning, error, and info variants"
+    </user_request>
+
+    <workflow>
+      <step number="1">
+        <description>Review existing patterns</description>
+        <approach>
+          Read components/ui/badge.tsx to understand the existing badge pattern.
+          Check globals.css for available color tokens.
+          Outcome: confirm cva pattern and available semantic colors.
+        </approach>
+      </step>
+
+      <step number="2">
+        <description>Implement the component</description>
+        <approach>
+          Create the component following the shadcn/ui pattern:
+          - Use cva() for variant definitions
+          - Use cn() for class merging
+          - Add data-slot="status-badge" attribute
+          - Use design tokens (bg-primary, text-destructive, etc.)
+          - Include dark mode variants where needed
+        </approach>
+      </step>
+
+      <step number="3">
+        <description>Validate the implementation</description>
+        <approach>
+          Check that the component:
+          - Follows the same pattern as existing badge.tsx
+          - Uses design tokens, not hardcoded colors
+          - Supports dark mode via CSS variables
+          - Has proper TypeScript types
+        </approach>
+      </step>
+    </workflow>
+
+    <key_takeaways>
+      <takeaway>Always check existing components before creating new ones</takeaway>
+      <takeaway>Follow the cva + cn() + data-slot pattern consistently</takeaway>
+      <takeaway>Use semantic design tokens for all colors</takeaway>
+    </key_takeaways>
+  </example>
+
+  <example name="build_responsive_page_layout">
+    <scenario>
+      User wants a dashboard-style page with a sidebar that collapses on mobile
+      and a main content area with a responsive card grid.
+    </scenario>
+
+    <user_request>
+      "Build a dashboard page with sidebar navigation and a card grid"
+    </user_request>
+
+    <workflow>
+      <step number="1">
+        <description>Analyze layout requirements</description>
+        <approach>
+          Review existing layout.tsx and page patterns in the app/ directory.
+          Check for existing sidebar components in components/ui/.
+          Identify which shadcn/ui components to compose (Sheet, Card, etc.).
+          Outcome: component inventory and layout plan.
+        </approach>
+      </step>
+
+      <step number="2">
+        <description>Implement the page layout</description>
+        <approach>
+          Create the page file with:
+          - Mobile: Sheet-based sidebar (hamburger trigger)
+          - Desktop: persistent sidebar with flex layout
+          - Card grid: responsive grid with breakpoint variants
+          - Use existing Card, Sheet, and Button components
+        </approach>
+      </step>
+
+      <step number="3">
+        <description>Validate responsive behavior</description>
+        <approach>
+          Verify:
+          - Mobile: sidebar hidden, accessible via Sheet trigger
+          - Tablet (md): possible 2-column card grid
+          - Desktop (lg+): sidebar visible, 3-4 column card grid
+          - All transitions are smooth with appropriate Tailwind transitions
+        </approach>
+      </step>
+    </workflow>
+
+    <key_takeaways>
+      <takeaway>Mobile-first approach: design for small screens, enhance for larger</takeaway>
+      <takeaway>Compose existing components (Sheet, Card) rather than building from scratch</takeaway>
+      <takeaway>Use responsive grid classes for card layouts</takeaway>
+    </key_takeaways>
+  </example>
+
+  <example name="update_theme_tokens">
+    <scenario>
+      User wants to adjust the primary color or add a new semantic color
+      to the design system.
+    </scenario>
+
+    <user_request>
+      "Change the primary color to a blue tone"
+    </user_request>
+
+    <workflow>
+      <step number="1">
+        <description>Locate theme definition</description>
+        <approach>
+          Read globals.css to find the current :root and .dark CSS variable blocks.
+          Identify the --primary and --primary-foreground variables.
+          Outcome: exact lines to modify.
+        </approach>
+      </step>
+
+      <step number="2">
+        <description>Update theme tokens</description>
+        <approach>
+          Modify the oklch values for --primary in both :root and .dark blocks.
+          Ensure the foreground color maintains sufficient contrast.
+          Outcome: updated CSS variables.
+        </approach>
+      </step>
+
+      <step number="3">
+        <description>Validate the change</description>
+        <approach>
+          Check that:
+          - Both light and dark mode variables are updated
+          - Contrast ratios meet WCAG AA standards
+          - All components using bg-primary/text-primary-foreground update automatically
+          - No hardcoded primary colors exist elsewhere
+        </approach>
+      </step>
+    </workflow>
+
+    <key_takeaways>
+      <takeaway>CSS variable changes propagate to all components using those tokens</takeaway>
+      <takeaway>Always update both :root (light) and .dark (dark) mode variables</takeaway>
+      <takeaway>Verify contrast accessibility after color changes</takeaway>
+    </key_takeaways>
+  </example>
+</complete_examples>

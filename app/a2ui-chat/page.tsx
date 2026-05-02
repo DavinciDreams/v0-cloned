@@ -337,10 +337,10 @@ export default function A2UIChatPage() {
             <div className="text-center text-muted-foreground py-12">
               <Sparkles className="w-12 h-12 mx-auto mb-4 opacity-50" />
               <p className="text-lg font-medium">Start a conversation</p>
-              <p className="text-sm mt-2">Try: "Show me a timeline of space exploration"</p>
-              <p className="text-sm">Or: "Create a login form with email and password"</p>
-              <p className="text-sm">Or: "Build a card with a title, description, and button"</p>
-              <p className="text-sm">Or: "Design a dashboard with stats and charts"</p>
+              <p className="text-sm mt-2">{'Try: "Show me a timeline of space exploration"'}</p>
+              <p className="text-sm">{'Or: "Create a login form with email and password"'}</p>
+              <p className="text-sm">{'Or: "Build a card with a title, description, and button"'}</p>
+              <p className="text-sm">{'Or: "Design a dashboard with stats and charts"'}</p>
             </div>
           )}
 
