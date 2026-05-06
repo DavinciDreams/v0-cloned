@@ -2,11 +2,11 @@
 
 import type { FormEvent, ComponentType } from "react";
 import { nanoid } from "nanoid";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import type { StickToBottomContext } from "use-stick-to-bottom";
 import Link from "next/link";
 
-import { useMessages, useAppState } from "@/lib/store";
+import { useMessages, useAppState, useGenerativeUIStore } from "@/lib/store";
 
 import { GenerativeMessage } from "@/components/ai-elements/generative-message";
 import { PromptInput, PromptInputTextarea, type PromptInputMessage } from "@/components/ai-elements/prompt-input";
@@ -89,7 +89,15 @@ const navGroups = [
 export default function Page() {
   const { messages, addMessage, updateMessage } = useMessages();
   const { isLoading, error, setLoading, setError } = useAppState();
+  const savedChats = useGenerativeUIStore((state) => state.savedChats);
+  const fetchChats = useGenerativeUIStore((state) => state.fetchChats);
+  const saveCurrentChat = useGenerativeUIStore((state) => state.saveCurrentChat);
+  const loadChat = useGenerativeUIStore((state) => state.loadChat);
+  const deleteChat = useGenerativeUIStore((state) => state.deleteChat);
   const [navOpen, setNavOpen] = useState(false);
+  const [historyOpen, setHistoryOpen] = useState(false);
+
+  useEffect(() => { fetchChats(); }, [fetchChats]);
 
   const handleSubmit = useCallback(async (message: PromptInputMessage, event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -150,7 +158,82 @@ export default function Page() {
       {/* Components navigation bar */}
       <div className="shrink-0 border-b border-border bg-background">
         <div className="mx-auto max-w-5xl px-4">
-          <div className="flex items-center justify-end h-9">
+          <div className="flex items-center justify-between h-9">
+            <div className="flex items-center gap-1">
+              {/* New chat */}
+              <button
+                type="button"
+                onClick={saveCurrentChat}
+                disabled={messages.length === 0}
+                className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors px-3 py-1.5 rounded-lg hover:bg-accent disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+                </svg>
+                New chat
+              </button>
+
+              {/* Chat history */}
+              {savedChats.length > 0 && (
+                <div className="relative">
+                  <button
+                    type="button"
+                    onClick={() => setHistoryOpen((v) => !v)}
+                    className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors px-3 py-1.5 rounded-lg hover:bg-accent"
+                  >
+                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    History
+                    <span className="ml-0.5 rounded-full bg-primary/20 px-1.5 py-px text-[10px] font-medium text-primary leading-none">
+                      {savedChats.length}
+                    </span>
+                  </button>
+
+                  {historyOpen && (
+                    <>
+                      {/* Backdrop */}
+                      <div className="fixed inset-0 z-40" onClick={() => setHistoryOpen(false)} />
+                      {/* Panel */}
+                      <div className="absolute left-0 top-full mt-1 z-50 w-72 rounded-xl border border-border bg-background/95 backdrop-blur shadow-xl overflow-hidden">
+                        <div className="px-3 py-2 border-b border-border text-[10px] uppercase tracking-wider font-medium text-muted-foreground">
+                          Saved chats
+                        </div>
+                        <ul className="max-h-72 overflow-y-auto divide-y divide-border">
+                          {savedChats.map((chat) => (
+                            <li key={chat.id} className="flex items-center gap-2 px-3 py-2 hover:bg-accent group">
+                              <button
+                                type="button"
+                                className="flex-1 text-left min-w-0"
+                                onClick={() => { loadChat(chat.id); setHistoryOpen(false); }}
+                              >
+                                <div className="text-xs font-medium text-foreground truncate">{chat.title}</div>
+                                <div className="text-[10px] text-muted-foreground mt-0.5">
+                                  {new Date(chat.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                                  {' · '}
+                                  {chat.messages.length} messages
+                                </div>
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => deleteChat(chat.id)}
+                                className="shrink-0 opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-destructive p-1 rounded"
+                                aria-label="Delete chat"
+                              >
+                                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                              </button>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </>
+                  )}
+                </div>
+              )}
+            </div>
+
             <button
               type="button"
               onClick={() => setNavOpen(!navOpen)}

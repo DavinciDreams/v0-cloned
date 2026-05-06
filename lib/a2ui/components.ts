@@ -33,6 +33,8 @@ import { CodeEditor } from '@/components/ai-elements/codeeditor';
 import { Markdown } from '@/components/ai-elements/markdown';
 import { DataTable } from '@/components/ai-elements/datatable';
 import { ImageGallery } from '@/components/ai-elements/imagegallery';
+import { Presentation } from '@/components/ai-elements/presentation';
+import { DocumentTemplate } from '@/components/ai-elements/document-template';
 import { ApprovalCard } from '@/components/ai-elements/approval-card';
 import { WeatherWidget } from '@/components/ai-elements/weather-widget';
 import { StatsDisplay } from '@/components/ai-elements/stats-display';
@@ -93,6 +95,8 @@ export const specializedComponents = {
   ParameterSlider,
   PreferencesPanel,
   QuestionFlow,
+  Presentation,
+  Document: DocumentTemplate,
 } as const;
 
 /**

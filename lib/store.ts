@@ -35,18 +35,31 @@ export interface UIComponent {
 }
 
 /**
+ * A saved chat session
+ */
+export interface SavedChat {
+  id: string;
+  title: string;
+  messages: Message[];
+  createdAt: number;
+}
+
+/**
  * Store state interface
  */
 export interface StoreState {
   // Message state
   messages: Message[];
-  
+
+  // Saved chat history
+  savedChats: SavedChat[];
+
   // UI Components state
   uiComponents: Record<string, UIComponent>; // Map of component ID to component
-  
+
   // Loading state
   isLoading: boolean;
-  
+
   // Error state
   error: string | null;
 }
@@ -71,6 +84,12 @@ export interface StoreActions {
   setLoading: (isLoading: boolean) => void;
   setError: (error: string | null) => void;
   
+  // Saved chat actions
+  fetchChats: () => Promise<void>;
+  saveCurrentChat: () => Promise<void>;
+  loadChat: (id: string) => void;
+  deleteChat: (id: string) => Promise<void>;
+
   // Reset action
   reset: () => void;
 }
@@ -98,6 +117,7 @@ export interface GenerativeUIStore extends StoreState, StoreActions {
  */
 const initialState: StoreState = {
   messages: [],
+  savedChats: [],
   uiComponents: {},
   isLoading: false,
   error: null,
@@ -209,6 +229,88 @@ export const useGenerativeUIStore = create<GenerativeUIStore>()(
       // =====================
       
       /**
+       * Fetch saved chats from Postgres and sync into local state.
+       */
+      fetchChats: async () => {
+        try {
+          const res = await fetch('/api/chats');
+          if (!res.ok) return;
+          const rows: SavedChat[] = await res.json();
+          set({ savedChats: rows });
+        } catch {
+          // silently ignore — user may be offline or unauthenticated
+        }
+      },
+
+      /**
+       * Save the current messages as a named chat entry, persist to Postgres, then reset.
+       */
+      saveCurrentChat: async () => {
+        const { messages } = get();
+        if (messages.length === 0) return;
+        const firstUser = messages.find((m) => m.role === 'user');
+        const title = firstUser
+          ? firstUser.content.slice(0, 60) + (firstUser.content.length > 60 ? '…' : '')
+          : 'Chat';
+        const saved: SavedChat = {
+          id: crypto.randomUUID(),
+          title,
+          messages,
+          createdAt: Date.now(),
+        };
+        set((state) => ({
+          ...initialState,
+          savedChats: [saved, ...state.savedChats],
+        }));
+        try {
+          await fetch('/api/chats', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(saved),
+          });
+        } catch {
+          // already in local state; Postgres sync failed silently
+        }
+      },
+
+      /**
+       * Load a previously saved chat into the current session.
+       * The current session (if non-empty) is saved first.
+       */
+      loadChat: (id) => {
+        const { savedChats, messages } = get();
+        const chat = savedChats.find((c) => c.id === id);
+        if (!chat) return;
+        let updatedChats = savedChats.filter((c) => c.id !== id);
+        if (messages.length > 0) {
+          const firstUser = messages.find((m) => m.role === 'user');
+          const title = firstUser
+            ? firstUser.content.slice(0, 60) + (firstUser.content.length > 60 ? '…' : '')
+            : 'Chat';
+          const current: SavedChat = { id: crypto.randomUUID(), title, messages, createdAt: Date.now() };
+          updatedChats = [current, ...updatedChats];
+          fetch('/api/chats', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(current),
+          }).catch(() => {});
+        }
+        set({ messages: chat.messages, savedChats: updatedChats, isLoading: false, error: null, uiComponents: {} });
+      },
+
+      /**
+       * Delete a saved chat from Postgres and local state.
+       */
+      deleteChat: async (id) => {
+        set((state) => ({ savedChats: state.savedChats.filter((c) => c.id !== id) }));
+        try {
+          await fetch(`/api/chats/${id}`, { method: 'DELETE' });
+        } catch {
+          // already removed from local state
+        }
+      },
+
+      /**
        * Reset the entire store to initial state
        */
       reset: () => set(initialState),
@@ -256,8 +358,8 @@ export const useGenerativeUIStore = create<GenerativeUIStore>()(
     {
       name: 'generative-ui-storage', // Storage key for localStorage
       partialize: (state) => ({
-        // Only persist messages and UI components, not loading/error states
         messages: state.messages,
+        savedChats: state.savedChats,
         uiComponents: state.uiComponents,
       }),
     }

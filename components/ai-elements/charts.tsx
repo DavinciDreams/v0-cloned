@@ -92,7 +92,7 @@ interface ChartsContextValue {
   setError: (error: string | null) => void;
   fullscreen: boolean;
   setFullscreen: (fullscreen: boolean) => void;
-  chartDivId: string;
+  chartDivRef: React.RefObject<HTMLDivElement | null>;
   rootRef: React.RefObject<any>;
 }
 
@@ -123,11 +123,7 @@ export const Charts = forwardRef<HTMLDivElement, ChartsProps>(
     const [error, setError] = useState<string | null>(null);
     const [fullscreen, setFullscreen] = useState(false);
     const rootRef = useRef<any>(null);
-    const [chartDivId] = useState(() =>
-      typeof window !== 'undefined'
-        ? `chart-${Math.random().toString(36).substr(2, 9)}`
-        : 'chart-ssr'
-    );
+    const chartDivRef = useRef<HTMLDivElement>(null);
 
     const contextValue: ChartsContextValue = {
       data,
@@ -136,7 +132,7 @@ export const Charts = forwardRef<HTMLDivElement, ChartsProps>(
       setError,
       fullscreen,
       setFullscreen,
-      chartDivId,
+      chartDivRef,
       rootRef,
     };
 
@@ -368,7 +364,7 @@ ChartsFullscreenButton.displayName = "ChartsFullscreenButton";
 export const ChartsContent = memo(
   forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
     ({ className, ...props }, ref) => {
-      const { data, options, error, setError, fullscreen, chartDivId, rootRef } =
+      const { data, options, error, setError, fullscreen, chartDivRef, rootRef } =
         useChartsContext();
 
       const [isMounted, setIsMounted] = useState(false);
@@ -384,6 +380,7 @@ export const ChartsContent = memo(
 
         let root: any;
         let chart: any;
+        let mounted = true;
 
         const initChart = async () => {
           try {
@@ -393,8 +390,18 @@ export const ChartsContent = memo(
             const am5radar = await import('@amcharts/amcharts5/radar');
             const am5themes_Animated = await import('@amcharts/amcharts5/themes/Animated');
 
-            const chartDiv = document.getElementById(chartDivId);
+            if (!mounted) return;
+
+            const chartDiv = chartDivRef.current;
             if (!chartDiv) return;
+
+            // Dispose any pre-existing Root on this node (React Strict Mode / fast re-renders)
+            const existing = (am5.registry.rootElements as any[]).find(
+              (r: any) => r.dom === chartDiv
+            );
+            if (existing) existing.dispose();
+
+            if (!mounted) return;
 
             // Create root
             root = am5.Root.new(chartDiv);
@@ -1102,19 +1109,23 @@ export const ChartsContent = memo(
 
             chart.appear(1000, 100);
           } catch (err) {
-            console.error('Failed to initialize chart:', err);
-            setError(`Failed to initialize chart: ${err instanceof Error ? err.message : String(err)}`);
+            if (mounted) {
+              console.error('Failed to initialize chart:', err);
+              setError(`Failed to initialize chart: ${err instanceof Error ? err.message : String(err)}`);
+            }
           }
         };
 
         initChart();
 
         return () => {
+          mounted = false;
           if (root) {
             root.dispose();
+            rootRef.current = null;
           }
         };
-      }, [isMounted, data, options, chartDivId, setError, rootRef]);
+      }, [isMounted, data, options, chartDivRef, setError, rootRef]);
 
       if (error) {
         return <ChartsError error={error} />;
@@ -1130,7 +1141,7 @@ export const ChartsContent = memo(
           {...props}
         >
           <div
-            id={chartDivId}
+            ref={chartDivRef}
             style={{
               width: typeof width === 'number' ? `${width}px` : width,
               height: typeof height === 'number' ? `${height}px` : height,

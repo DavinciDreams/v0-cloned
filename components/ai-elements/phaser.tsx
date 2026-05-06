@@ -421,9 +421,8 @@ export const PhaserContent = memo(
                   preload() {
                     if (sceneData.preload) {
                       try {
-                        // Execute preload code
                         const preloadFn = new Function("scene", sceneData.preload);
-                        preloadFn(this);
+                        preloadFn.call(this, this);
                       } catch (err) {
                         console.error(`Error in preload for scene ${sceneData.key}:`, err);
                       }
@@ -433,9 +432,8 @@ export const PhaserContent = memo(
                   create() {
                     if (sceneData.create) {
                       try {
-                        // Execute create code
                         const createFn = new Function("scene", sceneData.create);
-                        createFn(this);
+                        createFn.call(this, this);
                       } catch (err) {
                         console.error(`Error in create for scene ${sceneData.key}:`, err);
                       }
@@ -445,9 +443,8 @@ export const PhaserContent = memo(
                   update(time: number, delta: number) {
                     if (sceneData.update) {
                       try {
-                        // Execute update code
                         const updateFn = new Function("scene", "time", "delta", sceneData.update);
-                        updateFn(this, time, delta);
+                        updateFn.call(this, this, time, delta);
                       } catch (err) {
                         console.error(`Error in update for scene ${sceneData.key}:`, err);
                       }

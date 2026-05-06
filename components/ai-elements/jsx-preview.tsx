@@ -71,6 +71,11 @@ const matchJsxTag = (code: string) => {
   };
 };
 
+const sanitizeJsx = (code: string) =>
+  code
+    .replace(/\{\/\*[\s\S]*?\*\/\}/g, "") // strip JSX comments {/* ... */}
+    .replace(/\{\s*\}/g, "");             // strip empty expressions {}
+
 const completeJsxTag = (code: string) => {
   const stack: string[] = [];
   let result = "";
@@ -135,7 +140,7 @@ export const JSXPreview = memo(
     }
 
     const processedJsx = useMemo(
-      () => (isStreaming ? completeJsxTag(jsx) : jsx),
+      () => sanitizeJsx(isStreaming ? completeJsxTag(jsx) : jsx),
       [jsx, isStreaming]
     );
 
