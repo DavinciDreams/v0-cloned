@@ -778,6 +778,14 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    if (!process.env.ZHIPU_API_KEY) {
+      console.error("Chat API: ZHIPU_API_KEY is not set");
+      return new Response(
+        JSON.stringify({ error: "AI provider is not configured. Please set ZHIPU_API_KEY." }),
+        { status: 503, headers: { "Content-Type": "application/json" } }
+      );
+    }
+
     // Use Zhipu provider, base URL, and model from env
     const zhipu = createZhipu({
       baseURL: process.env.ZHIPU_BASE_URL,
