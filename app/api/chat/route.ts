@@ -743,7 +743,6 @@ const chatRequestSchema = z.object({
   prompt: z.string().optional(),
   stream: z.boolean().optional().default(true),
   temperature: z.number().optional().default(0.7),
-  maxTokens: z.number().optional().default(16000),
 });
 
 export async function POST(req: NextRequest) {
@@ -764,10 +763,9 @@ export async function POST(req: NextRequest) {
         headers: { 'Content-Type': 'application/json' },
       });
     }
-    const { messages, prompt, stream, temperature, maxTokens } = parseResult.data;
+    const { messages, prompt, stream, temperature } = parseResult.data;
 
     const clampedTemperature = Math.min(Math.max(Number(temperature) || 0.7, 0), 2);
-    const clampedMaxTokens = Math.min(Math.max(Math.floor(Number(maxTokens) || 16000), 1), 32000);
 
     // Validate required fields
     if (!messages && !prompt) {
@@ -803,7 +801,6 @@ export async function POST(req: NextRequest) {
         system: getSystemPrompt(),
         messages: preparedMessages,
         temperature: clampedTemperature,
-        maxOutputTokens: clampedMaxTokens,
         onError: ({ error }) => {
           console.error("Chat API: Streaming error:", error);
         },

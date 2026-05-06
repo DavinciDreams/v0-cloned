@@ -219,7 +219,6 @@ const a2uiRequestSchema = z.object({
     content: z.string().min(1),
   })).min(1),
   temperature: z.number().optional().default(0.7),
-  maxTokens: z.number().optional().default(16000),
 });
 
 export async function POST(req: NextRequest) {
@@ -239,10 +238,9 @@ export async function POST(req: NextRequest) {
         headers: { 'Content-Type': 'application/json' },
       });
     }
-    const { messages, temperature, maxTokens } = parseResult.data;
+    const { messages, temperature } = parseResult.data;
 
     const clampedTemperature = Math.min(Math.max(Number(temperature) || 0.7, 0), 2);
-    const clampedMaxTokens = Math.min(Math.max(Math.floor(Number(maxTokens) || 16000), 1), 32000);
 
     // Use ZAI (GLM-4.7) for reliable JSON generation
     const systemPrompt = getA2UISystemPrompt();
@@ -256,7 +254,6 @@ export async function POST(req: NextRequest) {
         ...messages
       ],
       temperature: clampedTemperature,
-      max_tokens: clampedMaxTokens,
       stream: true,
     };
 
