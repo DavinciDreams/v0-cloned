@@ -145,9 +145,9 @@ export default function Page() {
   }, [messages, addMessage, updateMessage, setLoading, setError]);
 
   return (
-    <div className="flex h-full w-full flex-col">
+    <div className="flex h-full w-full flex-col bg-[#0a0e14]">
       {/* Components navigation bar */}
-      <div className="flex-shrink-0 border-b border-border bg-background">
+      <div className="shrink-0 border-b border-white/5 bg-[#0a0e14]">
         <div className="mx-auto max-w-5xl px-4">
           <div className="flex items-center justify-end h-9">
             <button
@@ -191,13 +191,18 @@ export default function Page() {
             <div className="mx-auto max-w-3xl space-y-8">
               {messages.length === 0 ? (
                 <div className="flex min-h-[40vh] items-center justify-center">
-                  <div className="text-center space-y-3">
-                    <div className="mx-auto w-12 h-12 rounded-xl flex items-center justify-center text-lg mb-4 bg-accent text-accent-foreground font-light">
+                  <div className="text-center space-y-4">
+                    <div
+                      className="mx-auto w-14 h-14 rounded-2xl flex items-center justify-center text-xl font-bold text-white shadow-xl mb-2"
+                      style={{ background: 'linear-gradient(135deg, #0097b2, #7ed952)' }}
+                    >
                       ✦
                     </div>
-                    <h2 className="text-2xl font-semibold text-foreground">Ask for anything.</h2>
-                    <p className="text-muted-foreground max-w-xs leading-relaxed">
-                      Charts, 3D scenes, maps, code, timelines — watch it render live.
+                    <h2 className="text-3xl font-bold text-white" style={{ fontFamily: 'var(--font-poppins)' }}>
+                      Ask for anything.
+                    </h2>
+                    <p className="text-white/50 max-w-xs leading-relaxed text-sm">
+                      Charts, 3D scenes, maps, code, timelines, slides, docs — watch it render live.
                     </p>
                   </div>
                 </div>
@@ -207,8 +212,7 @@ export default function Page() {
                     key={message.id}
                     message={{ id: message.id, role: message.role, content: message.content, timestamp: message.timestamp }}
                     isStreaming={isLoading && message.role === "assistant" && index === messages.length - 1}
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    components={componentBindings as any}
+                                      components={componentBindings as unknown as Parameters<typeof GenerativeMessage>[0]['components']}
                   />
                 ))
               )}
@@ -232,11 +236,13 @@ export default function Page() {
       </Conversation>
 
       {/* Prompt input */}
-      <div className="flex-shrink-0 px-4 py-4 border-t border-border bg-background">
+      <div className="shrink-0 px-4 py-4 border-t border-white/5"
+        style={{ background: 'rgba(10, 14, 20, 0.85)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)' }}>
         <div className="mx-auto max-w-3xl">
-          <div className="rounded-xl border border-border bg-card shadow-sm overflow-hidden">
+          <div className="rounded-xl overflow-hidden"
+            style={{ background: 'rgba(18, 24, 32, 0.8)', border: '1px solid rgba(0, 151, 178, 0.2)', boxShadow: '0 0 0 1px rgba(0,151,178,0.05), 0 8px 32px rgba(0,0,0,0.4)' }}>
             <PromptInput onSubmit={handleSubmit}>
-              <PromptInputTextarea placeholder="Ask for anything — a chart, a map, a 3D scene, code..." />
+              <PromptInputTextarea placeholder="Ask for anything — a chart, a map, slides, a document, a 3D scene…" />
             </PromptInput>
           </div>
         </div>

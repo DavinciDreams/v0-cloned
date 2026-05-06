@@ -1,14 +1,21 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist_Mono, Poppins, Inter } from "next/font/google";
 import { ClerkProvider, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import Link from "next/link";
 import { SignInTrigger } from "@/components/auth/sign-in-trigger";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const inter = Inter({
+  variable: "--font-sans",
   subsets: ["latin"],
+  weight: ["400", "500", "600"],
+});
+
+const poppins = Poppins({
+  variable: "--font-poppins",
+  subsets: ["latin"],
+  weight: ["600", "700"],
 });
 
 const geistMono = Geist_Mono({
@@ -96,22 +103,26 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en" className="h-full">
         <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased h-full flex flex-col`}
+          className={`${inter.variable} ${poppins.variable} ${geistMono.variable} antialiased h-full flex flex-col`}
         >
           {/* Sets .dark on <html> before first paint — localStorage wins, then OS preference */}
           <script dangerouslySetInnerHTML={{ __html: `(function(){var t=localStorage.getItem('theme');if(t==='dark'||(t===null&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.classList.add('dark')}})()` }} />
 
           {/* Header */}
-          <header className="flex-shrink-0 px-6 py-3 flex items-center justify-between z-50 relative bg-background border-b border-border">
+          <header className="flex-shrink-0 px-6 py-3 flex items-center justify-between z-50 relative border-b border-white/5"
+            style={{ background: 'rgba(10, 14, 20, 0.85)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)' }}>
             <Link href="/" className="flex items-center gap-3 group">
-              <div className="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold bg-primary text-primary-foreground">
+              <div
+                className="w-8 h-8 rounded-xl flex items-center justify-center text-sm font-bold text-white shadow-lg"
+                style={{ background: 'linear-gradient(135deg, #0097b2, #7ed952)' }}
+              >
                 G
               </div>
               <div className="flex items-center gap-2.5">
-                <span className="text-sm font-semibold text-foreground">
+                <span className={`${poppins.className} text-sm font-bold text-white tracking-tight`}>
                   Generous
                 </span>
-                <span className="text-xs text-muted-foreground hidden sm:inline">
+                <span className="text-xs text-white/40 hidden sm:inline">
                   Universal Canvas for AI
                 </span>
               </div>
@@ -122,7 +133,8 @@ export default function RootLayout({
               <SignedOut>
                 <SignInTrigger
                   aria-label="Sign in to Generous"
-                  className="inline-flex h-8 items-center justify-center gap-2 whitespace-nowrap rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+                  className="inline-flex h-8 items-center justify-center gap-2 whitespace-nowrap rounded-lg px-4 text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+                  style={{ background: 'linear-gradient(135deg, #0097b2, #7ed952)' }}
                 >
                   Sign In
                 </SignInTrigger>

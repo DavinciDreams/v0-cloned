@@ -7,7 +7,7 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-sans);
   --font-mono: var(--font-geist-mono);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
@@ -48,103 +48,98 @@
 }
 
 /* ============================================================
-   CANVAS THEME — Light
+   GENEROUS — Dark-first theme (inspired by Duly Noted)
+   Primary: #0097b2 (teal)  Accent: #7ed952 (lime)
+   Background: #0a0e14 → #121820
    ============================================================ */
 
 :root {
-  --radius: 0.875rem;
+  --radius: 0.625rem; /* 10px */
 
-  --background: oklch(0.985 0.006 80);
-  --foreground: oklch(0.15 0.012 260);
+  /* Brand gradient */
+  --gradient-brand: linear-gradient(135deg, #0097b2, #7ed952);
+  --color-teal: #0097b2;
+  --color-lime: #7ed952;
 
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.15 0.012 260);
+  /* Backgrounds */
+  --background: oklch(0.08 0.014 248);   /* #0a0e14 */
+  --foreground: oklch(0.93 0.007 248);   /* #e8edf2 */
 
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.15 0.012 260);
+  --card: oklch(0.12 0.014 248);         /* #121820 */
+  --card-foreground: oklch(0.93 0.007 248);
 
-  --primary: oklch(0.50 0.18 152);
+  --popover: oklch(0.14 0.016 248);
+  --popover-foreground: oklch(0.93 0.007 248);
+
+  --primary: oklch(0.57 0.10 215);       /* #0097b2 teal */
   --primary-foreground: oklch(0.99 0 0);
 
-  --secondary: oklch(0.94 0.008 80);
-  --secondary-foreground: oklch(0.25 0.01 260);
+  --secondary: oklch(0.18 0.022 248);    /* #1a2536 */
+  --secondary-foreground: oklch(0.74 0.015 248); /* #a8b5c8 */
 
-  --muted: oklch(0.95 0.006 80);
-  --muted-foreground: oklch(0.42 0.016 260);
+  --muted: oklch(0.17 0.020 248);
+  --muted-foreground: oklch(0.62 0.014 248); /* mid-tone */
 
-  --accent: oklch(0.93 0.04 152);
-  --accent-foreground: oklch(0.26 0.16 152);
+  --accent: oklch(0.22 0.025 248);       /* #243040 hover */
+  --accent-foreground: oklch(0.57 0.10 215); /* teal */
 
   --destructive: oklch(0.55 0.22 25);
   --destructive-foreground: oklch(0.99 0 0);
 
-  --border: oklch(0.88 0.006 80);
-  --input: oklch(0.88 0.006 80);
-  --ring: oklch(0.50 0.18 152);
+  --border: oklch(0.22 0.014 248 / 0.6); /* subtle */
+  --input: oklch(0.15 0.015 248);
+  --ring: oklch(0.57 0.10 215);
 
-  --chart-1: oklch(0.50 0.18 152);
-  --chart-2: oklch(0.52 0.16 180);
-  --chart-3: oklch(0.55 0.15 210);
-  --chart-4: oklch(0.60 0.18 55);
-  --chart-5: oklch(0.48 0.12 260);
+  --chart-1: oklch(0.57 0.10 215);
+  --chart-2: oklch(0.80 0.19 136);
+  --chart-3: oklch(0.62 0.14 180);
+  --chart-4: oklch(0.70 0.18 55);
+  --chart-5: oklch(0.60 0.12 270);
 
-  --sidebar: oklch(0.97 0.006 80);
-  --sidebar-foreground: oklch(0.15 0.012 260);
-  --sidebar-primary: oklch(0.50 0.18 152);
+  --sidebar: oklch(0.10 0.014 248);
+  --sidebar-foreground: oklch(0.93 0.007 248);
+  --sidebar-primary: oklch(0.57 0.10 215);
   --sidebar-primary-foreground: oklch(0.99 0 0);
-  --sidebar-accent: oklch(0.93 0.04 152);
-  --sidebar-accent-foreground: oklch(0.26 0.16 152);
-  --sidebar-border: oklch(0.88 0.006 80);
-  --sidebar-ring: oklch(0.50 0.18 152);
+  --sidebar-accent: oklch(0.18 0.022 248);
+  --sidebar-accent-foreground: oklch(0.74 0.015 248);
+  --sidebar-border: oklch(0.22 0.014 248 / 0.5);
+  --sidebar-ring: oklch(0.57 0.10 215);
 }
 
-/* ============================================================
-   CANVAS THEME — Dark (.dark class, set by theme toggle)
-   ============================================================ */
-
+/* .dark mirrors :root — always dark */
 .dark {
-  --background: oklch(0.10 0.006 260);
-  --foreground: oklch(0.94 0.008 80);
-
-  --card: oklch(0.14 0.006 260);
-  --card-foreground: oklch(0.94 0.008 80);
-
-  --popover: oklch(0.14 0.006 260);
-  --popover-foreground: oklch(0.94 0.008 80);
-
-  --primary: oklch(0.58 0.18 152);
-  --primary-foreground: oklch(0.10 0.006 260);
-
-  --secondary: oklch(0.18 0.006 260);
-  --secondary-foreground: oklch(0.85 0.008 80);
-
-  --muted: oklch(0.18 0.006 260);
-  --muted-foreground: oklch(0.58 0.012 260);
-
-  --accent: oklch(0.20 0.030 152);
-  --accent-foreground: oklch(0.70 0.15 152);
-
-  --destructive: oklch(0.62 0.22 25);
+  --background: oklch(0.08 0.014 248);
+  --foreground: oklch(0.93 0.007 248);
+  --card: oklch(0.12 0.014 248);
+  --card-foreground: oklch(0.93 0.007 248);
+  --popover: oklch(0.14 0.016 248);
+  --popover-foreground: oklch(0.93 0.007 248);
+  --primary: oklch(0.57 0.10 215);
+  --primary-foreground: oklch(0.99 0 0);
+  --secondary: oklch(0.18 0.022 248);
+  --secondary-foreground: oklch(0.74 0.015 248);
+  --muted: oklch(0.17 0.020 248);
+  --muted-foreground: oklch(0.62 0.014 248);
+  --accent: oklch(0.22 0.025 248);
+  --accent-foreground: oklch(0.57 0.10 215);
+  --destructive: oklch(0.55 0.22 25);
   --destructive-foreground: oklch(0.99 0 0);
-
-  --border: oklch(0.24 0.006 260);
-  --input: oklch(0.24 0.006 260);
-  --ring: oklch(0.58 0.18 152);
-
-  --chart-1: oklch(0.62 0.18 152);
-  --chart-2: oklch(0.62 0.16 180);
-  --chart-3: oklch(0.64 0.15 210);
+  --border: oklch(0.22 0.014 248 / 0.6);
+  --input: oklch(0.15 0.015 248);
+  --ring: oklch(0.57 0.10 215);
+  --chart-1: oklch(0.57 0.10 215);
+  --chart-2: oklch(0.80 0.19 136);
+  --chart-3: oklch(0.62 0.14 180);
   --chart-4: oklch(0.70 0.18 55);
-  --chart-5: oklch(0.60 0.12 260);
-
-  --sidebar: oklch(0.12 0.006 260);
-  --sidebar-foreground: oklch(0.94 0.008 80);
-  --sidebar-primary: oklch(0.58 0.18 152);
-  --sidebar-primary-foreground: oklch(0.10 0.006 260);
-  --sidebar-accent: oklch(0.18 0.006 260);
-  --sidebar-accent-foreground: oklch(0.85 0.008 80);
-  --sidebar-border: oklch(0.24 0.006 260);
-  --sidebar-ring: oklch(0.58 0.18 152);
+  --chart-5: oklch(0.60 0.12 270);
+  --sidebar: oklch(0.10 0.014 248);
+  --sidebar-foreground: oklch(0.93 0.007 248);
+  --sidebar-primary: oklch(0.57 0.10 215);
+  --sidebar-primary-foreground: oklch(0.99 0 0);
+  --sidebar-accent: oklch(0.18 0.022 248);
+  --sidebar-accent-foreground: oklch(0.74 0.015 248);
+  --sidebar-border: oklch(0.22 0.014 248 / 0.5);
+  --sidebar-ring: oklch(0.57 0.10 215);
 }
 
 /* ============================================================
@@ -173,51 +168,78 @@ html {
 }
 
 /* ============================================================
-   SURFACE UTILITIES
-   Clean canvas surfaces — glass* names kept so existing
-   component references still resolve without changes.
+   SURFACE UTILITIES — Glassmorphism (Duly Noted style)
    ============================================================ */
 
 .glass {
-  background: var(--card);
-  border: 1px solid var(--border);
+  background: rgba(18, 24, 32, 0.70);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(0, 151, 178, 0.12);
 }
 
 .glass-sm {
-  background: var(--card);
-  border: 1px solid var(--border);
+  background: rgba(18, 24, 32, 0.55);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(148, 163, 184, 0.10);
 }
 
 .glass-strong {
-  background: var(--card);
-  border: 1px solid var(--border);
-  box-shadow: 0 1px 4px oklch(0 0 0 / 0.06);
+  background: rgba(14, 20, 30, 0.80);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(0, 151, 178, 0.18);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
 }
 
 .glass-card {
-  background: var(--card);
-  border: 1px solid var(--border);
+  background: rgba(18, 24, 32, 0.70);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(0, 151, 178, 0.12);
   border-radius: var(--radius-xl);
-  box-shadow: 0 1px 3px oklch(0 0 0 / 0.05);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 .glass-card:hover {
-  border-color: oklch(0.50 0.18 152 / 0.40);
-  box-shadow: 0 2px 8px oklch(0 0 0 / 0.08);
+  border-color: rgba(0, 151, 178, 0.35);
+  box-shadow: 0 4px 20px rgba(0, 151, 178, 0.12);
 }
 
 .glow-primary {
-  box-shadow: 0 0 0 3px oklch(0.50 0.18 152 / 0.18);
+  box-shadow: 0 0 0 3px rgba(0, 151, 178, 0.20),
+              0 0 16px rgba(0, 151, 178, 0.12);
 }
 
 .glow-primary:hover {
-  box-shadow: 0 0 0 3px oklch(0.50 0.18 152 / 0.32);
+  box-shadow: 0 0 0 3px rgba(0, 151, 178, 0.35),
+              0 0 24px rgba(0, 151, 178, 0.20);
 }
 
+/* Brand gradient text */
 .text-gradient-primary {
-  color: var(--primary);
+  background: var(--gradient-brand);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .text-gradient-accent {
-  color: var(--primary);
+  background: var(--gradient-brand);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Brand gradient background */
+.bg-gradient-brand {
+  background: var(--gradient-brand);
+}
+
+/* Teal glow on focus for inputs */
+input:focus, textarea:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 151, 178, 0.25);
 }
