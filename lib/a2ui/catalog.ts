@@ -2249,6 +2249,112 @@ export const specializedCatalog: ComponentCatalog = {
     examples: imageGalleryExamples
   },
 
+  Presentation: {
+    type: 'Presentation',
+    description: `Interactive slide presentation viewer with export to PowerPoint (.pptx). Create professional
+    slide decks from prompts with navigation, themes, and download support. Supports:
+    - 8 slide layouts: title, content, two-column, image, quote, blank, team, comparison
+    - 5 themes: professional (blue), modern (dark/purple), minimal (white), dark (green), colorful (purple)
+    - Slide navigation with dot indicators and prev/next buttons
+    - Export to real .pptx file (opens in PowerPoint, Keynote, Google Slides)
+    - Copy JSON data, fullscreen mode
+    - Speaker notes per slide
+    - Custom background color per slide
+    - Aspect ratio: 16:9 or 4:3
+
+    Slide layout reference:
+    - title: Large centered title + subtitle + author. Use for opening slide.
+    - content: Title + paragraph text + bullet list. Most common layout.
+    - two-column: Title + left/right columns each with title, text, or bullets.
+    - comparison: Title + two styled cards side by side (great for pros/cons, before/after).
+    - quote: Large centered quote with author attribution.
+    - image: Title + full image + caption.
+    - team: Title + content text (use for team member introductions).
+    - blank: Empty slide with optional background color.`,
+    props: ['data', 'options'],
+    examples: [
+      {
+        description: '5-slide pitch deck',
+        spec: {
+          id: 'pitch-deck',
+          component: {
+            Presentation: {
+              data: {
+                title: 'Acme Inc. — Series A',
+                theme: 'professional',
+                slides: [
+                  { id: 's1', layout: 'title', title: 'Acme Inc.', subtitle: 'The future of widget manufacturing', author: 'Jane Smith, CEO' },
+                  { id: 's2', layout: 'content', title: 'The Problem', bullets: ['Widgets take 3 weeks to deliver', 'Quality is inconsistent', 'Costs are rising 20% YoY'] },
+                  { id: 's3', layout: 'two-column', title: 'Our Solution', leftTitle: 'Before', leftBullets: ['Manual process', '21 days', '$50/unit'], rightTitle: 'After', rightBullets: ['Automated pipeline', '2 days', '$12/unit'] },
+                  { id: 's4', layout: 'content', title: 'Traction', bullets: ['$2M ARR', '150 customers', '40% MoM growth'] },
+                  { id: 's5', layout: 'quote', quote: 'Acme cut our delivery time by 90%. We will never go back.', author: 'Bob Lee, VP Operations at Globex' },
+                ],
+              },
+              options: { height: 520, aspectRatio: '16:9' },
+            },
+          },
+        },
+      },
+    ],
+  },
+
+  Document: {
+    type: 'Document',
+    description: `Formatted document renderer with export to Word (.docx). Create professional documents from
+    prompts with rich formatting and download support. Supports:
+    - Section types: heading (h1-h4), paragraph, bulletList, numberedList, table, divider, code, quote, image, callout
+    - 4 themes: default, academic (serif), business (blue headers), minimal (light)
+    - Export to real .docx file (opens in Word, Google Docs, LibreOffice)
+    - Copy as markdown, fullscreen mode
+    - Page-like rendering (A4/Letter/Legal)
+    - Callout boxes with info/warning/success/error styles
+    - Tables with headers and alternating rows
+    - Code blocks with monospace font
+
+    Section type reference:
+    - heading: { type: "heading", level: 1-4, text: "..." }
+    - paragraph: { type: "paragraph", text: "...", align: "left|center|right" }
+    - bulletList: { type: "bulletList", items: ["item1", "item2"] }
+    - numberedList: { type: "numberedList", items: ["step1", "step2"] }
+    - table: { type: "table", headers: ["Col1", "Col2"], rows: [["A", "B"]] }
+    - divider: { type: "divider" }
+    - code: { type: "code", text: "const x = 1;", language: "javascript" }
+    - quote: { type: "quote", text: "...", caption: "Author" }
+    - callout: { type: "callout", style: "info|warning|success|error", text: "..." }`,
+    props: ['data', 'options'],
+    examples: [
+      {
+        description: 'Project proposal document',
+        spec: {
+          id: 'project-proposal',
+          component: {
+            Document: {
+              data: {
+                title: 'Project Proposal: New Dashboard',
+                subtitle: 'Q3 2026 Initiative',
+                author: 'Engineering Team',
+                date: 'May 2026',
+                sections: [
+                  { type: 'heading', level: 1, text: 'Executive Summary' },
+                  { type: 'paragraph', text: 'This proposal outlines the development of a new analytics dashboard to improve visibility into key business metrics.' },
+                  { type: 'callout', style: 'info', text: 'Estimated completion: 8 weeks. Budget required: $40,000.' },
+                  { type: 'heading', level: 2, text: 'Goals' },
+                  { type: 'bulletList', items: ['Real-time data visualization', 'Role-based access control', 'Mobile-responsive design'] },
+                  { type: 'heading', level: 2, text: 'Timeline' },
+                  { type: 'table', headers: ['Phase', 'Duration', 'Owner'], rows: [['Discovery', '1 week', 'PM'], ['Design', '2 weeks', 'Design'], ['Development', '4 weeks', 'Engineering'], ['QA & Launch', '1 week', 'QA']] },
+                  { type: 'divider' },
+                  { type: 'heading', level: 2, text: 'Risks' },
+                  { type: 'callout', style: 'warning', text: 'Third-party API dependency may introduce latency. Mitigation: caching layer.' },
+                ],
+              },
+              options: { height: 640, theme: 'business' },
+            },
+          },
+        },
+      },
+    ],
+  },
+
   ApprovalCard: {
     type: 'ApprovalCard',
     description: `Approval card for user decision-making with confirm/cancel actions. Request user approval

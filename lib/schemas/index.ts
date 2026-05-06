@@ -69,6 +69,12 @@ export * from './datatable.schema';
 // ImageGallery schemas
 export * from './imagegallery.schema';
 
+// Presentation schemas
+export * from './presentation.schema';
+
+// Document schemas
+export * from './document.schema';
+
 /**
  * Registry of all component schemas
  * Maps component type to its props schema
@@ -96,6 +102,8 @@ import {
   MarkdownPropsSchema,
   DataTablePropsSchema,
   ImageGalleryPropsSchema,
+  PresentationPropsSchema,
+  DocumentPropsSchema,
   // Individual ToolUI component schemas
   SerializableApprovalCardSchema,
   SerializableWeatherWidgetSchema,
@@ -140,6 +148,8 @@ export const schemaRegistry: Record<string, ZodSchema> = {
   Markdown: MarkdownPropsSchema,
   DataTable: DataTablePropsSchema,
   ImageGallery: ImageGalleryPropsSchema,
+  Presentation: PresentationPropsSchema,
+  Document: DocumentPropsSchema,
   // Individual ToolUI component schemas for granular validation
   ApprovalCard: SerializableApprovalCardSchema,
   WeatherWidget: SerializableWeatherWidgetSchema,

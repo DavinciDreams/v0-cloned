@@ -246,6 +246,28 @@ import type { MarkdownProps } from '@/lib/schemas/markdown.schema';
 import type { DataTableProps } from '@/lib/schemas/datatable.schema';
 import type { JSONViewerProps } from '@/lib/schemas/jsonviewer.schema';
 import type { ImageGalleryProps } from '@/lib/schemas/imagegallery.schema';
+import type { PresentationProps } from '@/lib/schemas/presentation.schema';
+import type { DocumentProps } from '@/lib/schemas/document.schema';
+import {
+  Presentation,
+  PresentationHeader,
+  PresentationTitle,
+  PresentationActions,
+  PresentationDownloadButton,
+  PresentationCopyButton,
+  PresentationFullscreenButton,
+  PresentationContent,
+} from '@/components/ai-elements/presentation';
+import {
+  DocumentTemplate,
+  DocumentHeader,
+  DocumentTitle,
+  DocumentActions,
+  DocumentDownloadButton,
+  DocumentCopyButton,
+  DocumentFullscreenButton,
+  DocumentContent,
+} from '@/components/ai-elements/document-template';
 
 /**
  * List of specialized components that use Zod validation and composable pattern
@@ -274,6 +296,8 @@ const SPECIALIZED_COMPONENTS = new Set([
   'DataTable',
   'JSONViewer',
   'ImageGallery',
+  'Presentation',
+  'Document',
 ]);
 
 /**
@@ -813,6 +837,44 @@ export function renderA2UIComponent(
               </ImageGalleryHeader>
               <ImageGalleryGrid />
             </ImageGallery>
+          </div>
+        );
+      }
+
+      case 'Presentation': {
+        const presentationProps = validation.data as PresentationProps;
+        return (
+          <div key={componentId} data-a2ui-id={componentId} data-a2ui-type={componentType}>
+            <Presentation {...presentationProps}>
+              <PresentationHeader>
+                <PresentationTitle />
+                <PresentationActions>
+                  <PresentationCopyButton />
+                  <PresentationDownloadButton />
+                  <PresentationFullscreenButton />
+                </PresentationActions>
+              </PresentationHeader>
+              <PresentationContent />
+            </Presentation>
+          </div>
+        );
+      }
+
+      case 'Document': {
+        const documentProps = validation.data as DocumentProps;
+        return (
+          <div key={componentId} data-a2ui-id={componentId} data-a2ui-type={componentType}>
+            <DocumentTemplate {...documentProps}>
+              <DocumentHeader>
+                <DocumentTitle />
+                <DocumentActions>
+                  <DocumentCopyButton />
+                  <DocumentDownloadButton />
+                  <DocumentFullscreenButton />
+                </DocumentActions>
+              </DocumentHeader>
+              <DocumentContent />
+            </DocumentTemplate>
           </div>
         );
       }
