@@ -743,7 +743,7 @@ const chatRequestSchema = z.object({
   prompt: z.string().optional(),
   stream: z.boolean().optional().default(true),
   temperature: z.number().optional().default(0.7),
-  maxTokens: z.number().optional().default(4000),
+  maxTokens: z.number().optional().default(16000),
 });
 
 export async function POST(req: NextRequest) {
@@ -767,7 +767,7 @@ export async function POST(req: NextRequest) {
     const { messages, prompt, stream, temperature, maxTokens } = parseResult.data;
 
     const clampedTemperature = Math.min(Math.max(Number(temperature) || 0.7, 0), 2);
-    const clampedMaxTokens = Math.min(Math.max(Math.floor(Number(maxTokens) || 4000), 1), 8000);
+    const clampedMaxTokens = Math.min(Math.max(Math.floor(Number(maxTokens) || 16000), 1), 32000);
 
     // Validate required fields
     if (!messages && !prompt) {
