@@ -51,6 +51,7 @@ interface ExtendedStickToBottomContext extends StickToBottomContext {
   messages?: Array<{ id: string; role: string; content: string }>;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type ComponentRegistry = Record<string, ComponentType<any>>;
 
 const componentBindings: ComponentRegistry = {
@@ -145,9 +146,9 @@ export default function Page() {
   }, [messages, addMessage, updateMessage, setLoading, setError]);
 
   return (
-    <div className="flex h-full w-full flex-col bg-[#0a0e14]">
+    <div className="flex h-full w-full flex-col bg-background">
       {/* Components navigation bar */}
-      <div className="shrink-0 border-b border-white/5 bg-[#0a0e14]">
+      <div className="shrink-0 border-b border-border bg-background">
         <div className="mx-auto max-w-5xl px-4">
           <div className="flex items-center justify-end h-9">
             <button

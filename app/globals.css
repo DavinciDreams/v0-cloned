@@ -48,46 +48,46 @@
 }
 
 /* ============================================================
-   GENEROUS — Dark-first theme (inspired by Duly Noted)
+   GENEROUS — Theme (inspired by Duly Noted)
    Primary: #0097b2 (teal)  Accent: #7ed952 (lime)
-   Background: #0a0e14 → #121820
    ============================================================ */
 
+/* Shared brand tokens */
 :root {
-  --radius: 0.625rem; /* 10px */
-
-  /* Brand gradient */
+  --radius: 0.625rem;
   --gradient-brand: linear-gradient(135deg, #0097b2, #7ed952);
   --color-teal: #0097b2;
   --color-lime: #7ed952;
+}
 
-  /* Backgrounds */
-  --background: oklch(0.08 0.014 248);   /* #0a0e14 */
-  --foreground: oklch(0.93 0.007 248);   /* #e8edf2 */
+/* ── Light mode ─────────────────────────────────────────── */
+:root {
+  --background: oklch(0.97 0.006 248);   /* #f5f8fa */
+  --foreground: oklch(0.10 0.014 248);   /* near-black */
 
-  --card: oklch(0.12 0.014 248);         /* #121820 */
-  --card-foreground: oklch(0.93 0.007 248);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.10 0.014 248);
 
-  --popover: oklch(0.14 0.016 248);
-  --popover-foreground: oklch(0.93 0.007 248);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.10 0.014 248);
 
   --primary: oklch(0.57 0.10 215);       /* #0097b2 teal */
   --primary-foreground: oklch(0.99 0 0);
 
-  --secondary: oklch(0.18 0.022 248);    /* #1a2536 */
-  --secondary-foreground: oklch(0.74 0.015 248); /* #a8b5c8 */
+  --secondary: oklch(0.92 0.012 215);    /* light teal tint */
+  --secondary-foreground: oklch(0.30 0.02 248);
 
-  --muted: oklch(0.17 0.020 248);
-  --muted-foreground: oklch(0.62 0.014 248); /* mid-tone */
+  --muted: oklch(0.93 0.008 248);
+  --muted-foreground: oklch(0.48 0.016 248);
 
-  --accent: oklch(0.22 0.025 248);       /* #243040 hover */
-  --accent-foreground: oklch(0.57 0.10 215); /* teal */
+  --accent: oklch(0.91 0.018 215);
+  --accent-foreground: oklch(0.40 0.08 215);
 
   --destructive: oklch(0.55 0.22 25);
   --destructive-foreground: oklch(0.99 0 0);
 
-  --border: oklch(0.22 0.014 248 / 0.6); /* subtle */
-  --input: oklch(0.15 0.015 248);
+  --border: oklch(0.88 0.010 248);
+  --input: oklch(0.88 0.010 248);
   --ring: oklch(0.57 0.10 215);
 
   --chart-1: oklch(0.57 0.10 215);
@@ -96,13 +96,13 @@
   --chart-4: oklch(0.70 0.18 55);
   --chart-5: oklch(0.60 0.12 270);
 
-  --sidebar: oklch(0.10 0.014 248);
-  --sidebar-foreground: oklch(0.93 0.007 248);
+  --sidebar: oklch(0.95 0.008 248);
+  --sidebar-foreground: oklch(0.10 0.014 248);
   --sidebar-primary: oklch(0.57 0.10 215);
   --sidebar-primary-foreground: oklch(0.99 0 0);
-  --sidebar-accent: oklch(0.18 0.022 248);
-  --sidebar-accent-foreground: oklch(0.74 0.015 248);
-  --sidebar-border: oklch(0.22 0.014 248 / 0.5);
+  --sidebar-accent: oklch(0.91 0.018 215);
+  --sidebar-accent-foreground: oklch(0.40 0.08 215);
+  --sidebar-border: oklch(0.88 0.010 248);
   --sidebar-ring: oklch(0.57 0.10 215);
 }
 
@@ -172,35 +172,53 @@ html {
    ============================================================ */
 
 .glass {
-  background: rgba(18, 24, 32, 0.70);
+  background: var(--card);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(0, 151, 178, 0.12);
 }
 
+.dark .glass {
+  background: rgba(18, 24, 32, 0.70);
+}
+
 .glass-sm {
-  background: rgba(18, 24, 32, 0.55);
+  background: var(--card);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(148, 163, 184, 0.10);
+  border: 1px solid var(--border);
+}
+
+.dark .glass-sm {
+  background: rgba(18, 24, 32, 0.55);
 }
 
 .glass-strong {
-  background: rgba(14, 20, 30, 0.80);
+  background: var(--card);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(0, 151, 178, 0.18);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+}
+
+.dark .glass-strong {
+  background: rgba(14, 20, 30, 0.80);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
 }
 
 .glass-card {
-  background: rgba(18, 24, 32, 0.70);
+  background: var(--card);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(0, 151, 178, 0.12);
   border-radius: var(--radius-xl);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
   transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.dark .glass-card {
+  background: rgba(18, 24, 32, 0.70);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
 }
 
 .glass-card:hover {
